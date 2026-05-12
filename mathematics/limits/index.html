@@ -1,0 +1,1198 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Simulador Polea Mobile V5 PRO</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:"Segoe UI",sans-serif;
+-webkit-tap-highlight-color:transparent;
+}
+
+body{
+background:#0f172a;
+color:white;
+overflow-x:hidden;
+}
+
+header{
+background:linear-gradient(90deg,#020617,#1e3a8a,#020617);
+padding:16px;
+text-align:center;
+position:sticky;
+top:0;
+z-index:10;
+box-shadow:0 4px 12px rgba(0,0,0,0.35);
+}
+
+header h1{
+font-size:1.35rem;
+color:#38bdf8;
+}
+
+.container{
+padding:12px;
+display:flex;
+flex-direction:column;
+gap:14px;
+}
+
+.card{
+background:#111827;
+border-radius:20px;
+overflow:hidden;
+border:1px solid #334155;
+box-shadow:0 0 15px rgba(0,0,0,0.35);
+}
+
+.title{
+padding:12px;
+text-align:center;
+font-weight:bold;
+font-size:1.1rem;
+background:linear-gradient(90deg,#0f172a,#1d4ed8);
+}
+
+.green{
+background:linear-gradient(90deg,#064e3b,#16a34a);
+}
+
+canvas{
+width:100%;
+display:block;
+background:white;
+}
+
+.sliderBox{
+padding:18px;
+background:#e2e8f0;
+color:#111827;
+}
+
+.sliderBox label{
+font-size:1.1rem;
+font-weight:bold;
+color:#166534;
+}
+
+input[type=range]{
+width:100%;
+height:18px;
+accent-color:#16a34a;
+margin-top:12px;
+}
+
+.mass{
+margin-top:12px;
+background:white;
+border-radius:14px;
+padding:12px;
+font-size:1.5rem;
+font-weight:bold;
+text-align:center;
+border:2px solid #cbd5e1;
+}
+
+.pedagogia{
+background:#f8fafc;
+color:#111827;
+padding:16px;
+}
+
+.sec{
+margin-bottom:22px;
+}
+
+.secTitle{
+font-size:1.05rem;
+font-weight:bold;
+color:#2563eb;
+margin-bottom:10px;
+}
+
+.box{
+background:white;
+border:2px solid #2563eb;
+border-radius:14px;
+padding:14px;
+line-height:2;
+font-size:1rem;
+}
+
+.result{
+background:#f0fdf4;
+border:2px solid #16a34a;
+border-radius:14px;
+padding:14px;
+line-height:1.9;
+}
+
+.final{
+margin-top:14px;
+background:white;
+border:2px solid #dc2626;
+border-radius:14px;
+padding:14px;
+font-size:1.7rem;
+font-weight:bold;
+text-align:center;
+color:#b91c1c;
+}
+
+.question{
+background:white;
+border-radius:14px;
+padding:14px;
+margin-bottom:18px;
+border:2px solid #cbd5e1;
+color:#111827;
+}
+
+.question h4{
+margin-bottom:12px;
+line-height:1.5;
+}
+
+.option{
+display:block;
+padding:10px;
+margin-bottom:8px;
+background:#e2e8f0;
+border-radius:10px;
+}
+
+button{
+width:100%;
+padding:16px;
+font-size:1.1rem;
+font-weight:bold;
+border:none;
+border-radius:14px;
+background:linear-gradient(90deg,#2563eb,#06b6d4);
+color:white;
+margin-top:14px;
+}
+
+.grade{
+margin-top:18px;
+background:#052e16;
+border:2px solid #22c55e;
+padding:18px;
+border-radius:16px;
+font-size:1.2rem;
+line-height:2;
+}
+
+footer{
+text-align:center;
+padding:18px;
+color:#94a3b8;
+}
+
+</style>
+
+</head>
+
+<body>
+<div style="
+padding:15px;
+background:#020617;
+display:flex;
+gap:10px;
+flex-wrap:wrap;
+position:sticky;
+top:0;
+z-index:100;
+box-shadow:0 2px 10px rgba(0,0,0,0.4);
+">
+
+<button
+onclick="window.location.href='../../'"
+style="
+background:#2563eb;
+color:white;
+border:none;
+padding:12px 18px;
+border-radius:10px;
+font-size:1rem;
+cursor:pointer;
+width:auto;
+font-weight:bold;
+">
+⬅ Back to Platform
+</button>
+
+<a
+href="index.html"
+download
+style="
+background:#16a34a;
+color:white;
+text-decoration:none;
+padding:12px 18px;
+border-radius:10px;
+font-size:1rem;
+font-weight:bold;
+display:flex;
+align-items:center;
+">
+📥 Download Offline
+</a>
+
+</div>
+
+<header>
+<h1>📱 SIMULADOR POLEA MOBILE V5 PRO</h1>
+</header>
+
+<div class="container">
+
+<!-- DIAGRAMA FISICO -->
+
+<div class="card">
+
+<div class="title">
+1. DIAGRAMA FÍSICO
+</div>
+
+<canvas id="fisico" width="400" height="320"></canvas>
+
+</div>
+
+<!-- SLIDER -->
+
+<div class="card">
+
+<div class="sliderBox">
+
+<label>
+Masa del bloque
+</label>
+
+<input
+type="range"
+id="masa"
+min="1"
+max="20"
+value="3"
+step="1"
+>
+
+<div class="mass">
+<span id="massTxt">3</span> kg
+</div>
+
+</div>
+
+</div>
+
+<!-- DCL -->
+
+<div class="card">
+
+<div class="title green">
+2. D.C.L. — Punto A
+</div>
+
+<canvas id="dcl" width="400" height="300"></canvas>
+
+</div>
+
+<!-- PEDAGOGIA -->
+
+<div class="card">
+
+<div class="title">
+📖 DESARROLLO PEDAGÓGICO PRO
+</div>
+
+<div class="pedagogia" id="pedagogia"></div>
+
+</div>
+
+<!-- EVALUACION -->
+
+<div class="card">
+
+<div class="title green">
+🧠 EVALUACIÓN TIPO ICFES
+</div>
+
+<div class="pedagogia">
+
+<div id="quiz"></div>
+
+<button onclick="calificar()">
+CALIFICAR
+</button>
+
+<div id="resultado"></div>
+
+</div>
+
+</div>
+
+</div>
+
+<footer>
+Designed by Eng. Medina H. A.
+</footer>
+
+<script>
+
+// =====================================================
+// PREGUNTAS
+// =====================================================
+
+const preguntas=[
+
+{
+p:"Una masa de 5kg cuelga de una polea ideal. ¿Cuál es el peso aproximado del cuerpo?",
+o:["5N","9.81N","49.05N","98.1N"],
+r:2
+},
+
+{
+p:"En un sistema de polea ideal, la tensión de la cuerda:",
+o:[
+"elimina el peso",
+"transmite fuerza a través de la cuerda",
+"depende del color de la polea",
+"desaparece cuando hay equilibrio"
+],
+r:1
+},
+
+{
+p:"Si el sistema se encuentra en equilibrio, entonces:",
+o:[
+"la aceleración es positiva",
+"la fuerza neta es diferente de cero",
+"la aceleración es cero",
+"el peso desaparece"
+],
+r:2
+},
+
+{
+p:"La Segunda Ley de Newton se expresa mediante:",
+o:[
+"W = mg",
+"Ff = μN",
+"ΣF = ma",
+"v = d/t"
+],
+r:2
+},
+
+{
+p:"La fuerza peso siempre apunta:",
+o:[
+"horizontalmente",
+"hacia la cuerda",
+"verticalmente hacia abajo",
+"hacia arriba"
+],
+r:2
+},
+
+{
+p:"En el simulador, si la masa aumenta, entonces la tensión:",
+o:[
+"disminuye",
+"aumenta",
+"desaparece",
+"permanece negativa"
+],
+r:1
+},
+
+{
+p:"Una polea ideal tiene como función principal:",
+o:[
+"aumentar la gravedad",
+"eliminar la masa",
+"cambiar la dirección de la fuerza",
+"generar aceleración"
+],
+r:2
+},
+
+{
+p:"En el Diagrama de Cuerpo Libre del punto A aparecen:",
+o:[
+"únicamente la polea y la cuerda",
+"únicamente las fuerzas que actúan sobre el punto",
+"las paredes y el piso",
+"únicamente el peso"
+],
+r:1
+},
+
+{
+p:"Si m = 8kg, el peso aproximado será:",
+o:[
+"78.48N",
+"8N",
+"9.81N",
+"88N"
+],
+r:0
+},
+
+{
+p:"La unidad de fuerza en el Sistema Internacional es:",
+o:[
+"Joule",
+"Newton",
+"Pascal",
+"Watt"
+],
+r:1
+},
+
+{
+p:"En equilibrio mecánico se cumple que:",
+o:[
+"a ≠ 0",
+"ΣF = 0",
+"m = 0",
+"g = 0"
+],
+r:1
+},
+
+{
+p:"Cuando en el simulador se mueve el slider de masa, los vectores del D.C.L.:",
+o:[
+"permanecen iguales",
+"desaparecen",
+"cambian proporcionalmente",
+"cambian de color aleatoriamente"
+],
+r:2
+},
+
+{
+p:"La gravedad utilizada en la Tierra tiene un valor aproximado de:",
+o:[
+"1m/s²",
+"5m/s²",
+"9.81m/s²",
+"98m/s²"
+],
+r:2
+},
+
+{
+p:"Si la fuerza neta sobre un cuerpo es cero, el cuerpo:",
+o:[
+"necesariamente acelera",
+"puede permanecer en equilibrio",
+"pierde masa",
+"deja de tener peso"
+],
+r:1
+},
+
+{
+p:"La tensión y el peso tienen:",
+o:[
+"igual dirección y mismo sentido",
+"sentidos opuestos",
+"diferentes unidades",
+"magnitudes negativas"
+],
+r:1
+},
+
+{
+p:"En el simulador, el vector rojo representa:",
+o:[
+"el peso",
+"la gravedad",
+"la tensión",
+"la normal"
+],
+r:2
+},
+
+{
+p:"La fuerza peso depende de:",
+o:[
+"la temperatura",
+"el color del cuerpo",
+"la masa y la gravedad",
+"la velocidad"
+],
+r:2
+},
+
+{
+p:"Si una masa de 10kg se encuentra en equilibrio suspendida por una cuerda ideal, la tensión vale aproximadamente:",
+o:[
+"10N",
+"98.1N",
+"9.81N",
+"1000N"
+],
+r:1
+},
+
+{
+p:"El propósito principal del D.C.L. es:",
+o:[
+"decorar el sistema físico",
+"representar únicamente las fuerzas que actúan",
+"eliminar las ecuaciones",
+"calcular temperatura"
+],
+r:1
+},
+
+{
+p:"El simulador permite relacionar:",
+o:[
+"únicamente colores y dibujos",
+"teoría, ecuaciones y análisis físico",
+"gravedad y temperatura",
+"masa y energía nuclear"
+],
+r:1
+}
+
+];
+
+// =====================================================
+// QUIZ
+// =====================================================
+
+const quiz=document.getElementById("quiz");
+
+preguntas.forEach((q,i)=>{
+
+let html=`
+<div class="question">
+<h4>${i+1}. ${q.p}</h4>
+`;
+
+q.o.forEach((op,j)=>{
+
+html+=`
+<label class="option">
+<input type="radio" name="q${i}" value="${j}">
+${String.fromCharCode(65+j)}. ${op}
+</label>
+`;
+
+});
+
+html+="</div>";
+
+quiz.innerHTML+=html;
+
+});
+
+function calificar(){
+
+let buenas=0;
+
+preguntas.forEach((q,i)=>{
+
+const r=document.querySelector(
+`input[name=q${i}]:checked`
+);
+
+if(r){
+
+if(+r.value===q.r){
+
+buenas++;
+
+}
+
+}
+
+});
+
+const nota=((buenas/20)*5).toFixed(1);
+
+resultado.innerHTML=`
+
+<div class="grade">
+
+✅ Correctas:
+<b>${buenas}/20</b>
+
+<br>
+
+📊 Nota:
+<b>${nota}</b>
+
+<br><br>
+
+${
+nota>=4
+?
+"Excelente comprensión de la Segunda Ley de Newton."
+:
+nota>=3
+?
+"Buen desempeño. Continúa practicando."
+:
+"Debes reforzar los conceptos físicos."
+}
+
+</div>
+
+`;
+
+}
+
+// =====================================================
+// CANVAS
+// =====================================================
+
+const fisico=document.getElementById("fisico");
+const ctx=fisico.getContext("2d");
+
+const dcl=document.getElementById("dcl");
+const ctx2=dcl.getContext("2d");
+
+// =====================================================
+
+function flecha(c,x1,y1,x2,y2,color,g=4){
+
+c.strokeStyle=color;
+c.fillStyle=color;
+c.lineWidth=g;
+
+c.beginPath();
+c.moveTo(x1,y1);
+c.lineTo(x2,y2);
+c.stroke();
+
+const ang=Math.atan2(y2-y1,x2-x1);
+
+c.beginPath();
+
+c.moveTo(x2,y2);
+
+c.lineTo(
+x2-12*Math.cos(ang-Math.PI/6),
+y2-12*Math.sin(ang-Math.PI/6)
+);
+
+c.lineTo(
+x2-12*Math.cos(ang+Math.PI/6),
+y2-12*Math.sin(ang+Math.PI/6)
+);
+
+c.closePath();
+c.fill();
+
+}
+
+function etiqueta(c,x,y,texto,fondo,color){
+
+c.font="bold 14px Arial";
+
+const p=8;
+
+const w=c.measureText(texto).width+p*2;
+const h=30;
+
+c.fillStyle=fondo;
+
+c.beginPath();
+c.roundRect(x,y,w,h,10);
+c.fill();
+
+c.strokeStyle=color;
+c.lineWidth=2;
+c.stroke();
+
+c.fillStyle=color;
+c.fillText(texto,x+p,y+20);
+
+}
+
+// =====================================================
+
+function render(){
+
+const m=+masa.value;
+
+massTxt.innerText=m;
+
+const g=9.81;
+
+const F=(m*g).toFixed(2);
+
+// =====================================================
+// PEDAGOGIA
+// =====================================================
+
+pedagogia.innerHTML=`
+
+<div class="sec">
+
+<div class="secTitle">
+1. Datos de entrada
+</div>
+
+<div class="box">
+
+<span style="color:green;">
+\\[
+m=${m}kg
+\\]
+</span>
+
+<span style="color:#2563eb;">
+\\[
+g=9.81m/s^2
+\\]
+</span>
+
+</div>
+
+</div>
+
+<div class="sec">
+
+<div class="secTitle">
+2. Aplicación de la Segunda Ley de Newton
+</div>
+
+<div class="box">
+
+\\[
+\\sum F = ma
+\\]
+
+Como el sistema está suspendido y no presenta movimiento:
+
+\\[
+a=0
+\\]
+
+Entonces:
+
+\\[
+\\sum F=0
+\\]
+
+Esto significa que las fuerzas se encuentran balanceadas.
+
+</div>
+
+</div>
+
+<div class="sec">
+
+<div class="secTitle">
+3. Sumatoria de fuerzas en el eje Y
+</div>
+
+<div class="box">
+
+Las fuerzas que actúan son:
+
+<br><br>
+
+<span style="color:red;">
+Tensión:
+</span>
+
+\\[
+F
+\\]
+
+<span style="color:green;">
+Peso:
+</span>
+
+\\[
+W
+\\]
+
+Aplicando equilibrio:
+
+\\[
+F-W=0
+\\]
+
+Despejando:
+
+\\[
+F=W
+\\]
+
+</div>
+
+</div>
+
+<div class="sec">
+
+<div class="secTitle">
+4. Desarrollo matemático paso a paso
+</div>
+
+<div class="box">
+
+El peso se calcula mediante:
+
+\\[
+W=mg
+\\]
+
+Sustituimos los datos:
+
+\\[
+W=(${m})(9.81)
+\\]
+
+Multiplicando:
+
+\\[
+W=${F}N
+\\]
+
+Como:
+
+\\[
+F=W
+\\]
+
+Entonces:
+
+\\[
+F=${F}N
+\\]
+
+</div>
+
+</div>
+
+<div class="sec">
+
+<div class="secTitle">
+5. Interpretación física
+</div>
+
+<div class="result">
+
+✅ La tensión de la cuerda es igual al peso del bloque.
+
+<br>
+
+✅ La polea únicamente cambia la dirección de la fuerza.
+
+<br>
+
+✅ El sistema permanece en equilibrio.
+
+<br>
+
+✅ No existe aceleración porque las fuerzas están balanceadas.
+
+<div class="final">
+
+\\[
+F=${F}N
+\\]
+
+</div>
+
+</div>
+
+</div>
+
+`;
+
+if(window.MathJax){
+
+MathJax.typesetPromise();
+
+}
+
+// =====================================================
+// DIAGRAMA FISICO
+// =====================================================
+
+ctx.clearRect(0,0,400,320);
+
+ctx.fillStyle="white";
+ctx.fillRect(0,0,400,320);
+
+// gravedad
+
+flecha(
+ctx,
+60,
+40,
+60,
+90,
+"#2563eb",
+4
+);
+
+etiqueta(
+ctx,
+10,
+5,
+"g = 9.81",
+"#dbeafe",
+"#1d4ed8"
+);
+
+// piso
+
+ctx.strokeStyle="#111";
+ctx.lineWidth=3;
+
+ctx.beginPath();
+ctx.moveTo(80,160);
+ctx.lineTo(250,160);
+ctx.stroke();
+
+for(let i=80;i<250;i+=12){
+
+ctx.beginPath();
+ctx.moveTo(i,160);
+ctx.lineTo(i+7,168);
+ctx.stroke();
+
+}
+
+// pared
+
+ctx.beginPath();
+ctx.moveTo(250,160);
+ctx.lineTo(250,280);
+ctx.stroke();
+
+for(let i=160;i<280;i+=12){
+
+ctx.beginPath();
+ctx.moveTo(250,i);
+ctx.lineTo(258,i+7);
+ctx.stroke();
+
+}
+
+// polea
+
+ctx.beginPath();
+ctx.arc(280,125,28,0,2*Math.PI);
+
+ctx.fillStyle="#d1d5db";
+ctx.fill();
+
+ctx.strokeStyle="#111";
+ctx.lineWidth=3;
+ctx.stroke();
+
+ctx.beginPath();
+ctx.arc(280,125,7,0,2*Math.PI);
+
+ctx.fillStyle="#111";
+ctx.fill();
+
+// cuerda
+
+ctx.strokeStyle="red";
+ctx.lineWidth=5;
+
+ctx.beginPath();
+ctx.moveTo(120,125);
+ctx.lineTo(280,125);
+ctx.lineTo(280,220);
+ctx.stroke();
+
+// fuerza
+
+flecha(
+ctx,
+120,
+125,
+60,
+125,
+"red",
+4
+);
+
+etiqueta(
+ctx,
+5,
+108,
+"F = ?",
+"#fee2e2",
+"#991b1b"
+);
+
+// bloque
+
+ctx.fillStyle="#16a34a";
+
+ctx.fillRect(258,220,44,44);
+
+ctx.strokeStyle="#14532d";
+ctx.lineWidth=3;
+
+ctx.strokeRect(258,220,44,44);
+
+ctx.beginPath();
+ctx.arc(280,220,6,0,2*Math.PI);
+
+ctx.fillStyle="black";
+ctx.fill();
+
+ctx.fillStyle="black";
+ctx.font="bold 16px Arial";
+
+ctx.fillText("A",292,220);
+
+etiqueta(
+ctx,
+310,
+228,
+`m=${m}kg`,
+"#dcfce7",
+"#166534"
+);
+
+// =====================================================
+// DCL
+// =====================================================
+
+ctx2.clearRect(0,0,400,300);
+
+ctx2.fillStyle="white";
+ctx2.fillRect(0,0,400,300);
+
+const cx=200;
+const cy=150;
+
+// ejes
+
+flecha(
+ctx2,
+60,
+cy,
+340,
+cy,
+"black",
+2
+);
+
+flecha(
+ctx2,
+cx,
+260,
+cx,
+50,
+"black",
+2
+);
+
+ctx2.fillStyle="black";
+ctx2.font="bold 18px Arial";
+
+ctx2.fillText("X",350,154);
+ctx2.fillText("Y",205,40);
+
+// punto
+
+ctx2.beginPath();
+ctx2.arc(cx,cy,8,0,2*Math.PI);
+
+ctx2.fillStyle="black";
+ctx2.fill();
+
+ctx2.fillText("A",215,145);
+
+// escala
+
+const esc=Math.min(
+90,
+40+m*4
+);
+
+// tension
+
+flecha(
+ctx2,
+cx,
+cy,
+cx,
+cy-esc,
+"red",
+4
+);
+
+ctx2.fillStyle="red";
+ctx2.font="bold 24px Arial";
+
+ctx2.fillText(
+"T",
+cx+16,
+cy-esc+8
+);
+
+// peso
+
+flecha(
+ctx2,
+cx,
+cy,
+cx,
+cy+esc,
+"green",
+4
+);
+
+ctx2.fillStyle="green";
+ctx2.font="bold 24px Arial";
+
+ctx2.fillText(
+"W",
+cx+16,
+cy+esc
+);
+
+}
+
+// =====================================================
+
+masa.addEventListener(
+"input",
+render
+);
+
+render();
+
+</script>
+
+<script>
+window.MathJax = {
+tex: {
+inlineMath: [['\\(','\\)']],
+displayMath: [['\\[','\\]']]
+}
+};
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+</body>
+</html>
