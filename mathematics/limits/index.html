@@ -1,206 +1,132 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>LÍMITES: Calculador + Quiz ICFES (20 ejercicios auditados)</title>
+  
+  <!-- LIBRERÍAS -->
+  <script src="https://cdn.plot.ly/plotly-2.30.0.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/12.4.2/math.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Simulador Polea Mobile V5 PRO</title>
-
-<style>
-
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:"Segoe UI",sans-serif;
--webkit-tap-highlight-color:transparent;
-}
-
-body{
-background:#0f172a;
-color:white;
-overflow-x:hidden;
-}
-
-header{
-background:linear-gradient(90deg,#020617,#1e3a8a,#020617);
-padding:16px;
-text-align:center;
-position:sticky;
-top:0;
-z-index:10;
-box-shadow:0 4px 12px rgba(0,0,0,0.35);
-}
-
-header h1{
-font-size:1.35rem;
-color:#38bdf8;
-}
-
-.container{
-padding:12px;
-display:flex;
-flex-direction:column;
-gap:14px;
-}
-
-.card{
-background:#111827;
-border-radius:20px;
-overflow:hidden;
-border:1px solid #334155;
-box-shadow:0 0 15px rgba(0,0,0,0.35);
-}
-
-.title{
-padding:12px;
-text-align:center;
-font-weight:bold;
-font-size:1.1rem;
-background:linear-gradient(90deg,#0f172a,#1d4ed8);
-}
-
-.green{
-background:linear-gradient(90deg,#064e3b,#16a34a);
-}
-
-canvas{
-width:100%;
-display:block;
-background:white;
-}
-
-.sliderBox{
-padding:18px;
-background:#e2e8f0;
-color:#111827;
-}
-
-.sliderBox label{
-font-size:1.1rem;
-font-weight:bold;
-color:#166534;
-}
-
-input[type=range]{
-width:100%;
-height:18px;
-accent-color:#16a34a;
-margin-top:12px;
-}
-
-.mass{
-margin-top:12px;
-background:white;
-border-radius:14px;
-padding:12px;
-font-size:1.5rem;
-font-weight:bold;
-text-align:center;
-border:2px solid #cbd5e1;
-}
-
-.pedagogia{
-background:#f8fafc;
-color:#111827;
-padding:16px;
-}
-
-.sec{
-margin-bottom:22px;
-}
-
-.secTitle{
-font-size:1.05rem;
-font-weight:bold;
-color:#2563eb;
-margin-bottom:10px;
-}
-
-.box{
-background:white;
-border:2px solid #2563eb;
-border-radius:14px;
-padding:14px;
-line-height:2;
-font-size:1rem;
-}
-
-.result{
-background:#f0fdf4;
-border:2px solid #16a34a;
-border-radius:14px;
-padding:14px;
-line-height:1.9;
-}
-
-.final{
-margin-top:14px;
-background:white;
-border:2px solid #dc2626;
-border-radius:14px;
-padding:14px;
-font-size:1.7rem;
-font-weight:bold;
-text-align:center;
-color:#b91c1c;
-}
-
-.question{
-background:white;
-border-radius:14px;
-padding:14px;
-margin-bottom:18px;
-border:2px solid #cbd5e1;
-color:#111827;
-}
-
-.question h4{
-margin-bottom:12px;
-line-height:1.5;
-}
-
-.option{
-display:block;
-padding:10px;
-margin-bottom:8px;
-background:#e2e8f0;
-border-radius:10px;
-}
-
-button{
-width:100%;
-padding:16px;
-font-size:1.1rem;
-font-weight:bold;
-border:none;
-border-radius:14px;
-background:linear-gradient(90deg,#2563eb,#06b6d4);
-color:white;
-margin-top:14px;
-}
-
-.grade{
-margin-top:18px;
-background:#052e16;
-border:2px solid #22c55e;
-padding:18px;
-border-radius:16px;
-font-size:1.2rem;
-line-height:2;
-}
-
-footer{
-text-align:center;
-padding:18px;
-color:#94a3b8;
-}
-
-</style>
-
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #020617; color: white; font-family: 'Segoe UI', Arial, sans-serif; padding: 12px 8px; overflow-x: hidden; }
+    
+    /* ===== SELECTOR DE MODO - CENTRADO + BONITO + RESPONSIVE ===== */
+    .mode-selector-bar {
+      max-width: 320px;
+      margin: 0 auto 20px auto;
+      background: #0f172ad9;
+      backdrop-filter: blur(12px);
+      border-radius: 60px;
+      padding: 6px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      border: 1px solid rgba(34, 211, 238, 0.5);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+    .mode-label {
+      font-weight: bold;
+      color: #c084fc;
+      font-size: 0.8rem;
+      white-space: nowrap;
+      letter-spacing: 1px;
+    }
+    select {
+      background: #1e293b;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 40px;
+      font-size: 0.75rem;
+      font-weight: bold;
+      cursor: pointer;
+      outline: none;
+      width: auto;
+      min-width: 140px;
+      text-align: center;
+      font-family: inherit;
+      transition: 0.2s;
+    }
+    select:hover {
+      background: #2563eb;
+      transform: scale(0.98);
+    }
+    /* responsive muy pequeño */
+    @media (max-width: 380px) {
+      .mode-selector-bar {
+        max-width: 100%;
+        justify-content: center;
+        gap: 8px;
+        padding: 6px 12px;
+      }
+      .mode-label { font-size: 0.7rem; }
+      select { font-size: 0.7rem; min-width: 120px; }
+    }
+    
+    .mode-container { display: none; animation: fade 0.2s ease; }
+    .mode-container.active-mode { display: block; }
+    @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+    
+    /* Estilos modo calculador */
+    .mode-calculador .container { max-width: 560px; margin: auto; padding: 8px; display: flex; flex-direction: column; gap: 12px; }
+    .mode-calculador .card { background: #07111f; border: 1px solid #1e293b; border-radius: 20px; padding: 14px; }
+    .mode-calculador .header { text-align: center; border: 2px solid #3b82f6; background: linear-gradient(145deg, #0a1220, #030712); }
+    .mode-calculador .header h1 { font-size: 1.2rem; color: #60a5fa; }
+    .mode-calculador .title { font-size: 0.9rem; font-weight: bold; margin-bottom: 10px; color: #22d3ee; border-left: 4px solid #22d3ee; padding-left: 8px; }
+    .mode-calculador input, .mode-calculador button { width: 100%; padding: 12px; border-radius: 14px; font-size: 0.95rem; margin-top: 8px; }
+    .mode-calculador input { background: #0f172a; color: white; border: 1px solid #334155; }
+    .mode-calculador button { background: #22c55e; color: black; font-weight: bold; cursor: pointer; transition: 0.2s; }
+    .mode-calculador button:hover { background: #16a34a; transform: scale(0.98); }
+    .mode-calculador .hero { background: #000000cc; border: 2px solid #22c55e; border-radius: 20px; padding: 15px; text-align: center; }
+    .mode-calculador .step { padding: 12px; margin-top: 12px; border-radius: 16px; border-left: 5px solid; background: #0b1120; }
+    .mode-calculador .math-box { background: #020617; padding: 12px; border-radius: 14px; overflow-x: auto; margin-top: 8px; border: 1px solid #1e293b; }
+    .mode-calculador #graph { width: 100%; height: 380px; border-radius: 16px; }
+    .mode-calculador .green-box { margin-top: 10px; border: 2px solid #22c55e; border-radius: 16px; padding: 12px; text-align: center; background: #0c1a2a; }
+    .mode-calculador .table-wrapper { overflow-x: auto; }
+    .mode-calculador table { width: 100%; border-collapse: collapse; font-size: 0.75rem; }
+    .mode-calculador th, .mode-calculador td { border: 1px solid #334155; padding: 6px; text-align: center; }
+    .mode-calculador .signature { text-align: center; color: #38bdf8; font-weight: bold; margin-top: 16px; font-size: 0.75rem; border-top: 1px solid #1e293b; padding-top: 10px; }
+    
+    /* Estilos modo evaluativo (quiz) */
+    .mode-evaluativo .container { max-width: 900px; margin: auto; display: flex; flex-direction: column; gap: 16px; }
+    .mode-evaluativo .card { background: #07111f; border: 1px solid #1e293b; border-radius: 20px; padding: 18px; }
+    .mode-evaluativo .header { text-align: center; border: 2px solid #2563eb; }
+    .mode-evaluativo .header h1 { color: #60a5fa; font-size: 1.3rem; }
+    .mode-evaluativo .title { font-size: 1rem; font-weight: bold; margin-bottom: 12px; color: #22d3ee; }
+    .mode-evaluativo input, .mode-evaluativo button { width: 100%; padding: 14px; border-radius: 14px; font-size: 1rem; margin-top: 10px; }
+    .mode-evaluativo input { background: #0f172a; color: white; border: 1px solid #334155; }
+    .mode-evaluativo button { background: #2563eb; color: white; font-weight: bold; cursor: pointer; }
+    .mode-evaluativo .question-card { background: #0f172a; border: 1px solid #334155; border-radius: 18px; padding: 16px; margin-top: 18px; }
+    .mode-evaluativo .math-box { background: #020617; padding: 14px; border-radius: 14px; margin-top: 12px; overflow-x: auto; text-align: center; }
+    .mode-evaluativo .option {
+      padding: 14px; margin-top: 10px; border-radius: 14px; background: #111827;
+      border: 2px solid #334155; cursor: pointer; font-weight: bold; color: white;
+      transition: 0.2s; text-align: center;
+    }
+    .mode-evaluativo .option:hover { background: #1e293b; transform: scale(0.98); }
+    .mode-evaluativo .option.selected { background: #16a34a; border-color: #22c55e; box-shadow: 0 0 10px #22c55e88; }
+    .mode-evaluativo .green-box { margin-top: 18px; border: 2px solid #22c55e; border-radius: 18px; padding: 16px; line-height: 1.8; }
+    .mode-evaluativo .result-good { color: #22c55e; font-weight: bold; }
+    .mode-evaluativo .result-mid { color: #facc15; font-weight: bold; }
+    .mode-evaluativo .result-bad { color: #ef4444; font-weight: bold; }
+    .mode-evaluativo .signature { text-align: center; color: #38bdf8; font-weight: bold; margin-top: 10px; }
+    .simulador-btn {
+      background: #8b5cf6; color: white; border: none; border-radius: 40px;
+      padding: 8px 16px; font-size: 0.75rem; font-weight: bold; margin-top: 12px;
+      cursor: pointer; transition: 0.2s; width: auto; display: inline-block;
+    }
+    .simulador-btn:hover { background: #7c3aed; transform: scale(0.96); }
+  </style>
 </head>
-
 <body>
 <div style="
 padding:15px;
@@ -249,950 +175,461 @@ align-items:center;
 
 </div>
 
-<header>
-<h1>📱 SIMULADOR POLEA MOBILE V5 PRO</h1>
-</header>
-
-<div class="container">
-
-<!-- DIAGRAMA FISICO -->
-
-<div class="card">
-
-<div class="title">
-1. DIAGRAMA FÍSICO
+<!-- SELECTOR DE MODO: centrado, bonito, compacto -->
+<div class="mode-selector-bar">
+  <span class="mode-label">⚡</span>
+  <select id="modoSelector">
+    <option value="calculador">🧮 Calculador de límites</option>
+    <option value="evaluativo">📝 Quiz ICFES (20 ejercicios)</option>
+  </select>
 </div>
 
-<canvas id="fisico" width="400" height="320"></canvas>
-
+<!-- MODO CALCULADOR -->
+<div id="modoCalculador" class="mode-container mode-calculador">
+  <div class="container">
+    <div class="card header">
+      <h1>📐 LÍMITES ALGEBRAICOS PRO</h1>
+      <p>Factorización total | Gráfica con guías</p>
+    </div>
+    <div class="card">
+      <div class="title">✏️ Ingreso del límite</div>
+      <input id="expr" value="(x^2-4*x+4)/(x-2)">
+      <input id="lim" type="number" value="2">
+      <button onclick="resolverCalculador()">🚀 Resolver límite</button>
+    </div>
+    <div class="hero"><div id="hero"></div></div>
+    <div class="card"><div class="title">📚 Desarrollo pedagógico</div><div id="motor"></div></div>
+    <div class="card"><div class="title">📖 Interpretación analítica</div><div id="analitica"></div></div>
+    <div class="card"><div class="title">📈 Gráfica interactiva (guías punteadas)</div><div id="graph"></div>
+      <input type="range" id="slider" min="-1" max="1" step="0.001" value="0" oninput="moverSlider()">
+      <div id="sliderInfo" class="green-box"></div>
+    </div>
+    <div class="card">
+      <div class="title">📊 Tabla de aproximación lateral</div>
+      <div class="table-wrapper"><table id="tabla"></table></div>
+    </div>
+    <div class="signature">🧠 Eng. Medina H. A. • STEM Rural</div>
+  </div>
 </div>
 
-<!-- SLIDER -->
-
-<div class="card">
-
-<div class="sliderBox">
-
-<label>
-Masa del bloque
-</label>
-
-<input
-type="range"
-id="masa"
-min="1"
-max="20"
-value="3"
-step="1"
->
-
-<div class="mass">
-<span id="massTxt">3</span> kg
+<!-- MODO EVALUATIVO (QUIZ con los 20 límites + preguntas conceptuales) -->
+<div id="modoEvaluativo" class="mode-container mode-evaluativo">
+  <div class="container">
+    <div class="card header">
+      <h1>SIMULACRO ICFES STEM</h1>
+      <p>20 límites algebraicos + análisis gráfico</p>
+    </div>
+    <div class="card">
+      <div class="title">📋 Datos del estudiante</div>
+      <input id="studentName" placeholder="Nombre completo">
+    </div>
+    <div class="card">
+      <div class="title">📝 Preguntas tipo ICFES</div>
+      <div id="quizContainer"></div>
+      <button onclick="calificarQuiz()">✅ Calificar simulacro</button>
+      <button onclick="reiniciarIntento()">🔄 Hacer otro intento</button>
+      <button onclick="descargarPDFQuiz()">📄 Descargar PDF</button>
+      <button onclick="descargarExcelQuiz()">📊 Exportar Excel</button>
+      <div id="quizResult" class="green-box"></div>
+    </div>
+    <div class="signature">Ingeniero Henson Alberto Medina • STEM Rural</div>
+  </div>
 </div>
-
-</div>
-
-</div>
-
-<!-- DCL -->
-
-<div class="card">
-
-<div class="title green">
-2. D.C.L. — Punto A
-</div>
-
-<canvas id="dcl" width="400" height="300"></canvas>
-
-</div>
-
-<!-- PEDAGOGIA -->
-
-<div class="card">
-
-<div class="title">
-📖 DESARROLLO PEDAGÓGICO PRO
-</div>
-
-<div class="pedagogia" id="pedagogia"></div>
-
-</div>
-
-<!-- EVALUACION -->
-
-<div class="card">
-
-<div class="title green">
-🧠 EVALUACIÓN TIPO ICFES
-</div>
-
-<div class="pedagogia">
-
-<div id="quiz"></div>
-
-<button onclick="calificar()">
-CALIFICAR
-</button>
-
-<div id="resultado"></div>
-
-</div>
-
-</div>
-
-</div>
-
-<footer>
-Designed by Eng. Medina H. A.
-</footer>
 
 <script>
-
-// =====================================================
-// PREGUNTAS
-// =====================================================
-
-const preguntas=[
-
-{
-p:"Una masa de 5kg cuelga de una polea ideal. ¿Cuál es el peso aproximado del cuerpo?",
-o:["5N","9.81N","49.05N","98.1N"],
-r:2
-},
-
-{
-p:"En un sistema de polea ideal, la tensión de la cuerda:",
-o:[
-"elimina el peso",
-"transmite fuerza a través de la cuerda",
-"depende del color de la polea",
-"desaparece cuando hay equilibrio"
-],
-r:1
-},
-
-{
-p:"Si el sistema se encuentra en equilibrio, entonces:",
-o:[
-"la aceleración es positiva",
-"la fuerza neta es diferente de cero",
-"la aceleración es cero",
-"el peso desaparece"
-],
-r:2
-},
-
-{
-p:"La Segunda Ley de Newton se expresa mediante:",
-o:[
-"W = mg",
-"Ff = μN",
-"ΣF = ma",
-"v = d/t"
-],
-r:2
-},
-
-{
-p:"La fuerza peso siempre apunta:",
-o:[
-"horizontalmente",
-"hacia la cuerda",
-"verticalmente hacia abajo",
-"hacia arriba"
-],
-r:2
-},
-
-{
-p:"En el simulador, si la masa aumenta, entonces la tensión:",
-o:[
-"disminuye",
-"aumenta",
-"desaparece",
-"permanece negativa"
-],
-r:1
-},
-
-{
-p:"Una polea ideal tiene como función principal:",
-o:[
-"aumentar la gravedad",
-"eliminar la masa",
-"cambiar la dirección de la fuerza",
-"generar aceleración"
-],
-r:2
-},
-
-{
-p:"En el Diagrama de Cuerpo Libre del punto A aparecen:",
-o:[
-"únicamente la polea y la cuerda",
-"únicamente las fuerzas que actúan sobre el punto",
-"las paredes y el piso",
-"únicamente el peso"
-],
-r:1
-},
-
-{
-p:"Si m = 8kg, el peso aproximado será:",
-o:[
-"78.48N",
-"8N",
-"9.81N",
-"88N"
-],
-r:0
-},
-
-{
-p:"La unidad de fuerza en el Sistema Internacional es:",
-o:[
-"Joule",
-"Newton",
-"Pascal",
-"Watt"
-],
-r:1
-},
-
-{
-p:"En equilibrio mecánico se cumple que:",
-o:[
-"a ≠ 0",
-"ΣF = 0",
-"m = 0",
-"g = 0"
-],
-r:1
-},
-
-{
-p:"Cuando en el simulador se mueve el slider de masa, los vectores del D.C.L.:",
-o:[
-"permanecen iguales",
-"desaparecen",
-"cambian proporcionalmente",
-"cambian de color aleatoriamente"
-],
-r:2
-},
-
-{
-p:"La gravedad utilizada en la Tierra tiene un valor aproximado de:",
-o:[
-"1m/s²",
-"5m/s²",
-"9.81m/s²",
-"98m/s²"
-],
-r:2
-},
-
-{
-p:"Si la fuerza neta sobre un cuerpo es cero, el cuerpo:",
-o:[
-"necesariamente acelera",
-"puede permanecer en equilibrio",
-"pierde masa",
-"deja de tener peso"
-],
-r:1
-},
-
-{
-p:"La tensión y el peso tienen:",
-o:[
-"igual dirección y mismo sentido",
-"sentidos opuestos",
-"diferentes unidades",
-"magnitudes negativas"
-],
-r:1
-},
-
-{
-p:"En el simulador, el vector rojo representa:",
-o:[
-"el peso",
-"la gravedad",
-"la tensión",
-"la normal"
-],
-r:2
-},
-
-{
-p:"La fuerza peso depende de:",
-o:[
-"la temperatura",
-"el color del cuerpo",
-"la masa y la gravedad",
-"la velocidad"
-],
-r:2
-},
-
-{
-p:"Si una masa de 10kg se encuentra en equilibrio suspendida por una cuerda ideal, la tensión vale aproximadamente:",
-o:[
-"10N",
-"98.1N",
-"9.81N",
-"1000N"
-],
-r:1
-},
-
-{
-p:"El propósito principal del D.C.L. es:",
-o:[
-"decorar el sistema físico",
-"representar únicamente las fuerzas que actúan",
-"eliminar las ecuaciones",
-"calcular temperatura"
-],
-r:1
-},
-
-{
-p:"El simulador permite relacionar:",
-o:[
-"únicamente colores y dibujos",
-"teoría, ecuaciones y análisis físico",
-"gravedad y temperatura",
-"masa y energía nuclear"
-],
-r:1
-}
-
-];
-
-// =====================================================
-// QUIZ
-// =====================================================
-
-const quiz=document.getElementById("quiz");
-
-preguntas.forEach((q,i)=>{
-
-let html=`
-<div class="question">
-<h4>${i+1}. ${q.p}</h4>
-`;
-
-q.o.forEach((op,j)=>{
-
-html+=`
-<label class="option">
-<input type="radio" name="q${i}" value="${j}">
-${String.fromCharCode(65+j)}. ${op}
-</label>
-`;
-
-});
-
-html+="</div>";
-
-quiz.innerHTML+=html;
-
-});
-
-function calificar(){
-
-let buenas=0;
-
-preguntas.forEach((q,i)=>{
-
-const r=document.querySelector(
-`input[name=q${i}]:checked`
-);
-
-if(r){
-
-if(+r.value===q.r){
-
-buenas++;
-
-}
-
-}
-
-});
-
-const nota=((buenas/20)*5).toFixed(1);
-
-resultado.innerHTML=`
-
-<div class="grade">
-
-✅ Correctas:
-<b>${buenas}/20</b>
-
-<br>
-
-📊 Nota:
-<b>${nota}</b>
-
-<br><br>
-
-${
-nota>=4
-?
-"Excelente comprensión de la Segunda Ley de Newton."
-:
-nota>=3
-?
-"Buen desempeño. Continúa practicando."
-:
-"Debes reforzar los conceptos físicos."
-}
-
-</div>
-
-`;
-
-}
-
-// =====================================================
-// CANVAS
-// =====================================================
-
-const fisico=document.getElementById("fisico");
-const ctx=fisico.getContext("2d");
-
-const dcl=document.getElementById("dcl");
-const ctx2=dcl.getContext("2d");
-
-// =====================================================
-
-function flecha(c,x1,y1,x2,y2,color,g=4){
-
-c.strokeStyle=color;
-c.fillStyle=color;
-c.lineWidth=g;
-
-c.beginPath();
-c.moveTo(x1,y1);
-c.lineTo(x2,y2);
-c.stroke();
-
-const ang=Math.atan2(y2-y1,x2-x1);
-
-c.beginPath();
-
-c.moveTo(x2,y2);
-
-c.lineTo(
-x2-12*Math.cos(ang-Math.PI/6),
-y2-12*Math.sin(ang-Math.PI/6)
-);
-
-c.lineTo(
-x2-12*Math.cos(ang+Math.PI/6),
-y2-12*Math.sin(ang+Math.PI/6)
-);
-
-c.closePath();
-c.fill();
-
-}
-
-function etiqueta(c,x,y,texto,fondo,color){
-
-c.font="bold 14px Arial";
-
-const p=8;
-
-const w=c.measureText(texto).width+p*2;
-const h=30;
-
-c.fillStyle=fondo;
-
-c.beginPath();
-c.roundRect(x,y,w,h,10);
-c.fill();
-
-c.strokeStyle=color;
-c.lineWidth=2;
-c.stroke();
-
-c.fillStyle=color;
-c.fillText(texto,x+p,y+20);
-
-}
-
-// =====================================================
-
-function render(){
-
-const m=+masa.value;
-
-massTxt.innerText=m;
-
-const g=9.81;
-
-const F=(m*g).toFixed(2);
-
-// =====================================================
-// PEDAGOGIA
-// =====================================================
-
-pedagogia.innerHTML=`
-
-<div class="sec">
-
-<div class="secTitle">
-1. Datos de entrada
-</div>
-
-<div class="box">
-
-<span style="color:green;">
-\\[
-m=${m}kg
-\\]
-</span>
-
-<span style="color:#2563eb;">
-\\[
-g=9.81m/s^2
-\\]
-</span>
-
-</div>
-
-</div>
-
-<div class="sec">
-
-<div class="secTitle">
-2. Aplicación de la Segunda Ley de Newton
-</div>
-
-<div class="box">
-
-\\[
-\\sum F = ma
-\\]
-
-Como el sistema está suspendido y no presenta movimiento:
-
-\\[
-a=0
-\\]
-
-Entonces:
-
-\\[
-\\sum F=0
-\\]
-
-Esto significa que las fuerzas se encuentran balanceadas.
-
-</div>
-
-</div>
-
-<div class="sec">
-
-<div class="secTitle">
-3. Sumatoria de fuerzas en el eje Y
-</div>
-
-<div class="box">
-
-Las fuerzas que actúan son:
-
-<br><br>
-
-<span style="color:red;">
-Tensión:
-</span>
-
-\\[
-F
-\\]
-
-<span style="color:green;">
-Peso:
-</span>
-
-\\[
-W
-\\]
-
-Aplicando equilibrio:
-
-\\[
-F-W=0
-\\]
-
-Despejando:
-
-\\[
-F=W
-\\]
-
-</div>
-
-</div>
-
-<div class="sec">
-
-<div class="secTitle">
-4. Desarrollo matemático paso a paso
-</div>
-
-<div class="box">
-
-El peso se calcula mediante:
-
-\\[
-W=mg
-\\]
-
-Sustituimos los datos:
-
-\\[
-W=(${m})(9.81)
-\\]
-
-Multiplicando:
-
-\\[
-W=${F}N
-\\]
-
-Como:
-
-\\[
-F=W
-\\]
-
-Entonces:
-
-\\[
-F=${F}N
-\\]
-
-</div>
-
-</div>
-
-<div class="sec">
-
-<div class="secTitle">
-5. Interpretación física
-</div>
-
-<div class="result">
-
-✅ La tensión de la cuerda es igual al peso del bloque.
-
-<br>
-
-✅ La polea únicamente cambia la dirección de la fuerza.
-
-<br>
-
-✅ El sistema permanece en equilibrio.
-
-<br>
-
-✅ No existe aceleración porque las fuerzas están balanceadas.
-
-<div class="final">
-
-\\[
-F=${F}N
-\\]
-
-</div>
-
-</div>
-
-</div>
-
-`;
-
-if(window.MathJax){
-
-MathJax.typesetPromise();
-
-}
-
-// =====================================================
-// DIAGRAMA FISICO
-// =====================================================
-
-ctx.clearRect(0,0,400,320);
-
-ctx.fillStyle="white";
-ctx.fillRect(0,0,400,320);
-
-// gravedad
-
-flecha(
-ctx,
-60,
-40,
-60,
-90,
-"#2563eb",
-4
-);
-
-etiqueta(
-ctx,
-10,
-5,
-"g = 9.81",
-"#dbeafe",
-"#1d4ed8"
-);
-
-// piso
-
-ctx.strokeStyle="#111";
-ctx.lineWidth=3;
-
-ctx.beginPath();
-ctx.moveTo(80,160);
-ctx.lineTo(250,160);
-ctx.stroke();
-
-for(let i=80;i<250;i+=12){
-
-ctx.beginPath();
-ctx.moveTo(i,160);
-ctx.lineTo(i+7,168);
-ctx.stroke();
-
-}
-
-// pared
-
-ctx.beginPath();
-ctx.moveTo(250,160);
-ctx.lineTo(250,280);
-ctx.stroke();
-
-for(let i=160;i<280;i+=12){
-
-ctx.beginPath();
-ctx.moveTo(250,i);
-ctx.lineTo(258,i+7);
-ctx.stroke();
-
-}
-
-// polea
-
-ctx.beginPath();
-ctx.arc(280,125,28,0,2*Math.PI);
-
-ctx.fillStyle="#d1d5db";
-ctx.fill();
-
-ctx.strokeStyle="#111";
-ctx.lineWidth=3;
-ctx.stroke();
-
-ctx.beginPath();
-ctx.arc(280,125,7,0,2*Math.PI);
-
-ctx.fillStyle="#111";
-ctx.fill();
-
-// cuerda
-
-ctx.strokeStyle="red";
-ctx.lineWidth=5;
-
-ctx.beginPath();
-ctx.moveTo(120,125);
-ctx.lineTo(280,125);
-ctx.lineTo(280,220);
-ctx.stroke();
-
-// fuerza
-
-flecha(
-ctx,
-120,
-125,
-60,
-125,
-"red",
-4
-);
-
-etiqueta(
-ctx,
-5,
-108,
-"F = ?",
-"#fee2e2",
-"#991b1b"
-);
-
-// bloque
-
-ctx.fillStyle="#16a34a";
-
-ctx.fillRect(258,220,44,44);
-
-ctx.strokeStyle="#14532d";
-ctx.lineWidth=3;
-
-ctx.strokeRect(258,220,44,44);
-
-ctx.beginPath();
-ctx.arc(280,220,6,0,2*Math.PI);
-
-ctx.fillStyle="black";
-ctx.fill();
-
-ctx.fillStyle="black";
-ctx.font="bold 16px Arial";
-
-ctx.fillText("A",292,220);
-
-etiqueta(
-ctx,
-310,
-228,
-`m=${m}kg`,
-"#dcfce7",
-"#166534"
-);
-
-// =====================================================
-// DCL
-// =====================================================
-
-ctx2.clearRect(0,0,400,300);
-
-ctx2.fillStyle="white";
-ctx2.fillRect(0,0,400,300);
-
-const cx=200;
-const cy=150;
-
-// ejes
-
-flecha(
-ctx2,
-60,
-cy,
-340,
-cy,
-"black",
-2
-);
-
-flecha(
-ctx2,
-cx,
-260,
-cx,
-50,
-"black",
-2
-);
-
-ctx2.fillStyle="black";
-ctx2.font="bold 18px Arial";
-
-ctx2.fillText("X",350,154);
-ctx2.fillText("Y",205,40);
-
-// punto
-
-ctx2.beginPath();
-ctx2.arc(cx,cy,8,0,2*Math.PI);
-
-ctx2.fillStyle="black";
-ctx2.fill();
-
-ctx2.fillText("A",215,145);
-
-// escala
-
-const esc=Math.min(
-90,
-40+m*4
-);
-
-// tension
-
-flecha(
-ctx2,
-cx,
-cy,
-cx,
-cy-esc,
-"red",
-4
-);
-
-ctx2.fillStyle="red";
-ctx2.font="bold 24px Arial";
-
-ctx2.fillText(
-"T",
-cx+16,
-cy-esc+8
-);
-
-// peso
-
-flecha(
-ctx2,
-cx,
-cy,
-cx,
-cy+esc,
-"green",
-4
-);
-
-ctx2.fillStyle="green";
-ctx2.font="bold 24px Arial";
-
-ctx2.fillText(
-"W",
-cx+16,
-cy+esc
-);
-
-}
-
-// =====================================================
-
-masa.addEventListener(
-"input",
-render
-);
-
-render();
-
+  // ============================================================
+  // 1. CONTROL DE MODO
+  // ============================================================
+  const selector = document.getElementById('modoSelector');
+  const modoCalcDiv = document.getElementById('modoCalculador');
+  const modoEvalDiv = document.getElementById('modoEvaluativo');
+
+  function cambiarModo() {
+    const modo = selector.value;
+    if (modo === 'calculador') {
+      modoCalcDiv.classList.add('active-mode');
+      modoEvalDiv.classList.remove('active-mode');
+      setTimeout(() => { if (window.Plotly && document.getElementById('graph')) Plotly.relayout('graph', { autosize: true }); }, 50);
+    } else {
+      modoEvalDiv.classList.add('active-mode');
+      modoCalcDiv.classList.remove('active-mode');
+      setTimeout(() => { if(window.renderMathInElement) renderMathInElement(document.getElementById('modoEvaluativo'), { delimiters: [{left: '$$', right: '$$', display: true}] }); }, 100);
+    }
+  }
+  selector.addEventListener('change', cambiarModo);
+  cambiarModo();
+
+  // Función para enviar límite al simulador (usada por el quiz)
+  window.probarEnSimulador = function(expresion, valorX) {
+    selector.value = 'calculador';
+    cambiarModo();
+    document.getElementById('expr').value = expresion;
+    document.getElementById('lim').value = valorX;
+    setTimeout(() => resolverCalculador(), 100);
+  };
+
+  // ============================================================
+  // 2. MOTOR ALGEBRAICO COMPLETO (con sqrt → √ en LaTeX)
+  // ============================================================
+  function evaluar(expr, x) {
+    try { return math.evaluate(expr, { x: x }); } catch(e) { return NaN; }
+  }
+  function limpiar(expr) {
+    let limpia = expr.trim();
+    if (limpia.startsWith('(') && limpia.endsWith(')')) limpia = limpia.slice(1, -1);
+    return limpia.replace(/\s+/g, '').replace(/\*/g, '');
+  }
+
+  // Convierte expresiones tipo "sqrt(x)" a "\sqrt{x}" para LaTeX
+  function toLatexSqrt(expr) {
+    return expr.replace(/sqrt\(([^)]+)\)/g, '\\sqrt{$1}');
+  }
+
+  function factorizarCuadratica(expr, xvar='x') {
+    const patron = new RegExp(`^([+-]?\\d*)?${xvar}\\^2([+-]\\d*)${xvar}([+-]\\d+)$`);
+    const m = expr.match(patron);
+    if (!m) return null;
+    let a = (m[1] === '' || m[1] === '+') ? 1 : (m[1] === '-' ? -1 : parseInt(m[1]));
+    let b = (m[2] === '' || m[2] === '+') ? 1 : (m[2] === '-' ? -1 : parseInt(m[2]));
+    let c = parseInt(m[3]);
+    if (isNaN(a)) a = 1;
+    const disc = b*b - 4*a*c;
+    if (disc < 0) return null;
+    const sqrtDisc = Math.sqrt(disc);
+    const r1 = (-b + sqrtDisc)/(2*a);
+    const r2 = (-b - sqrtDisc)/(2*a);
+    if (!Number.isInteger(r1) && !Number.isInteger(r2)) return null;
+    const fact1 = (r1 === 0) ? `${xvar}` : `(${xvar}${r1>0 ? `-${r1}` : `+${-r1}`})`;
+    const fact2 = (r2 === 0) ? `${xvar}` : `(${xvar}${r2>0 ? `-${r2}` : `+${-r2}`})`;
+    let factorizacion = (a !== 1 && a !== -1) ? `${a}` : "";
+    factorizacion += `${fact1}${fact2}`;
+    return { factores: [factorizacion], raices: [r1, r2], a: a };
+  }
+
+  function motorAlgebraico(exprCompleta, a) {
+    let modelo = { 
+      tipo: '', identidad: '', 
+      factorizacionLatex: '', cancelacionLatex: '', 
+      simplificadaLatex: '', simplificadaMath: '', resultado: NaN 
+    };
+    let partes = exprCompleta.split('/');
+    let numStr = partes[0], denStr = partes.length > 1 ? partes[1] : '1';
+    numStr = limpiar(numStr); denStr = limpiar(denStr);
+    const valNum = evaluar(numStr, a), valDen = evaluar(denStr, a);
+    
+    if (isFinite(valNum) && isFinite(valDen) && Math.abs(valDen) > 1e-9) {
+      modelo.tipo = 'Sustitución directa'; modelo.identidad = 'Función continua';
+      modelo.simplificadaMath = exprCompleta;
+      modelo.resultado = valNum / valDen;
+      modelo.simplificadaLatex = toLatexSqrt(exprCompleta);
+      return modelo;
+    }
+    if (Math.abs(valNum) < 1e-9 && Math.abs(valDen) < 1e-9) {
+      // 1) Diferencia de cuadrados
+      const cuadMatch = numStr.match(/^x\^2-(\d+)$/);
+      if (cuadMatch && denStr === `x-${Math.sqrt(parseInt(cuadMatch[1]))}`) {
+        const raiz = Math.sqrt(parseInt(cuadMatch[1]));
+        modelo.tipo = 'Diferencia de cuadrados';
+        modelo.identidad = 'a^2 - b^2 = (a+b)(a-b)';
+        modelo.factorizacionLatex = `${numStr} = (x+${raiz})(x-${raiz})`;
+        modelo.cancelacionLatex = `\\frac{(x+${raiz})\\cancel{(x-${raiz})}}{\\cancel{x-${raiz}}} = x+${raiz}`;
+        modelo.simplificadaLatex = `x+${raiz}`;
+        modelo.simplificadaMath = `x+${raiz}`;
+        modelo.resultado = evaluar(modelo.simplificadaMath, a);
+        return modelo;
+      }
+      // 2) Trinomio cuadrado perfecto
+      const tcpMatch = numStr.match(/^x\^2([+-])(\d+)x([+-])(\d+)$/);
+      if (tcpMatch) {
+        const sLin = tcpMatch[1], coef = parseInt(tcpMatch[2]), sCte = tcpMatch[3], cte = parseInt(tcpMatch[4]);
+        if (sCte === '+') {
+          const raiz = Math.sqrt(cte);
+          if (Number.isInteger(raiz) && coef === 2*raiz) {
+            const binomio = (sLin === '-') ? `(x-${raiz})` : `(x+${raiz})`;
+            if (denStr === (sLin === '-' ? `x-${raiz}` : `x+${raiz}`)) {
+              modelo.tipo = 'Trinomio cuadrado perfecto';
+              modelo.identidad = 'a^2 \\pm 2ab + b^2 = (a \\pm b)^2';
+              modelo.factorizacionLatex = `${numStr} = ${binomio}^2`;
+              modelo.cancelacionLatex = `\\frac{${binomio}^2}{\\cancel{${binomio}}} = ${binomio}`;
+              modelo.simplificadaLatex = binomio;
+              modelo.simplificadaMath = binomio;
+              modelo.resultado = evaluar(modelo.simplificadaMath, a);
+              return modelo;
+            }
+          }
+        }
+      }
+      // 3) Factorización cuadrática general
+      const fact = factorizarCuadratica(numStr);
+      if (fact && denStr.match(/^x([+-]\d+)$/)) {
+        const constDen = parseInt(denStr.slice(1));
+        const raizDen = denStr[0] === '-' ? constDen : -constDen;
+        if (fact.raices.includes(raizDen)) {
+          const factorComun = `(x${raizDen>0 ? `-${raizDen}` : `+${-raizDen}`})`;
+          let simpl = fact.factores[0].replace(factorComun, '').replace(/\*/g, '');
+          if (simpl.startsWith('(') && simpl.endsWith(')')) simpl = simpl.slice(1,-1);
+          modelo.tipo = 'Factorización cuadrática';
+          modelo.identidad = 'Se factoriza numerador y se cancela factor común';
+          modelo.factorizacionLatex = `${numStr} = ${fact.factores[0]}`;
+          modelo.cancelacionLatex = `\\frac{${fact.factores[0]}}{\\cancel{${denStr}}} = ${simpl}`;
+          modelo.simplificadaLatex = simpl;
+          modelo.simplificadaMath = simpl;
+          modelo.resultado = evaluar(modelo.simplificadaMath, a);
+          return modelo;
+        }
+      }
+      // 4) Diferencia / suma de cubos
+      const cuboMatch = numStr.match(/^x\^3([+-])(\d+)$/);
+      if (cuboMatch && denStr.match(/^x([+-]\d+)$/)) {
+        const signoC = cuboMatch[1], constC = parseInt(cuboMatch[2]);
+        const raizCub = Math.round(Math.pow(constC, 1/3));
+        if (raizCub*raizCub*raizCub === constC) {
+          const signoDen = denStr[0]; const valDen = parseInt(denStr.slice(1));
+          const raizDen = signoDen === '-' ? valDen : -valDen;
+          if ((signoC === '-' && raizDen === raizCub) || (signoC === '+' && raizDen === -raizCub)) {
+            if (signoC === '-') {
+              modelo.tipo = 'Diferencia de cubos'; 
+              modelo.identidad = 'a^3 - b^3 = (a-b)(a^2+ab+b^2)';
+              modelo.simplificadaLatex = `x^2+${raizCub}x+${raizCub*raizCub}`;
+              modelo.simplificadaMath = `x^2+${raizCub}*x+${raizCub*raizCub}`;
+              modelo.factorizacionLatex = `${numStr} = (x-${raizCub})(x^2+${raizCub}x+${raizCub*raizCub})`;
+              modelo.cancelacionLatex = `\\frac{(x-${raizCub})(x^2+${raizCub}x+${raizCub*raizCub})}{\\cancel{x-${raizCub}}} = x^2+${raizCub}x+${raizCub*raizCub}`;
+            } else {
+              modelo.tipo = 'Suma de cubos'; 
+              modelo.identidad = 'a^3 + b^3 = (a+b)(a^2-ab+b^2)';
+              modelo.simplificadaLatex = `x^2-${raizCub}x+${raizCub*raizCub}`;
+              modelo.simplificadaMath = `x^2-${raizCub}*x+${raizCub*raizCub}`;
+              modelo.factorizacionLatex = `${numStr} = (x+${raizCub})(x^2-${raizCub}x+${raizCub*raizCub})`;
+              modelo.cancelacionLatex = `\\frac{(x+${raizCub})(x^2-${raizCub}x+${raizCub*raizCub})}{\\cancel{x+${raizCub}}} = x^2-${raizCub}x+${raizCub*raizCub}`;
+            }
+            modelo.resultado = evaluar(modelo.simplificadaMath, a);
+            return modelo;
+          }
+        }
+      }
+      // 5) Racionalización con conjugada (√x)
+      const conjMatch = exprCompleta.match(/\(sqrt\(([^)]+)\)\s*([+-])\s*(\d+)\)\s*\/\s*\(\s*x\s*([+-])\s*(\d+)\s*\)/);
+      if (conjMatch) {
+        const interior = conjMatch[1];
+        const signoNum = conjMatch[2];
+        const constNum = parseInt(conjMatch[3]);
+        const signoDen = conjMatch[4];
+        const constDen = parseInt(conjMatch[5]);
+        const aPunto = (signoDen === '-') ? constDen : -constDen;
+        if (Math.abs(a - aPunto) < 1e-6) {
+          const valorInterior = evaluar(interior, a);
+          if (Math.abs(valorInterior - constNum*constNum) < 1e-6) {
+            modelo.tipo = 'Racionalización por conjugada';
+            modelo.identidad = '(a-b)(a+b)=a^2-b^2';
+            const opuesto = (signoNum === '-') ? '+' : '-';
+            const raizLatex = interior === 'x' ? `\\sqrt{x}` : `\\sqrt{${interior}}`;
+            modelo.simplificadaLatex = `\\frac{1}{${raizLatex} ${opuesto} ${constNum}}`;
+            modelo.simplificadaMath = `1/(sqrt(${interior})${opuesto}${constNum})`;
+            modelo.resultado = evaluar(modelo.simplificadaMath, a);
+            modelo.factorizacionLatex = `\\frac{${raizLatex} ${signoNum} ${constNum}}{x ${signoDen} ${constDen}} \\cdot \\frac{${raizLatex} \\mp ${constNum}}{${raizLatex} \\mp ${constNum}} = \\frac{${interior} - ${constNum*constNum}}{(x ${signoDen} ${constDen})(${raizLatex} \\pm ${constNum})}`;
+            modelo.cancelacionLatex = `\\frac{\\cancel{${interior} - ${constNum*constNum}}}{\\cancel{(x ${signoDen} ${constDen})}(${raizLatex} \\pm ${constNum})} = \\frac{1}{${raizLatex} \\pm ${constNum}}`;
+            return modelo;
+          }
+        }
+      }
+      // fallback
+      modelo.tipo = 'Indeterminación 0/0'; modelo.identidad = 'Requiere simplificación algebraica';
+      modelo.simplificadaMath = exprCompleta; modelo.resultado = NaN;
+      modelo.simplificadaLatex = toLatexSqrt(exprCompleta);
+      return modelo;
+    } else {
+      modelo.tipo = 'Asíntota vertical'; modelo.identidad = 'Denominador tiende a cero, numerador no nulo';
+      modelo.simplificadaMath = exprCompleta; modelo.resultado = Infinity;
+      modelo.simplificadaLatex = toLatexSqrt(exprCompleta);
+      return modelo;
+    }
+  }
+
+  let modeloGlobal = {};
+  function renderHeroCalc() { 
+    const exprLatex = toLatexSqrt(modeloGlobal.expr);
+    document.getElementById('hero').innerHTML = `$$\\lim_{x\\to ${modeloGlobal.a}} ${exprLatex}$$`; 
+  }
+  function renderMotorCalc() {
+    const res = isNaN(modeloGlobal.resultado) ? '\\text{Indefinido}' : Number(modeloGlobal.resultado.toFixed(6));
+    document.getElementById('motor').innerHTML = `
+      <div class="step blue"><h3>1. Caso detectado</h3><div class="info"><b>${modeloGlobal.tipo}</b></div></div>
+      <div class="step green"><h3>2. Identidad algebraica</h3><div class="math-box">$$${modeloGlobal.identidad}$$</div></div>
+      <div class="step orange"><h3>3. Desarrollo algebraico</h3><div class="math-box">$$${modeloGlobal.factorizacionLatex || toLatexSqrt(modeloGlobal.expr)}$$</div></div>
+      <div class="step red"><h3>4. Cancelación</h3><div class="math-box">$$${modeloGlobal.cancelacionLatex || toLatexSqrt(modeloGlobal.expr)}$$</div></div>
+      <div class="step purple"><h3>5. Simplificación</h3><div class="math-box">$$${modeloGlobal.simplificadaLatex}$$</div></div>
+      <div class="step cyan"><h3>6. Resultado</h3><div class="math-box">$$\\boxed{${res}}$$</div></div>
+    `;
+  }
+  function renderAnaliticaCalc() {
+    document.getElementById('analitica').innerHTML = isNaN(modeloGlobal.resultado) ? 
+      `<div class="green-box">⚠️ El límite no existe o persiste indeterminación.</div>` :
+      `<div class="green-box">📌 Discontinuidad removible en x = ${modeloGlobal.a}<br><br>✅ Límite: $$L = ${Number(modeloGlobal.resultado.toFixed(6))}$$</div>`;
+  }
+  function renderTablaCalc() {
+    const aprox = [0.1, 0.01, 0.001, 0.0001];
+    let html = `<table><th>x → ${modeloGlobal.a}^-</th><th>f(x)</th><th>x → ${modeloGlobal.a}^+</th><th>f(x)</th></tr>`;
+    for (let v of aprox) {
+      let xi = modeloGlobal.a - v, xd = modeloGlobal.a + v;
+      let yi = evaluar(modeloGlobal.simplificadaMath, xi), yd = evaluar(modeloGlobal.simplificadaMath, xd);
+      html += `<tr><td>${xi.toFixed(5)}</td><td>${isNaN(yi)?'---':yi.toFixed(5)}</td><td>${xd.toFixed(5)}</td><td>${isNaN(yd)?'---':yd.toFixed(5)}</td></tr>`;
+    }
+    html += `</table>`;
+    document.getElementById('tabla').innerHTML = html;
+  }
+  function renderGraficaCalc() {
+    let xs = [], ys = [];
+    let inicio = modeloGlobal.a - 8, fin = modeloGlobal.a + 8;
+    for (let x = inicio; x <= fin; x += 0.05) {
+      if (Math.abs(x - modeloGlobal.a) < 0.001) continue;
+      let y = evaluar(modeloGlobal.simplificadaMath, x);
+      if (isFinite(y) && Math.abs(y) < 100) { xs.push(x); ys.push(y); }
+    }
+    const curva = { x: xs, y: ys, mode: 'lines', line: { color: '#3b82f6', width: 4 }, name: 'f(x) simplificada' };
+    const hueco = { x: [modeloGlobal.a], y: [modeloGlobal.resultado], mode: 'markers', marker: { size: 14, symbol: 'circle-open', color: 'white', line: { width: 3, color: '#22c55e' } }, name: 'Hueco removible' };
+    const puntoDin = { x: [modeloGlobal.a + 0.2], y: [evaluar(modeloGlobal.simplificadaMath, modeloGlobal.a+0.2)], mode: 'markers', marker: { size: 10, color: '#a855f7' }, name: 'Punto dinámico' };
+    const yMin = Math.min(...ys, modeloGlobal.resultado-1);
+    const lineVert = { x: [modeloGlobal.a, modeloGlobal.a], y: [yMin, modeloGlobal.resultado], mode: 'lines', line: { dash: 'dot', color: '#facc15', width: 2 }, showlegend: false };
+    const lineHor = { x: [Math.min(...xs), modeloGlobal.a], y: [modeloGlobal.resultado, modeloGlobal.resultado], mode: 'lines', line: { dash: 'dot', color: '#facc15', width: 2 }, showlegend: false };
+    Plotly.newPlot('graph', [curva, hueco, lineVert, lineHor, puntoDin], {
+      paper_bgcolor: '#07111f', plot_bgcolor: '#020617', font: { color: 'white' },
+      xaxis: { title: 'x', gridcolor: '#1e293b' }, yaxis: { title: 'f(x)', gridcolor: '#1e293b' },
+      margin: { l: 35, r: 15, t: 30, b: 30 }, legend: { orientation: 'h', yanchor: 'bottom', y: -0.25, xanchor: 'center', x: 0.5, bgcolor: 'rgba(0,0,0,0.6)' }, autosize: true, responsive: true
+    });
+  }
+  function moverSlider() {
+    if (!modeloGlobal.a) return;
+    let delta = parseFloat(document.getElementById('slider').value);
+    if (Math.abs(delta) < 0.0001) delta = 0.0001;
+    let x = modeloGlobal.a + delta, y = evaluar(modeloGlobal.simplificadaMath, x);
+    document.getElementById('sliderInfo').innerHTML = `<b>📍 x actual:</b> ${x.toFixed(5)}<br><b>📌 f(x):</b> ${isNaN(y) ? 'Indefinido' : y.toFixed(5)}`;
+    Plotly.restyle('graph', { x: [[x]], y: [[y]] }, [4]);
+  }
+  window.resolverCalculador = function() {
+    try {
+      const expr = document.getElementById('expr').value;
+      const a = parseFloat(document.getElementById('lim').value);
+      modeloGlobal = motorAlgebraico(expr, a);
+      modeloGlobal.expr = expr; modeloGlobal.a = a;
+      renderHeroCalc(); renderMotorCalc(); renderAnaliticaCalc(); renderGraficaCalc(); renderTablaCalc();
+      moverSlider();
+      setTimeout(() => { if(window.renderMathInElement) renderMathInElement(document.getElementById('modoCalculador'), { delimiters: [{left: '$$', right: '$$', display: true}] }); }, 100);
+    } catch(e) { console.warn(e); }
+  };
+  resolverCalculador();
+
+  // ============================================================
+  // 3. MÓDULO QUIZ (20 límites auditados + conceptuales)
+  // ============================================================
+  const preguntas = [
+    { q: "Calcular: $$\\lim_{x\\to 5}\\frac{x^2-25}{x-5}$$", latex: "\\lim_{x\\to 5}\\frac{x^2-25}{x-5}", opciones: ["0","5","10","No existe"], correcta: "10", expr: "(x^2-25)/(x-5)", a: 5 },
+    { q: "Calcular: $$\\lim_{x\\to 7}\\frac{x^2-49}{x-7}$$", latex: "\\lim_{x\\to 7}\\frac{x^2-49}{x-7}", opciones: ["7","14","0","49"], correcta: "14", expr: "(x^2-49)/(x-7)", a: 7 },
+    { q: "Calcular: $$\\lim_{x\\to 10}\\frac{x^2-100}{x-10}$$", latex: "\\lim_{x\\to 10}\\frac{x^2-100}{x-10}", opciones: ["10","20","0","100"], correcta: "20", expr: "(x^2-100)/(x-10)", a: 10 },
+    { q: "Calcular: $$\\lim_{x\\to 3}\\frac{x^2-9}{x-3}$$", latex: "\\lim_{x\\to 3}\\frac{x^2-9}{x-3}", opciones: ["3","6","0","9"], correcta: "6", expr: "(x^2-9)/(x-3)", a: 3 },
+    { q: "Calcular: $$\\lim_{x\\to 2}\\frac{x^2-5x+6}{x-2}$$", latex: "\\lim_{x\\to 2}\\frac{x^2-5x+6}{x-2}", opciones: ["-1","0","1","2"], correcta: "-1", expr: "(x^2-5*x+6)/(x-2)", a: 2 },
+    { q: "Calcular: $$\\lim_{x\\to 3}\\frac{x^2-5x+6}{x-3}$$", latex: "\\lim_{x\\to 3}\\frac{x^2-5x+6}{x-3}", opciones: ["1","0","2","3"], correcta: "1", expr: "(x^2-5*x+6)/(x-3)", a: 3 },
+    { q: "Calcular: $$\\lim_{x\\to 2}\\frac{2x^2-5x+2}{x-2}$$", latex: "\\lim_{x\\to 2}\\frac{2x^2-5x+2}{x-2}", opciones: ["1","3","5","7"], correcta: "3", expr: "(2*x^2-5*x+2)/(x-2)", a: 2 },
+    { q: "Calcular: $$\\lim_{x\\to -1}\\frac{x^2+4x+3}{x+1}$$", latex: "\\lim_{x\\to -1}\\frac{x^2+4x+3}{x+1}", opciones: ["-2","0","2","4"], correcta: "2", expr: "(x^2+4*x+3)/(x+1)", a: -1 },
+    { q: "Calcular: $$\\lim_{x\\to 2}\\frac{x^2-4x+4}{x-2}$$", latex: "\\lim_{x\\to 2}\\frac{x^2-4x+4}{x-2}", opciones: ["0","1","2","4"], correcta: "0", expr: "(x^2-4*x+4)/(x-2)", a: 2 },
+    { q: "Calcular: $$\\lim_{x\\to 5}\\frac{x^2-10x+25}{x-5}$$", latex: "\\lim_{x\\to 5}\\frac{x^2-10x+25}{x-5}", opciones: ["0","5","10","25"], correcta: "0", expr: "(x^2-10*x+25)/(x-5)", a: 5 },
+    { q: "Calcular: $$\\lim_{x\\to 4}\\frac{x^2-8x+16}{x-4}$$", latex: "\\lim_{x\\to 4}\\frac{x^2-8x+16}{x-4}", opciones: ["0","4","8","16"], correcta: "0", expr: "(x^2-8*x+16)/(x-4)", a: 4 },
+    { q: "Calcular: $$\\lim_{x\\to 6}\\frac{x^2-12x+36}{x-6}$$", latex: "\\lim_{x\\to 6}\\frac{x^2-12x+36}{x-6}", opciones: ["0","6","12","36"], correcta: "0", expr: "(x^2-12*x+36)/(x-6)", a: 6 },
+    { q: "Calcular: $$\\lim_{x\\to 2}\\frac{x^3-8}{x-2}$$", latex: "\\lim_{x\\to 2}\\frac{x^3-8}{x-2}", opciones: ["4","8","12","16"], correcta: "12", expr: "(x^3-8)/(x-2)", a: 2 },
+    { q: "Calcular: $$\\lim_{x\\to 3}\\frac{x^3-27}{x-3}$$", latex: "\\lim_{x\\to 3}\\frac{x^3-27}{x-3}", opciones: ["9","18","27","36"], correcta: "27", expr: "(x^3-27)/(x-3)", a: 3 },
+    { q: "Calcular: $$\\lim_{x\\to 5}\\frac{x^3-125}{x-5}$$", latex: "\\lim_{x\\to 5}\\frac{x^3-125}{x-5}", opciones: ["25","50","75","100"], correcta: "75", expr: "(x^3-125)/(x-5)", a: 5 },
+    { q: "Calcular: $$\\lim_{x\\to 4}\\frac{x^3-64}{x-4}$$", latex: "\\lim_{x\\to 4}\\frac{x^3-64}{x-4}", opciones: ["16","32","48","64"], correcta: "48", expr: "(x^3-64)/(x-4)", a: 4 },
+    { q: "Calcular: $$\\lim_{x\\to 4}\\frac{\\sqrt{x}-2}{x-4}$$", latex: "\\lim_{x\\to 4}\\frac{\\sqrt{x}-2}{x-4}", opciones: ["1/2","1/4","1/8","1/16"], correcta: "1/4", expr: "(sqrt(x)-2)/(x-4)", a: 4 },
+    { q: "Calcular: $$\\lim_{x\\to 16}\\frac{\\sqrt{x}-4}{x-16}$$", latex: "\\lim_{x\\to 16}\\frac{\\sqrt{x}-4}{x-16}", opciones: ["1/4","1/8","1/16","1/32"], correcta: "1/8", expr: "(sqrt(x)-4)/(x-16)", a: 16 },
+    { q: "Calcular: $$\\lim_{x\\to 25}\\frac{\\sqrt{x}-5}{x-25}$$", latex: "\\lim_{x\\to 25}\\frac{\\sqrt{x}-5}{x-25}", opciones: ["1/5","1/10","1/15","1/20"], correcta: "1/10", expr: "(sqrt(x)-5)/(x-25)", a: 25 },
+    { q: "Calcular: $$\\lim_{x\\to 9}\\frac{\\sqrt{x}-3}{x-9}$$", latex: "\\lim_{x\\to 9}\\frac{\\sqrt{x}-3}{x-9}", opciones: ["1/3","1/6","1/9","1/12"], correcta: "1/6", expr: "(sqrt(x)-3)/(x-9)", a: 9 },
+    { q: "En la gráfica, el círculo abierto representa:", latex: "", opciones: ["Una asíntota","Una discontinuidad removible","Un máximo relativo","Una raíz doble"], correcta: "Una discontinuidad removible" },
+    { q: "Las líneas punteadas en la gráfica indican:", latex: "", opciones: ["El crecimiento exponencial","La aproximación al límite","La derivada","El dominio"], correcta: "La aproximación al límite" },
+    { q: "La indeterminación 0/0 indica que:", latex: "", opciones: ["El límite no existe","Debe aplicarse simplificación algebraica","La función diverge","La función es continua"], correcta: "Debe aplicarse simplificación algebraica" }
+  ];
+
+  let respuestasQuiz = [];
+  let intentosQuiz = 0;
+  const MAX_INTENTOS_QUIZ = 5;
+
+  function renderQuizLaTeX() {
+    let html = '';
+    preguntas.forEach((p, idx) => {
+      html += `<div class="question-card"><h3>${idx+1}. ${p.q}</h3>`;
+      if(p.latex && p.latex.trim() !== "") {
+        html += `<div class="math-box quiz-latex">$$${p.latex}$$</div>`;
+      }
+      p.opciones.forEach(op => {
+        let opRaw = op;
+        let opDisplay = op;
+        if(op.includes("\\frac") || op.includes("\\sqrt") || op.includes("^")) opDisplay = `$$${op}$$`;
+        html += `<div class="option" onclick="seleccionarOpcion(${idx}, this, '${opRaw.replace(/'/g, "\\'")}')">${opDisplay}</div>`;
+      });
+      if(p.expr && p.a !== undefined) {
+        html += `<div><button class="simulador-btn" onclick="probarEnSimulador('${p.expr.replace(/'/g, "\\'")}', ${p.a})">🧪 Probar en el simulador</button></div>`;
+      }
+      html += `</div>`;
+    });
+    document.getElementById('quizContainer').innerHTML = html;
+    document.querySelectorAll('.quiz-latex').forEach(el => {
+      try { katex.render(el.innerText, el, { displayMode: true, throwOnError: false }); } catch(e) {}
+    });
+    document.querySelectorAll('.mode-evaluativo .option').forEach(opt => {
+      if (opt.innerText.includes('\\frac') || opt.innerText.includes('\\sqrt') || opt.innerText.includes('^')) {
+        try {
+          const span = document.createElement('span');
+          katex.render(opt.innerText, span, { displayMode: false, throwOnError: false });
+          opt.innerHTML = span.innerHTML;
+        } catch(e) {}
+      }
+    });
+  }
+
+  window.seleccionarOpcion = function(idx, elem, valor) {
+    const grupo = elem.parentElement;
+    grupo.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
+    elem.classList.add('selected');
+    respuestasQuiz[idx] = valor;
+  };
+
+  window.calificarQuiz = function() {
+    if(intentosQuiz >= MAX_INTENTOS_QUIZ) { alert('Máximo de intentos alcanzado (5)'); return; }
+    intentosQuiz++;
+    let correctas = 0;
+    preguntas.forEach((p, i) => { if(respuestasQuiz[i] === p.correcta) correctas++; });
+    const porcentaje = (correctas/preguntas.length)*100;
+    const nota = ((correctas/preguntas.length)*5).toFixed(1);
+    let clase = '', mensaje = '';
+    if(nota < 3) { clase = 'result-bad'; mensaje = 'Debes reforzar factorización, racionalización y álgebra.'; }
+    else if(nota < 4.5) { clase = 'result-mid'; mensaje = 'Buen desempeño. Fortalece el análisis algebraico.'; }
+    else { clase = 'result-good'; mensaje = 'Excelente dominio de límites algebraicos.'; }
+    document.getElementById('quizResult').innerHTML = `<h2 class="${clase}">Resultados del simulacro</h2><br><b>Aciertos:</b> ${correctas}/${preguntas.length}<br><br><b>Porcentaje:</b> ${porcentaje.toFixed(1)}%<br><br><b>Nota:</b> ${nota}<br><br><b>Intento:</b> ${intentosQuiz}/${MAX_INTENTOS_QUIZ}<br><br>${mensaje}`;
+  };
+  window.reiniciarIntento = function() {
+    if(intentosQuiz >= MAX_INTENTOS_QUIZ) { alert('No quedan intentos disponibles.'); return; }
+    respuestasQuiz = [];
+    document.querySelectorAll('.mode-evaluativo .option').forEach(opt => opt.classList.remove('selected'));
+    document.getElementById('quizResult').innerHTML = '';
+  };
+  window.descargarPDFQuiz = function() {
+    const nombre = document.getElementById('studentName').value || 'Estudiante';
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    const texto = document.getElementById('quizResult').innerText;
+    doc.setFontSize(16); doc.text('SIMULACRO ICFES STEM', 20, 20);
+    doc.setFontSize(12); doc.text(`Estudiante: ${nombre}`, 20, 40);
+    doc.text(texto, 20, 60);
+    doc.save(`${nombre}_resultado_quiz.pdf`);
+  };
+  window.descargarExcelQuiz = function() {
+    const nombre = document.getElementById('studentName').value || 'Estudiante';
+    const resultado = document.getElementById('quizResult').innerText;
+    const data = [["Estudiante", nombre], ["Resultado", resultado]];
+    const ws = XLSX.utils.aoa_to_sheet(data);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Resultados ICFES");
+    XLSX.writeFile(wb, `${nombre}_resultado_quiz.xlsx`);
+  };
+  renderQuizLaTeX();
 </script>
-
-<script>
-window.MathJax = {
-tex: {
-inlineMath: [['\\(','\\)']],
-displayMath: [['\\[','\\]']]
-}
-};
-</script>
-
-<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-
 </body>
-</html>
+</html></html>
