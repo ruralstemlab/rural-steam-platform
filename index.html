@@ -1,22 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Rural STEAM Lab</title>
 
 <style>
 
 body{
     margin:0;
-    font-family:Arial, sans-serif;
+    font-family:Arial,sans-serif;
     background:#0f172a;
     color:white;
     text-align:center;
 }
 
+/* =========================
+MENU SUPERIOR
+========================= */
+
+nav{
+    background:#020617;
+    padding:15px 25px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    position:sticky;
+    top:0;
+    z-index:1000;
+    box-shadow:0 2px 10px rgba(0,0,0,0.4);
+}
+
+.logo{
+    font-size:1.3rem;
+    font-weight:bold;
+    color:#38bdf8;
+}
+
+.menu{
+    display:flex;
+    gap:15px;
+    flex-wrap:wrap;
+}
+
+.menu a{
+    color:white;
+    text-decoration:none;
+    font-weight:bold;
+    transition:0.3s;
+}
+
+.menu a:hover{
+    color:#38bdf8;
+}
+
+/* =========================
+HEADER
+========================= */
+
 header{
-    padding:50px 20px;
+    padding:60px 20px;
     background:linear-gradient(135deg,#1e293b,#0f172a);
 }
 
@@ -25,10 +72,17 @@ h1{
     margin-bottom:10px;
 }
 
-p{
+header p{
     font-size:1.2rem;
     color:#cbd5e1;
+    max-width:800px;
+    margin:auto;
+    line-height:1.8;
 }
+
+/* =========================
+CARDS
+========================= */
 
 .container{
     display:grid;
@@ -42,12 +96,26 @@ p{
     border-radius:20px;
     padding:30px;
     transition:0.3s;
+    box-shadow:0 0 15px rgba(0,0,0,0.3);
 }
 
 .card:hover{
     transform:translateY(-5px);
     background:#334155;
 }
+
+.card h2{
+    margin-bottom:15px;
+}
+
+.card p{
+    color:#cbd5e1;
+    line-height:1.7;
+}
+
+/* =========================
+BOTONES
+========================= */
 
 button{
     margin-top:15px;
@@ -58,85 +126,229 @@ button{
     color:white;
     font-size:1rem;
     cursor:pointer;
+    font-weight:bold;
+    transition:0.3s;
 }
 
+button:hover{
+    background:#16a34a;
+}
+
+/* =========================
+FOOTER
+========================= */
+
 footer{
+    text-align:center;
     padding:30px;
+    background:#020617;
+    color:#94a3b8;
+    margin-top:40px;
+}
+
+footer h3{
+    color:white;
+    margin-bottom:10px;
+}
+
+footer p{
+    margin:6px 0;
     color:#94a3b8;
 }
 
+/* =========================
+RESPONSIVE
+========================= */
+
+@media(max-width:700px){
+
+    h1{
+        font-size:2.2rem;
+    }
+
+    nav{
+        justify-content:center;
+        gap:15px;
+    }
+
+}
+
 </style>
+
 </head>
 
 <body>
 
+<!-- =========================
+MENU SUPERIOR
+========================= -->
+
+<nav>
+
+<div class="logo">
+Rural STEAM Lab
+</div>
+
+<div class="menu">
+
+<a href="#">
+Home
+</a>
+
+<a href="#">
+Physics
+</a>
+
+<a href="#">
+Mathematics
+</a>
+
+<a href="#">
+OMR System
+</a>
+
+</div>
+
+</nav>
+
+<!-- =========================
+HEADER
+========================= -->
+
 <header>
-    <h1>Rural STEAM Lab</h1>
-    <p>
-        Interactive STEM simulations for Mathematics and Physics education in rural communities.
-    </p>
+
+<h1>
+Rural STEAM Lab
+</h1>
+
+<p>
+Interactive STEM simulations for Mathematics and Physics education in rural communities.
+</p>
+
 </header>
+
+<!-- =========================
+CARDS
+========================= -->
 
 <section class="container">
 
 <div class="card">
-    <h2>🎓 Student Zone</h2>
-    <p>
-        Interactive simulations, virtual laboratories,
-        quizzes and STEM learning activities.
-    </p>
 
-    <button onclick="window.location.href='simulators/pulley/'">
-        Open Simulators
-    </button>
+<h2>
+🎓 Student Zone
+</h2>
+
+<p>
+Interactive simulations, virtual laboratories,
+quizzes and STEM learning activities.
+</p>
+
+<button onclick="window.location.href='simulators/pulley/'">
+
+Open Simulators
+
+</button>
+
 </div>
 
 <div class="card">
-    <h2>🧑‍🏫 Teacher Zone</h2>
-    <p>
-        Educational tools for grading, analytics,
-        pedagogical reports and classroom support.
-    </p>
 
-    <button>
-        Open Teacher Tools
-    </button>
+<h2>
+🧑‍🏫 Teacher Zone
+</h2>
+
+<p>
+Educational tools for grading, analytics,
+pedagogical reports and classroom support.
+</p>
+
+<button>
+
+Open Teacher Tools
+
+</button>
+
 </div>
 
 <div class="card">
-    <h2>📊 OMR Evaluation System</h2>
-    <p>
-        Automatic grading system for ICFES-style
-        answer sheets with analytics and reports.
-    </p>
 
-    <button>
-        Open OMR System
-    </button>
+<h2>
+📊 OMR Evaluation System
+</h2>
+
+<p>
+Automatic grading system for ICFES-style
+answer sheets with analytics and reports.
+</p>
+
+<button>
+
+Open OMR System
+
+</button>
+
 </div>
 
 <div class="card">
-    <h2>⚙️ Physics Laboratory</h2>
-    <p>
-        Dynamics, waves, Newton laws,
-        pulleys, Doppler effect and sound.
-    </p>
 
-    <button onclick="window.location.href='simulators/pulley/'">
-        Open Physics
-    </button>
+<h2>
+⚙️ Physics Laboratory
+</h2>
+
+<p>
+Dynamics, waves, Newton laws,
+pulleys, Doppler effect and sound.
+</p>
+
+<button onclick="window.location.href='simulators/pulley/'">
+
+Open Physics
+
+</button>
+
 </div>
 
 <div class="card">
-    <h2>📐 Mathematics Laboratory</h2>
-    <p>
-        Algebra, geometry, statistics,
-        limits and interactive mathematical models.
-    </p>
 
-    <button>
-        Open Mathematics
-    </button>
+<h2>
+📐 Mathematics Laboratory
+</h2>
+
+<p>
+Algebra, geometry, statistics,
+limits and interactive mathematical models.
+</p>
+
+<button>
+
+Open Mathematics
+
+</button>
+
 </div>
 
 </section>
+
+<!-- =========================
+FOOTER
+========================= -->
+
+<footer>
+
+<h3>
+Eng. Medina H. A.
+</h3>
+
+<p>
+Developer • Educator • Innovator
+</p>
+
+<p>
+Rural STEAM Lab © 2026
+</p>
+
+</footer>
+
+</body>
+</html>
