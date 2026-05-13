@@ -2,7 +2,9 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Calificador OMR V10.1</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Teacher Evaluation Tools V3</title>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
@@ -11,30 +13,16 @@
 <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
 
 <style>
-body{font-family:"Segoe UI";background:#f4f6fb;padding:20px;}
-h2{text-align:center;color:#1f3c88;}
-.container{display:flex;gap:20px;}
-.left,.right{background:white;padding:20px;border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,0.05);}
-.left{flex:2;} .right{flex:1;}
 
-textarea{width:100%;height:110px;border-radius:8px;border:1px solid #ccc;padding:10px;margin-bottom:10px;}
+body{
+font-family:"Segoe UI",sans-serif;
+background:#0f172a;
+padding:20px;
+color:white;
+margin:0;
+}
 
-button{padding:10px 14px;border:none;border-radius:8px;background:#4f8cff;color:white;margin:5px;cursor:pointer;}
-button:hover{background:#1f3c88;}
-
-table{width:100%;border-collapse:collapse;margin-top:10px;}
-td,th{border:1px solid #ddd;padding:6px;text-align:center;}
-th{background:#1f3c88;color:white;}
-
-.superior{background:#e6f4ea;color:#1e8e3e;font-weight:600;}
-.alto{background:#fff8e1;color:#b88900;font-weight:600;}
-.basico{background:#fff3e0;color:#d35400;font-weight:600;}
-.bajo{background:#fdecea;color:#c62828;font-weight:600;}
-</style>
-</head>
-
-<body>
-<div style="
+.topbar{
 padding:15px;
 background:#020617;
 display:flex;
@@ -44,11 +32,11 @@ position:sticky;
 top:0;
 z-index:100;
 box-shadow:0 2px 10px rgba(0,0,0,0.4);
-">
+margin:-20px -20px 20px -20px;
+}
 
-<button
-onclick="window.location.href='../'"
-style="
+.topbar button,
+.topbar a{
 background:#2563eb;
 color:white;
 border:none;
@@ -57,43 +45,189 @@ border-radius:10px;
 font-size:1rem;
 cursor:pointer;
 font-weight:bold;
-">
+text-decoration:none;
+display:flex;
+align-items:center;
+}
+
+.topbar a{
+background:#16a34a;
+}
+
+h2{
+text-align:center;
+color:#38bdf8;
+margin-bottom:20px;
+font-size:2rem;
+}
+
+.container{
+display:flex;
+gap:20px;
+flex-wrap:wrap;
+}
+
+.left,.right{
+background:#1e293b;
+padding:20px;
+border-radius:20px;
+box-shadow:0 6px 18px rgba(0,0,0,0.3);
+}
+
+.left{
+flex:2;
+min-width:320px;
+}
+
+.right{
+flex:1;
+min-width:280px;
+}
+
+textarea{
+width:100%;
+height:110px;
+border-radius:12px;
+border:1px solid #334155;
+padding:12px;
+margin-bottom:12px;
+background:#0f172a;
+color:white;
+font-size:1rem;
+}
+
+textarea::placeholder{
+color:#94a3b8;
+}
+
+button{
+padding:12px 16px;
+border:none;
+border-radius:10px;
+background:#22c55e;
+color:white;
+margin:5px;
+cursor:pointer;
+font-weight:bold;
+transition:0.3s;
+}
+
+button:hover{
+background:#16a34a;
+transform:translateY(-2px);
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+margin-top:10px;
+background:#0f172a;
+border-radius:10px;
+overflow:hidden;
+}
+
+td,th{
+border:1px solid #334155;
+padding:8px;
+text-align:center;
+color:white;
+}
+
+th{
+background:#020617;
+color:#38bdf8;
+}
+
+.superior{
+background:#14532d;
+color:#bbf7d0;
+font-weight:600;
+}
+
+.alto{
+background:#713f12;
+color:#fde68a;
+font-weight:600;
+}
+
+.basico{
+background:#7c2d12;
+color:#fdba74;
+font-weight:600;
+}
+
+.bajo{
+background:#7f1d1d;
+color:#fecaca;
+font-weight:600;
+}
+
+pre{
+white-space:pre-wrap;
+background:#0f172a;
+padding:15px;
+border-radius:12px;
+border:1px solid #334155;
+color:#e2e8f0;
+margin-top:15px;
+}
+
+h3{
+color:#38bdf8;
+}
+
+.footer{
+margin-top:30px;
+text-align:right;
+font-weight:bold;
+color:#38bdf8;
+}
+
+@media(max-width:900px){
+.container{
+flex-direction:column;
+}
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="topbar">
+
+<button onclick="window.location.href='../'">
 ⬅ Back to Teacher Zone
 </button>
 
-<a
-href="index.html"
-download
-style="
-background:#16a34a;
-color:white;
-text-decoration:none;
-padding:12px 18px;
-border-radius:10px;
-font-size:1rem;
-font-weight:bold;
-display:flex;
-align-items:center;
-">
+<a href="index.html" download>
 📥 Download Offline
 </a>
 
 </div>
-<h2>Calificador OMR V10.1</h2>
+
+<h2>
+📊 Teacher Evaluation Tools V3
+</h2>
 
 <div class="container">
 
 <div class="left">
 
 <textarea id="clave" placeholder="Clave (horizontal o vertical)"></textarea>
+
 <textarea id="tablaInput" placeholder="Nombre + respuestas"></textarea>
 
 <button onclick="calcular()">Calcular</button>
+
 <button onclick="exportarExcel()">Excel</button>
+
 <button onclick="exportarPDF()">PDF</button>
+
 <button onclick="location.reload()">Nuevo</button>
 
 <table>
+
 <thead>
 <tr>
 <th>#</th>
@@ -103,7 +237,9 @@ align-items:center;
 <th>Nivel</th>
 </tr>
 </thead>
+
 <tbody id="tabla"></tbody>
+
 </table>
 
 </div>
@@ -121,7 +257,10 @@ align-items:center;
 
 <pre id="interpretacion"></pre>
 
-<h3>Análisis por ítems</h3>
+<h3>
+📘 Análisis por ítems
+</h3>
+
 <div id="analisisItems"></div>
 
 </div>
@@ -144,14 +283,17 @@ return text.trim().split(/\s+|\t|,/).filter(x=>x!="");
 }
 
 function parseLinea(linea){
+
 if(linea.includes("\t")) return linea.split("\t");
 
 let partes=linea.trim().split(/\s+/);
+
 let idx=partes.findIndex(p=>esValida(p));
 
 if(idx===-1) return [];
 
 let nombre=partes.slice(0,idx).join(" ");
+
 let resp=partes.slice(idx);
 
 return [nombre,...resp];
@@ -171,50 +313,93 @@ return;
 let lineas=document.getElementById("tablaInput").value.trim().split("\n");
 
 let estudiantes=[];
-let conteo={SUPERIOR:0,ALTO:0,BASICO:0,BAJO:0};
+
+let conteo={
+SUPERIOR:0,
+ALTO:0,
+BASICO:0,
+BAJO:0
+};
+
 window.estadisticasItems=[];
 
 lineas.forEach(l=>{
+
 let d=parseLinea(l);
+
 if(d.length<2)return;
 
 let nombre=d[0];
+
 let resp=d.slice(1);
 
 let total=Math.min(clave.length,resp.length);
+
 if(total===0)return;
 
 let aciertos=0;
 
 for(let i=0;i<total;i++){
+
 if(!window.estadisticasItems[i]){
-window.estadisticasItems[i]={correctas:0,total:0};
+window.estadisticasItems[i]={
+correctas:0,
+total:0
+};
 }
+
 }
 
 for(let i=0;i<total;i++){
 
 if(!resp[i] || resp[i].trim()==="") continue;
+
 if(!esValida(resp[i])) continue;
 
 window.estadisticasItems[i].total++;
 
 if(clave[i].toUpperCase()===resp[i].toUpperCase()){
+
 aciertos++;
+
 window.estadisticasItems[i].correctas++;
+
 }
+
 }
 
 let nota=(aciertos/total)*5;
 
 let nivel="",clase="";
-if(nota>=4){nivel="SUPERIOR";clase="superior";}
-else if(nota>=3.5){nivel="ALTO";clase="alto";}
-else if(nota>=3){nivel="BASICO";clase="basico";}
-else{nivel="BAJO";clase="bajo";}
+
+if(nota>=4){
+nivel="SUPERIOR";
+clase="superior";
+}
+else if(nota>=3.5){
+nivel="ALTO";
+clase="alto";
+}
+else if(nota>=3){
+nivel="BASICO";
+clase="basico";
+}
+else{
+nivel="BAJO";
+clase="bajo";
+}
 
 conteo[nivel]++;
-estudiantes.push({nombre,aciertos,total,nota,nivel,clase});
+
+estudiantes.push({
+nombre,
+aciertos,
+total,
+nota,
+nivel,
+clase
+});
+
 });
 
 if(estudiantes.length===0){
@@ -225,7 +410,9 @@ return;
 estudiantes.sort((a,b)=>b.nota-a.nota);
 
 tabla.innerHTML="";
+
 estudiantes.forEach((e,i)=>{
+
 tabla.innerHTML+=`
 <tr class="${e.clase}">
 <td>${i+1}</td>
@@ -233,21 +420,27 @@ tabla.innerHTML+=`
 <td>${e.aciertos}/${e.total}</td>
 <td>${e.nota.toFixed(2)}</td>
 <td>${e.nivel}</td>
-</tr>`;
+</tr>
+`;
+
 });
 
 let notas=estudiantes.map(e=>e.nota);
+
 let prom=notas.reduce((a,b)=>a+b,0)/notas.length;
 
 promedio.innerText=prom.toFixed(2);
+
 mejor.innerText=Math.max(...notas).toFixed(2);
+
 peor.innerText=Math.min(...notas).toFixed(2);
+
 total.innerText=notas.length;
 
 let dispersion=Math.max(...notas)-Math.min(...notas);
 
-// 🔥 INTERPRETACIÓN MEJORADA
 let totalEst=estudiantes.length;
+
 let pBajo=(conteo.BAJO/totalEst)*100;
 let pBasico=(conteo.BASICO/totalEst)*100;
 let pAlto=(conteo.ALTO/totalEst)*100;
@@ -266,17 +459,21 @@ texto+=`Bajo: ${pBajo.toFixed(1)}%\n\n`;
 
 if(pBajo>=40){
 texto+="Grupo en nivel crítico con dificultades generalizadas.\n";
-}else if(pBajo+pBasico>=60){
+}
+else if(pBajo+pBasico>=60){
 texto+="Grupo en riesgo académico.\n";
-}else if(pAlto+pSuperior>=60){
+}
+else if(pAlto+pSuperior>=60){
 texto+="Grupo con desempeño adecuado.\n";
 }
 
 if(prom<3){
 texto+="Promedio bajo.\n";
-}else if(prom<4){
+}
+else if(prom<4){
 texto+="Proceso en consolidación.\n";
-}else{
+}
+else{
 texto+="Buen desempeño general.\n";
 }
 
@@ -284,7 +481,6 @@ texto+="\nRecomendación: reforzar preguntas con menor porcentaje de acierto.";
 
 interpretacion.innerText=texto;
 
-// GRÁFICO
 if(chart) chart.destroy();
 
 chart=new Chart(grafico,{
@@ -292,8 +488,18 @@ type:"pie",
 data:{
 labels:["Superior","Alto","Básico","Bajo"],
 datasets:[{
-data:[conteo.SUPERIOR,conteo.ALTO,conteo.BASICO,conteo.BAJO],
-backgroundColor:["green","#FFD700","#FFA500","red"]
+data:[
+conteo.SUPERIOR,
+conteo.ALTO,
+conteo.BASICO,
+conteo.BAJO
+],
+backgroundColor:[
+"#22c55e",
+"#eab308",
+"#f97316",
+"#ef4444"
+]
 }]
 },
 options:{
@@ -312,38 +518,52 @@ plugins:[ChartDataLabels]
 });
 
 let cont=document.getElementById("analisisItems");
+
 cont.innerHTML="";
 
 window.estadisticasItems.forEach((it,i)=>{
+
 let p=it.total?it.correctas/it.total:0;
 
 let nivel=p>=0.8?"Fácil":p>=0.5?"Media":"Difícil";
-let color=p>=0.8?"green":p>=0.5?"orange":"red";
+
+let color=p>=0.8?"#22c55e":p>=0.5?"#facc15":"#ef4444";
 
 cont.innerHTML+=`
-<div>Pregunta ${i+1}: ${(p*100).toFixed(1)}% → <b style="color:${color}">${nivel}</b></div>
+<div style="margin:6px 0;">
+Pregunta ${i+1}: ${(p*100).toFixed(1)}%
+→ <b style="color:${color}">${nivel}</b>
+</div>
 `;
+
 });
 
 }
 
-// 🔥 PDF COMPLETO CORREGIDO
 function exportarPDF(){
+
 const {jsPDF}=window.jspdf;
+
 let doc=new jsPDF();
 
-doc.setFontSize(14);
-doc.text("REPORTE OMR V10.1",10,10);
+doc.setFontSize(16);
+
+doc.text("Teacher Evaluation Tools V3",10,10);
 
 doc.setFontSize(10);
+
 doc.text("Promedio: "+promedio.innerText,10,20);
 
-// TABLA
 let rows=[];
+
 document.querySelectorAll("#tabla tr").forEach(tr=>{
+
 let fila=[];
+
 tr.querySelectorAll("td").forEach(td=>fila.push(td.innerText));
+
 rows.push(fila);
+
 });
 
 doc.autoTable({
@@ -353,38 +573,53 @@ startY:30,
 styles:{fontSize:8}
 });
 
-// GRÁFICO
 let y=doc.lastAutoTable.finalY || 60;
+
 let img=grafico.toDataURL("image/png");
+
 doc.addImage(img,"PNG",10,y+5,80,80);
 
-// INTERPRETACIÓN
 let texto=interpretacion.innerText.split("\n");
+
 doc.setFontSize(9);
+
 doc.text(texto,100,y+10);
 
-// FIRMA
 const pageHeight=doc.internal.pageSize.height;
-doc.text("Design by Eng. Medina H. A.",140,pageHeight-10);
+
+doc.text("Design by Eng. Medina H. A.",130,pageHeight-10);
 
 doc.save("Reporte.pdf");
+
 }
 
 function exportarExcel(){
+
 let data=[["Ranking","Nombre","Aciertos","Nota","Nivel"]];
+
 document.querySelectorAll("#tabla tr").forEach(tr=>{
-let f=[];tr.querySelectorAll("td").forEach(td=>f.push(td.innerText));
+
+let f=[];
+
+tr.querySelectorAll("td").forEach(td=>f.push(td.innerText));
+
 data.push(f);
+
 });
+
 let wb=XLSX.utils.book_new();
+
 let ws=XLSX.utils.aoa_to_sheet(data);
+
 XLSX.utils.book_append_sheet(wb,ws,"Resultados");
+
 XLSX.writeFile(wb,"Reporte.xlsx");
+
 }
 
 </script>
 
-<div style="margin-top:30px;text-align:right;font-weight:bold;color:#1f3c88;">
+<div class="footer">
 Design by Eng. Medina H. A.
 </div>
 
