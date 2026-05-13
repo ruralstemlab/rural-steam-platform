@@ -64,7 +64,7 @@ HEADER
 
 header{
 
-padding:70px 20px;
+padding:110px 20px;
 
 background:
 linear-gradient(
@@ -79,19 +79,21 @@ background-repeat:no-repeat;
 
 }
 
-/* =========================
-TEXTOS HEADER
-========================= */
+h1{
+font-size:4rem;
+margin-bottom:20px;
+color:white;
+text-shadow:0 0 20px rgba(0,0,0,0.9);
+}
 
 header p{
-    font-size:1.35rem;
-    max-width:950px;
-    margin:auto;
-    line-height:2;
-    font-weight:bold;
-    color:#4ade80;
-    text-shadow:0 0 10px rgba(0,0,0,0.8);
-    padding-top:40px;
+font-size:1.3rem;
+max-width:900px;
+margin:auto;
+line-height:1.9;
+font-weight:500;
+color:#4ade80;
+text-shadow:0 0 10px rgba(0,0,0,0.9);
 }
 
 /* =========================
@@ -181,9 +183,13 @@ RESPONSIVE
         gap:15px;
     }
 
+    h1{
+        font-size:2.5rem;
+    }
+
     header p{
-        font-size:1.05rem;
-        line-height:1.8;
+        font-size:1rem;
+        line-height:1.7;
     }
 
 }
@@ -232,7 +238,9 @@ HEADER
 
 <header>
 
-<div style="height:70px;"></div>
+<h1>
+Rural STEAM Lab
+</h1>
 
 <p>
 Interactive STEM simulations for Mathematics and Physics education in rural communities.
