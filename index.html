@@ -63,7 +63,8 @@ HEADER
 ========================= */
 
 header{
-padding:140px 20px;
+
+padding:70px 20px;
 
 background:
 linear-gradient(
@@ -75,19 +76,22 @@ url('assets/stem-bg.png');
 background-size:cover;
 background-position:center;
 background-repeat:no-repeat;
+
 }
 
-h1{
-    font-size:3rem;
-    margin-bottom:10px;
-}
+/* =========================
+TEXTOS HEADER
+========================= */
 
 header p{
-    font-size:1.2rem;
-    color:#cbd5e1;
-    max-width:800px;
+    font-size:1.35rem;
+    max-width:950px;
     margin:auto;
-    line-height:1.8;
+    line-height:2;
+    font-weight:bold;
+    color:#4ade80;
+    text-shadow:0 0 10px rgba(0,0,0,0.8);
+    padding-top:40px;
 }
 
 /* =========================
@@ -172,13 +176,14 @@ RESPONSIVE
 
 @media(max-width:700px){
 
-    h1{
-        font-size:2.2rem;
-    }
-
     nav{
         justify-content:center;
         gap:15px;
+    }
+
+    header p{
+        font-size:1.05rem;
+        line-height:1.8;
     }
 
 }
@@ -227,18 +232,9 @@ HEADER
 
 <header>
 
-<div style="height:180px;"></div>
+<div style="height:70px;"></div>
 
-<p style="
-font-size:1.35rem;
-max-width:950px;
-margin:auto;
-line-height:2;
-font-weight:bold;
-color:#4ade80;
-text-shadow:0 0 10px rgba(0,0,0,0.8);
-padding-top:40px;
-">
+<p>
 Interactive STEM simulations for Mathematics and Physics education in rural communities.
 </p>
 
@@ -279,9 +275,7 @@ pedagogical reports and classroom support.
 </p>
 
 <button onclick="window.location.href='teacher-zone/'">
-
 Open Teacher Zone
-    
 </button>
 
 </div>
@@ -316,9 +310,7 @@ pulleys, Doppler effect and sound.
 </p>
 
 <button onclick="window.location.href='physics/'">
-
 Open Physics
-
 </button>
 
 </div>
@@ -335,9 +327,7 @@ limits and interactive mathematical models.
 </p>
 
 <button onclick="window.location.href='mathematics/limits/index.html'">
-
 Open Mathematics
-
 </button>
 
 </div>
