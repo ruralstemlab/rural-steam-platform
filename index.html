@@ -39,7 +39,6 @@ nav{
     top:0;
     z-index:1000;
     box-shadow:0 4px 15px rgba(0,0,0,0.5);
-    backdrop-filter:blur(2px);
 }
 
 .logo{
@@ -73,25 +72,18 @@ nav{
 }
 
 /* =========================
-HEADER (con gradiente más suave)
+HEADER CON IMAGEN DE FONDO (restaurada)
 ========================= */
 
 header{
     padding:130px 20px;
-    background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+    background: 
+        linear-gradient(rgba(15,23,42,0.75), rgba(15,23,42,0.8)),
+        url('assets/stem-bg.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
     position:relative;
-    overflow:hidden;
-}
-
-header::before{
-    content:"";
-    position:absolute;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
-    background:radial-gradient(circle at 20% 40%, rgba(56,189,248,0.1) 0%, transparent 60%);
-    pointer-events:none;
 }
 
 h1{
@@ -256,7 +248,7 @@ MENU SUPERIOR (con Química incluida)
 </nav>
 
 <!-- =========================
-HEADER
+HEADER CON IMAGEN RESTAURADA
 ========================= -->
 
 <header>
@@ -272,7 +264,7 @@ Interactive STEM simulations for Mathematics, Physics, Chemistry and rural educa
 </header>
 
 <!-- =========================
-CARDS (ahora con Química)
+CARDS (con Química)
 ========================= -->
 
 <section class="container">
