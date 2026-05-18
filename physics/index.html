@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>Physics Lab | Rural STEAM Platform</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -19,7 +19,7 @@
             line-height: 1.5;
         }
 
-        /* Header / Topbar */
+        /* Topbar */
         .topbar {
             background: #020617;
             padding: 1rem 2rem;
@@ -65,11 +65,10 @@
             color: #94a3b8;
         }
 
-        /* Hero section */
+        /* Hero */
         .hero {
             text-align: center;
             padding: 3rem 2rem 2rem;
-            background: linear-gradient(180deg, #0f172a 0%, #0f172a 100%);
         }
 
         .hero h2 {
@@ -84,78 +83,75 @@
             margin: 0 auto;
         }
 
-        /* Container grid cards */
-        .container {
+        /* Secciones de área */
+        .section {
             max-width: 1300px;
-            margin: 0 auto;
-            padding: 2rem;
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-            gap: 2rem;
+            margin: 2rem auto;
+            padding: 0 2rem;
         }
 
-        .card {
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            border-left: 5px solid #3b82f6;
+            padding-left: 1rem;
+        }
+
+        /* Grid de simuladores */
+        .sim-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.8rem;
+        }
+
+        /* Tarjeta de simulador */
+        .sim-card {
             background: #1e293b;
             border-radius: 1.8rem;
-            padding: 1.8rem;
+            padding: 1.5rem;
             transition: transform 0.2s, box-shadow 0.2s;
             border: 1px solid #334155;
             display: flex;
             flex-direction: column;
         }
 
-        .card:hover {
+        .sim-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 20px 30px -12px rgba(0, 0, 0, 0.4);
             border-color: #475569;
         }
 
-        .card-icon {
-            font-size: 2.5rem;
+        .sim-icon {
+            font-size: 3rem;
+            background: #0f172a;
+            width: 70px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 1.5rem;
             margin-bottom: 1rem;
+            border: 1px solid #334155;
         }
 
-        .card h3 {
-            font-size: 1.6rem;
+        .sim-card h3 {
+            font-size: 1.4rem;
             font-weight: 600;
             margin-bottom: 0.5rem;
-            letter-spacing: -0.3px;
         }
 
-        .card p {
-            color: #cbd5e1;
-            margin-bottom: 1.5rem;
-            font-size: 0.9rem;
+        .sim-card p {
+            color: #94a3b8;
+            font-size: 0.85rem;
+            margin-bottom: 1.2rem;
             flex-grow: 1;
         }
 
-        .simulator-list {
-            margin: 0.5rem 0 1rem;
-            padding-left: 1.2rem;
-        }
-
-        .simulator-list li {
-            margin: 0.5rem 0;
-            list-style-type: circle;
-            color: #94a3b8;
-        }
-
-        .simulator-list a {
-            color: #a5f3fc;
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.2s;
-        }
-
-        .simulator-list a:hover {
-            color: white;
-            text-decoration: underline;
-        }
-
-        .card-buttons {
+        .button-group {
             display: flex;
             flex-wrap: wrap;
-            gap: 0.8rem;
+            gap: 0.6rem;
             margin-top: 0.5rem;
         }
 
@@ -163,16 +159,16 @@
             background: #2563eb;
             color: white;
             border: none;
-            padding: 0.6rem 1.2rem;
+            padding: 0.5rem 1rem;
             border-radius: 30px;
             font-weight: 600;
-            font-size: 0.85rem;
+            font-size: 0.75rem;
             cursor: pointer;
             transition: 0.2s;
             text-decoration: none;
             display: inline-flex;
             align-items: center;
-            gap: 6px;
+            gap: 5px;
         }
 
         .btn-sim.download {
@@ -184,18 +180,17 @@
         }
 
         .btn-sim:hover {
-            filter: brightness(1.08);
+            filter: brightness(1.1);
             transform: scale(0.97);
         }
 
-        .coming-soon {
+        .coming-badge {
             background: #334155;
             border-radius: 2rem;
-            padding: 0.4rem 1rem;
-            font-size: 0.75rem;
+            padding: 0.3rem 0.8rem;
+            font-size: 0.7rem;
             font-weight: 600;
             display: inline-block;
-            color: #e2e8f0;
             margin-top: 0.5rem;
             text-align: center;
         }
@@ -204,14 +199,14 @@
             text-align: center;
             padding: 2rem;
             border-top: 1px solid #1e293b;
-            margin-top: 1rem;
+            margin-top: 2rem;
             font-size: 0.8rem;
             color: #64748b;
         }
 
         @media (max-width: 680px) {
-            .container {
-                padding: 1rem;
+            .section {
+                padding: 0 1rem;
             }
             .hero h2 {
                 font-size: 1.6rem;
@@ -234,85 +229,186 @@
     <p>Hands-on virtual labs for mechanics, waves, electricity, optics and more. Each simulator includes free-body diagrams, real-time analysis and downloadable resources.</p>
 </section>
 
-<div class="container">
-
-    <!-- MECHANICS -->
-    <div class="card">
-        <div class="card-icon">⚙️</div>
-        <h3>Classical Mechanics</h3>
-        <p>Motion, forces, energy, oscillations and equilibrium.</p>
-        <ul class="simulator-list">
-            <li><a href="../simulators/projectile-motion/">🏀 Projectile Motion</a></li>
-            <li><a href="../simulators/friction/">🧱 Friction System</a></li>
-            <li><a href="../simulators/pulley/">🧲 Pulley System</a></li>
-            <li><a href="../simulators/inclined-plane/">📐 Inclined Plane</a></li>
-            <li><a href="../simulators/eyebolt-tensions/">🔩 Eyebolt Tensions</a></li>
-            <li><a href="../simulators/simple-pendulum/">🌀 Simple Pendulum</a></li>
-        </ul>
-        <div class="card-buttons">
-            <a href="mechanics/" class="btn-sim">📁 Mechanics Lab →</a>
-            <a href="mechanics/oscillations/" class="btn-sim">📈 Oscillations</a>
+<!-- MECÁNICA -->
+<div class="section">
+    <div class="section-title">⚙️ Classical Mechanics</div>
+    <div class="sim-grid">
+        <!-- Proyectiles -->
+        <div class="sim-card">
+            <div class="sim-icon">🏀</div>
+            <h3>Projectile Motion</h3>
+            <p>Parabolic motion simulator with vectors, trajectory and STEM pedagogy.</p>
+            <div class="button-group">
+                <a href="../simulators/projectile-motion/" class="btn-sim">🎮 Abrir</a>
+                <a href="../../../downloads/projectile-motion.zip" class="btn-sim download" download>📥 HTML</a>
+                <a href="../../../guides/projectile-motion-guide.pdf" class="btn-sim guide" download>📘 Guía</a>
+            </div>
+        </div>
+        <!-- Fricción -->
+        <div class="sim-card">
+            <div class="sim-icon">🧱</div>
+            <h3>Friction System</h3>
+            <p>Second Law with friction and free body diagrams.</p>
+            <div class="button-group">
+                <a href="../simulators/friction/" class="btn-sim">🎮 Abrir</a>
+                <a href="../../../downloads/friction.zip" class="btn-sim download" download>📥 HTML</a>
+                <a href="../../../guides/friction-guide.pdf" class="btn-sim guide" download>📘 Guía</a>
+            </div>
+        </div>
+        <!-- Polea -->
+        <div class="sim-card">
+            <div class="sim-icon">🧲</div>
+            <h3>Pulley System</h3>
+            <p>Pulley simulator with tensions and Newton laws.</p>
+            <div class="button-group">
+                <a href="../simulators/pulley/" class="btn-sim">🎮 Abrir</a>
+                <a href="../../../downloads/pulley.zip" class="btn-sim download" download>📥 HTML</a>
+                <a href="../../../guides/pulley-guide.pdf" class="btn-sim guide" download>📘 Guía</a>
+            </div>
+        </div>
+        <!-- Plano inclinado -->
+        <div class="sim-card">
+            <div class="sim-icon">📐</div>
+            <h3>Inclined Plane</h3>
+            <p>Inclined plane simulator with dynamics and forces.</p>
+            <div class="button-group">
+                <a href="../simulators/inclined-plane/" class="btn-sim">🎮 Abrir</a>
+                <a href="../../../downloads/inclined-plane.zip" class="btn-sim download" download>📥 HTML</a>
+                <a href="../../../guides/inclined-plane-guide.pdf" class="btn-sim guide" download>📘 Guía</a>
+            </div>
+        </div>
+        <!-- Pernos de anclaje -->
+        <div class="sim-card">
+            <div class="sim-icon">🔩</div>
+            <h3>Eyebolt Tensions</h3>
+            <p>Equilibrium of forces with multiple tensions.</p>
+            <div class="button-group">
+                <a href="../simulators/eyebolt-tensions/" class="btn-sim">🎮 Abrir</a>
+                <a href="../../../downloads/eyebolt-tensions.zip" class="btn-sim download" download>📥 HTML</a>
+                <a href="../../../guides/eyebolt-tensions-guide.pdf" class="btn-sim guide" download>📘 Guía</a>
+            </div>
+        </div>
+        <!-- Péndulo simple -->
+        <div class="sim-card">
+            <div class="sim-icon">🌀</div>
+            <h3>Simple Pendulum</h3>
+            <p>Oscillations, period, energy and ICFES assessment.</p>
+            <div class="button-group">
+                <a href="../simulators/simple-pendulum/" class="btn-sim">🎮 Abrir</a>
+                <a href="../../../downloads/simple-pendulum.zip" class="btn-sim download" download>📥 HTML</a>
+                <a href="../../../guides/simple-pendulum-guide.pdf" class="btn-sim guide" download>📘 Guía</a>
+            </div>
         </div>
     </div>
+</div>
 
-    <!-- WAVES & SOUND -->
-    <div class="card">
-        <div class="card-icon">🌊</div>
-        <h3>Waves & Sound</h3>
-        <p>Wave basics, sound intensity, Doppler effect, 2D/3D beats.</p>
-        <ul class="simulator-list">
-            <li><a href="../simulators/sound-intensity/">🔊 Sound Intensity</a></li>
-            <li><a href="../simulators/doppler/">📡 Doppler Effect</a></li>
-            <li><a href="../simulators/beats-2d/">〰️ Beats 2D</a></li>
-            <li><a href="../simulators/beats-3d/">🌐 Beats 3D</a></li>
-        </ul>
-        <div class="card-buttons">
-            <a href="waves/" class="btn-sim">📁 Waves Lab →</a>
-            <a href="waves/wave-phenomena/" class="btn-sim">🌀 Wave Phenomena</a>
+<!-- ONDAS Y SONIDO -->
+<div class="section">
+    <div class="section-title">🌊 Waves & Sound</div>
+    <div class="sim-grid">
+        <div class="sim-card">
+            <div class="sim-icon">🔊</div>
+            <h3>Sound Intensity</h3>
+            <p>Sound level, decibels and distance simulation.</p>
+            <div class="button-group">
+                <a href="../simulators/sound-intensity/" class="btn-sim">🎮 Abrir</a>
+                <a href="../../../downloads/sound-intensity.zip" class="btn-sim download" download>📥 HTML</a>
+                <a href="../../../guides/sound-intensity-guide.pdf" class="btn-sim guide" download>📘 Guía</a>
+            </div>
+        </div>
+        <div class="sim-card">
+            <div class="sim-icon">📡</div>
+            <h3>Doppler Effect</h3>
+            <p>Frequency shift due to relative motion.</p>
+            <div class="button-group">
+                <a href="../simulators/doppler/" class="btn-sim">🎮 Abrir</a>
+                <a href="../../../downloads/doppler.zip" class="btn-sim download" download>📥 HTML</a>
+                <a href="../../../guides/doppler-guide.pdf" class="btn-sim guide" download>📘 Guía</a>
+            </div>
+        </div>
+        <div class="sim-card">
+            <div class="sim-icon">〰️</div>
+            <h3>Beats 2D</h3>
+            <p>Interference and beat frequency in 2D.</p>
+            <div class="button-group">
+                <a href="../simulators/beats-2d/" class="btn-sim">🎮 Abrir</a>
+                <a href="../../../downloads/beats-2d.zip" class="btn-sim download" download>📥 HTML</a>
+                <a href="../../../guides/beats-2d-guide.pdf" class="btn-sim guide" download>📘 Guía</a>
+            </div>
+        </div>
+        <div class="sim-card">
+            <div class="sim-icon">🌐</div>
+            <h3>Beats 3D</h3>
+            <p>Three-dimensional wave interference.</p>
+            <div class="button-group">
+                <a href="../simulators/beats-3d/" class="btn-sim">🎮 Abrir</a>
+                <a href="../../../downloads/beats-3d.zip" class="btn-sim download" download>📥 HTML</a>
+                <a href="../../../guides/beats-3d-guide.pdf" class="btn-sim guide" download>📘 Guía</a>
+            </div>
         </div>
     </div>
+</div>
 
-    <!-- ELECTRICITY & MAGNETISM -->
-    <div class="card">
-        <div class="card-icon">⚡</div>
-        <h3>Electricity & Magnetism</h3>
-        <p>Electrostatics, DC/AC circuits, magnetic fields and basic electronics.</p>
-        <div class="coming-soon">🚧 Simulators coming soon</div>
-        <div class="card-buttons" style="margin-top: 1rem;">
-            <a href="electricity/" class="btn-sim">🔌 Electricity Lab →</a>
+<!-- ELECTRICIDAD Y MAGNETISMO (próximamente) -->
+<div class="section">
+    <div class="section-title">⚡ Electricity & Magnetism</div>
+    <div class="sim-grid">
+        <div class="sim-card">
+            <div class="sim-icon">🔌</div>
+            <h3>Electrostatics</h3>
+            <p>Electric charge, field and Coulomb law.</p>
+            <div class="coming-badge">🚧 Próximamente</div>
+        </div>
+        <div class="sim-card">
+            <div class="sim-icon">💡</div>
+            <h3>Circuits</h3>
+            <p>Ohm's law, series and parallel circuits.</p>
+            <div class="coming-badge">🚧 Próximamente</div>
+        </div>
+        <div class="sim-card">
+            <div class="sim-icon">🧲</div>
+            <h3>Magnetism</h3>
+            <p>Magnetic fields and electromagnetism.</p>
+            <div class="coming-badge">🚧 Próximamente</div>
         </div>
     </div>
+</div>
 
-    <!-- OPTICS -->
-    <div class="card">
-        <div class="card-icon">🔆</div>
-        <h3>Optics</h3>
-        <p>Reflection, refraction, lenses and ray diagrams.</p>
-        <div class="coming-soon">🚧 Optics simulators in progress</div>
-        <div class="card-buttons" style="margin-top: 1rem;">
-            <a href="optics/" class="btn-sim">🔍 Optics Lab →</a>
+<!-- ÓPTICA -->
+<div class="section">
+    <div class="section-title">🔆 Optics</div>
+    <div class="sim-grid">
+        <div class="sim-card">
+            <div class="sim-icon">🔍</div>
+            <h3>Geometric Optics</h3>
+            <p>Reflection, refraction and lenses.</p>
+            <div class="coming-badge">🚧 Próximamente</div>
         </div>
     </div>
+</div>
 
-    <!-- THERMODYNAMICS -->
-    <div class="card">
-        <div class="card-icon">🔥</div>
-        <h3>Thermodynamics</h3>
-        <p>Heat transfer, ideal gas law, thermal equilibrium.</p>
-        <div class="coming-soon">🚧 Coming soon</div>
-        <div class="card-buttons" style="margin-top: 1rem;">
-            <a href="thermodynamics/" class="btn-sim">🌡️ Thermodynamics Lab →</a>
+<!-- TERMODINÁMICA -->
+<div class="section">
+    <div class="section-title">🔥 Thermodynamics</div>
+    <div class="sim-grid">
+        <div class="sim-card">
+            <div class="sim-icon">🌡️</div>
+            <h3>Ideal Gas Law</h3>
+            <p>Pressure, volume and temperature simulation.</p>
+            <div class="coming-badge">🚧 Próximamente</div>
         </div>
     </div>
+</div>
 
-    <!-- MODERN PHYSICS -->
-    <div class="card">
-        <div class="card-icon">⚛️</div>
-        <h3>Modern Physics</h3>
-        <p>Quantum mechanics, relativity, atomic models.</p>
-        <div class="coming-soon">🚧 Modern physics modules in development</div>
-        <div class="card-buttons" style="margin-top: 1rem;">
-            <a href="modern-physics/" class="btn-sim">🧪 Modern Physics →</a>
+<!-- FÍSICA MODERNA -->
+<div class="section">
+    <div class="section-title">⚛️ Modern Physics</div>
+    <div class="sim-grid">
+        <div class="sim-card">
+            <div class="sim-icon">💡</div>
+            <h3>Photoelectric Effect</h3>
+            <p>Quantum nature of light.</p>
+            <div class="coming-badge">🚧 Próximamente</div>
         </div>
     </div>
 </div>
