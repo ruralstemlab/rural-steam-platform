@@ -1,415 +1,325 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="es">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Physics Lab | Rural STEAM Platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0f172a;
+            color: #f1f5f9;
+            line-height: 1.5;
+        }
 
-<title>Physics Laboratory</title>
+        /* Header / Topbar */
+        .topbar {
+            background: #020617;
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            border-bottom: 1px solid #1e293b;
+        }
 
-<meta name="description"
-content="Interactive STEM physics simulations for mechanics, waves, electricity, thermodynamics and modern physics education.">
+        .back-btn {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
 
-<link rel="icon" href="../assets/icons/logo.png">
+        .back-btn:hover {
+            background: #3b82f6;
+            transform: scale(0.98);
+        }
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+        .title-area h1 {
+            font-size: 1.7rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #c084fc, #60a5fa);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
 
-<style>
+        .title-area p {
+            font-size: 0.9rem;
+            color: #94a3b8;
+        }
 
-:root{
+        /* Hero section */
+        .hero {
+            text-align: center;
+            padding: 3rem 2rem 2rem;
+            background: linear-gradient(180deg, #0f172a 0%, #0f172a 100%);
+        }
 
---bg:#0f172a;
---card:#1e293b;
---card-hover:#334155;
+        .hero h2 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
 
---blue:#2563eb;
---purple:#7c3aed;
---yellow:#eab308;
---cyan:#06b6d4;
---orange:#f97316;
---pink:#ec4899;
+        .hero p {
+            color: #cbd5e1;
+            max-width: 700px;
+            margin: 0 auto;
+        }
 
---text:#ffffff;
---text-soft:#cbd5e1;
+        /* Container grid cards */
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 2rem;
+        }
 
-}
+        .card {
+            background: #1e293b;
+            border-radius: 1.8rem;
+            padding: 1.8rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+            border: 1px solid #334155;
+            display: flex;
+            flex-direction: column;
+        }
 
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-}
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 30px -12px rgba(0, 0, 0, 0.4);
+            border-color: #475569;
+        }
 
-body{
-font-family:'Poppins',sans-serif;
-background:var(--bg);
-color:var(--text);
-min-height:100vh;
-}
+        .card-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
 
-.topbar{
-background:#020617;
-padding:15px 20px;
-display:flex;
-gap:12px;
-flex-wrap:wrap;
-position:sticky;
-top:0;
-z-index:1000;
-box-shadow:0 4px 12px rgba(0,0,0,0.25);
-}
+        .card h3 {
+            font-size: 1.6rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.3px;
+        }
 
-.topbar button{
-background:var(--blue);
-color:white;
-border:none;
-padding:12px 18px;
-border-radius:12px;
-cursor:pointer;
-font-weight:600;
-transition:0.3s;
-font-size:0.95rem;
-}
+        .card p {
+            color: #cbd5e1;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            flex-grow: 1;
+        }
 
-.topbar button:hover{
-transform:scale(1.05);
-background:#1d4ed8;
-}
+        .simulator-list {
+            margin: 0.5rem 0 1rem;
+            padding-left: 1.2rem;
+        }
 
-header{
-padding:70px 20px 40px;
-text-align:center;
-}
+        .simulator-list li {
+            margin: 0.5rem 0;
+            list-style-type: circle;
+            color: #94a3b8;
+        }
 
-header h1{
-font-size:3rem;
-color:#38bdf8;
-margin-bottom:15px;
-}
+        .simulator-list a {
+            color: #a5f3fc;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
 
-header p{
-color:var(--text-soft);
-font-size:1.1rem;
-max-width:850px;
-margin:auto;
-line-height:1.8;
-}
+        .simulator-list a:hover {
+            color: white;
+            text-decoration: underline;
+        }
 
-.container{
-max-width:1400px;
-margin:auto;
-padding:40px;
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
-gap:30px;
-}
+        .card-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            margin-top: 0.5rem;
+        }
 
-.card{
-background:var(--card);
-padding:35px;
-border-radius:25px;
-transition:0.35s;
-box-shadow:0 4px 12px rgba(0,0,0,0.25);
-border:1px solid rgba(255,255,255,0.05);
-animation:fadeUp 0.8s ease;
-}
+        .btn-sim {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
 
-.card:hover{
-transform:translateY(-8px);
-background:var(--card-hover);
-}
+        .btn-sim.download {
+            background: #16a34a;
+        }
 
-.card h2{
-font-size:1.8rem;
-margin-bottom:15px;
-}
+        .btn-sim.guide {
+            background: #7c3aed;
+        }
 
-.card p{
-color:var(--text-soft);
-line-height:1.8;
-margin-bottom:25px;
-}
+        .btn-sim:hover {
+            filter: brightness(1.08);
+            transform: scale(0.97);
+        }
 
-.card button{
-padding:14px 20px;
-border:none;
-border-radius:12px;
-font-weight:bold;
-cursor:pointer;
-font-size:1rem;
-transition:0.3s;
-width:100%;
-}
+        .coming-soon {
+            background: #334155;
+            border-radius: 2rem;
+            padding: 0.4rem 1rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: inline-block;
+            color: #e2e8f0;
+            margin-top: 0.5rem;
+            text-align: center;
+        }
 
-.card button:hover{
-transform:scale(1.03);
-}
+        footer {
+            text-align: center;
+            padding: 2rem;
+            border-top: 1px solid #1e293b;
+            margin-top: 1rem;
+            font-size: 0.8rem;
+            color: #64748b;
+        }
 
-.mechanics{
-background:var(--blue);
-color:white;
-}
-
-.waves{
-background:var(--purple);
-color:white;
-}
-
-.electricity{
-background:var(--yellow);
-color:#111827;
-}
-
-.electricity:hover{
-color:#111827;
-}
-
-.optics{
-background:var(--cyan);
-color:white;
-}
-
-.thermo{
-background:var(--orange);
-color:white;
-}
-
-.modern{
-background:var(--pink);
-color:white;
-}
-
-footer{
-margin-top:60px;
-padding:35px;
-background:#020617;
-text-align:center;
-color:#94a3b8;
-}
-
-footer h3{
-margin-bottom:10px;
-color:white;
-font-size:1.2rem;
-}
-
-footer p{
-margin-top:6px;
-}
-
-@keyframes fadeUp{
-
-from{
-opacity:0;
-transform:translateY(20px);
-}
-
-to{
-opacity:1;
-transform:translateY(0);
-}
-
-}
-
-@media(max-width:768px){
-
-header h1{
-font-size:2.2rem;
-}
-
-header p{
-font-size:1rem;
-}
-
-.container{
-padding:20px;
-}
-
-.card{
-padding:25px;
-}
-
-}
-
-</style>
-
+        @media (max-width: 680px) {
+            .container {
+                padding: 1rem;
+            }
+            .hero h2 {
+                font-size: 1.6rem;
+            }
+        }
+    </style>
 </head>
-
 <body>
 
-<!-- TOPBAR -->
-
 <div class="topbar">
-
-<button onclick="window.location.href='../'">
-⬅ Back to Platform
-</button>
-
+    <a href="../../index.html" class="back-btn">⬅ Inicio</a>
+    <div class="title-area">
+        <h1>🔬 Physics Laboratory</h1>
+        <p>Interactive simulations for STEM education — Rural STEAM Platform</p>
+    </div>
 </div>
 
-<!-- HEADER -->
-
-<header>
-
-<h1>
-⚛️ Physics Laboratory
-</h1>
-
-<p>
-Interactive STEM simulations, virtual laboratories and educational guides for physics learning and scientific exploration.
-</p>
-
-</header>
-
-<!-- MAIN MODULES -->
-
-<section class="container">
-
-<!-- MECHANICS -->
-
-<div class="card">
-
-<h2>
-⚙️ Mechanics
-</h2>
-
-<p>
-Kinematics, Newton Laws, equilibrium systems, forces, energy and oscillatory motion simulations.
-</p>
-
-<button class="mechanics"
-onclick="window.location.href='./mechanics/'">
-
-Open Module
-
-</button>
-
-</div>
-
-<!-- WAVES -->
-
-<div class="card">
-
-<h2>
-🌊 Waves & Sound
-</h2>
-
-<p>
-Wave phenomena, Doppler effect, beats, sound intensity and virtual wave laboratory simulations.
-</p>
-
-<button class="waves"
-onclick="window.location.href='./waves/'">
-
-Open Module
-
-</button>
-
-</div>
-
-<!-- ELECTRICITY -->
-
-<div class="card">
-
-<h2>
-⚡ Electricity
-</h2>
-
-<p>
-Electric circuits, Ohm Law, electrostatics, magnetism and electronic systems simulations.
-</p>
-
-<button class="electricity"
-onclick="window.location.href='./electricity/'">
-
-Open Module
-
-</button>
-
-</div>
-
-<!-- OPTICS -->
-
-<div class="card">
-
-<h2>
-🔍 Optics
-</h2>
-
-<p>
-Reflection, refraction, lenses, mirrors and optical interference educational simulations.
-</p>
-
-<button class="optics"
-onclick="window.location.href='./optics/'">
-
-Open Module
-
-</button>
-
-</div>
-
-<!-- THERMODYNAMICS -->
-
-<div class="card">
-
-<h2>
-🔥 Thermodynamics
-</h2>
-
-<p>
-Heat transfer, gas laws, calorimetry and thermal energy simulations for STEM learning.
-</p>
-
-<button class="thermo"
-onclick="window.location.href='./thermodynamics/'">
-
-Open Module
-
-</button>
-
-</div>
-
-<!-- MODERN PHYSICS -->
-
-<div class="card">
-
-<h2>
-☢️ Modern Physics
-</h2>
-
-<p>
-Photoelectric effect, relativity, atomic models and introductory quantum physics explorations.
-</p>
-
-<button class="modern"
-onclick="window.location.href='./modern-physics/'">
-
-Open Module
-
-</button>
-
-</div>
-
+<section class="hero">
+    <h2>📐 Explore Physics Through Simulation</h2>
+    <p>Hands-on virtual labs for mechanics, waves, electricity, optics and more. Each simulator includes free-body diagrams, real-time analysis and downloadable resources.</p>
 </section>
 
-<!-- FOOTER -->
+<div class="container">
+
+    <!-- MECHANICS -->
+    <div class="card">
+        <div class="card-icon">⚙️</div>
+        <h3>Classical Mechanics</h3>
+        <p>Motion, forces, energy, oscillations and equilibrium.</p>
+        <ul class="simulator-list">
+            <li><a href="../simulators/projectile-motion/">🏀 Projectile Motion</a></li>
+            <li><a href="../simulators/friction/">🧱 Friction System</a></li>
+            <li><a href="../simulators/pulley/">🧲 Pulley System</a></li>
+            <li><a href="../simulators/inclined-plane/">📐 Inclined Plane</a></li>
+            <li><a href="../simulators/eyebolt-tensions/">🔩 Eyebolt Tensions</a></li>
+            <li><a href="../simulators/simple-pendulum/">🌀 Simple Pendulum</a></li>
+        </ul>
+        <div class="card-buttons">
+            <a href="mechanics/" class="btn-sim">📁 Mechanics Lab →</a>
+            <a href="mechanics/oscillations/" class="btn-sim">📈 Oscillations</a>
+        </div>
+    </div>
+
+    <!-- WAVES & SOUND -->
+    <div class="card">
+        <div class="card-icon">🌊</div>
+        <h3>Waves & Sound</h3>
+        <p>Wave basics, sound intensity, Doppler effect, 2D/3D beats.</p>
+        <ul class="simulator-list">
+            <li><a href="../simulators/sound-intensity/">🔊 Sound Intensity</a></li>
+            <li><a href="../simulators/doppler/">📡 Doppler Effect</a></li>
+            <li><a href="../simulators/beats-2d/">〰️ Beats 2D</a></li>
+            <li><a href="../simulators/beats-3d/">🌐 Beats 3D</a></li>
+        </ul>
+        <div class="card-buttons">
+            <a href="waves/" class="btn-sim">📁 Waves Lab →</a>
+            <a href="waves/wave-phenomena/" class="btn-sim">🌀 Wave Phenomena</a>
+        </div>
+    </div>
+
+    <!-- ELECTRICITY & MAGNETISM -->
+    <div class="card">
+        <div class="card-icon">⚡</div>
+        <h3>Electricity & Magnetism</h3>
+        <p>Electrostatics, DC/AC circuits, magnetic fields and basic electronics.</p>
+        <div class="coming-soon">🚧 Simulators coming soon</div>
+        <div class="card-buttons" style="margin-top: 1rem;">
+            <a href="electricity/" class="btn-sim">🔌 Electricity Lab →</a>
+        </div>
+    </div>
+
+    <!-- OPTICS -->
+    <div class="card">
+        <div class="card-icon">🔆</div>
+        <h3>Optics</h3>
+        <p>Reflection, refraction, lenses and ray diagrams.</p>
+        <div class="coming-soon">🚧 Optics simulators in progress</div>
+        <div class="card-buttons" style="margin-top: 1rem;">
+            <a href="optics/" class="btn-sim">🔍 Optics Lab →</a>
+        </div>
+    </div>
+
+    <!-- THERMODYNAMICS -->
+    <div class="card">
+        <div class="card-icon">🔥</div>
+        <h3>Thermodynamics</h3>
+        <p>Heat transfer, ideal gas law, thermal equilibrium.</p>
+        <div class="coming-soon">🚧 Coming soon</div>
+        <div class="card-buttons" style="margin-top: 1rem;">
+            <a href="thermodynamics/" class="btn-sim">🌡️ Thermodynamics Lab →</a>
+        </div>
+    </div>
+
+    <!-- MODERN PHYSICS -->
+    <div class="card">
+        <div class="card-icon">⚛️</div>
+        <h3>Modern Physics</h3>
+        <p>Quantum mechanics, relativity, atomic models.</p>
+        <div class="coming-soon">🚧 Modern physics modules in development</div>
+        <div class="card-buttons" style="margin-top: 1rem;">
+            <a href="modern-physics/" class="btn-sim">🧪 Modern Physics →</a>
+        </div>
+    </div>
+</div>
 
 <footer>
-
-<h3>
-Eng. Medina H. A.
-</h3>
-
-<p>
-Rural STEAM Lab © 2026
-</p>
-
-<p>
-Independent Educational Simulation Platform
-</p>
-
+    <p>Rural STEAM Platform — Interactive Physics Laboratory | All simulators include STEM pedagogy, ICFES-style assessment and downloadable PDF guides.</p>
+    <p style="margin-top: 0.5rem;">✨ Designed by Rural STEAM Lab Team</p>
 </footer>
 
 </body>
