@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>Simulador Parabólico + Quiz ICFES | Física Interactiva</title>
+    <!-- jsPDF para generar PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 16px;
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            background: linear-gradient(145deg, #e0eafc 0%, #cfdef3 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+        }
+
+        /* Contenedor principal: VERTICAL (móvil) */
+        .simulador-container {
+            max-width: 550px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.92);
+            border-radius: 48px 48px 40px 40px;
+            box-shadow: 0 20px 35px rgba(0, 0, 0, 0.2), 0 2px 6px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            padding: 20px 18px 30px 18px;
+            transition: all 0.2s;
+        }
+
+        h1 {
+            font-size: 1.7rem;
+            margin: 0 0 6px 0;
+            color: #1e2b3c;
+            text-align: center;
+            font-weight: 700;
+        }
+
+        .subtitulo {
+            text-align: center;
+            font-size: 0.85rem;
+            color: #2c5a6e;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #9bb7d4;
+            display: inline-block;
+            width: auto;
+            padding-bottom: 5px;
+        }
+
+        canvas {
+            display: block;
+            margin: 0 auto 12px auto;
+            border-radius: 28px;
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            height: auto;
+        }
+
+        #main {
+            background: #1e4633;
+        }
+
+        #grafico {
+            background: #0f2125;
+        }
+
+        .botonera {
+            display: flex;
+            gap: 14px;
+            justify-content: center;
+            margin: 12px 0 20px 0;
+        }
+
+        .botonera button {
+            background: #2c3e4e;
+            border: none;
+            font-size: 1.5rem;
+            padding: 10px 20px;
+            border-radius: 60px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            transition: 0.08s linear;
+            min-width: 70px;
+        }
+
+        .botonera button:active {
+            transform: scale(0.96);
+            background: #1f2f3a;
+        }
+
+        .control-group {
+            background: #f4f9fe;
+            border-radius: 40px;
+            padding: 10px 18px;
+            margin-bottom: 18px;
+            box-shadow: inset 0 0 0 1px rgba(255,255,255,0.8), 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .control-group label {
+            font-weight: 700;
+            display: block;
+            margin-bottom: 6px;
+            font-size: 1rem;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 12px 14px;
+            font-size: 1rem;
+            border-radius: 60px;
+            border: 1px solid #bdd4e7;
+            background: white;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        /* Panel pedagógico: FONDO BLANCO con texto oscuro (como pide el usuario) */
+        .panel-pedagogico {
+            background: #ffffff;
+            border-radius: 32px;
+            padding: 16px 20px;
+            margin: 20px 0 16px 0;
+            color: #1f2a3e;
+            font-size: 0.9rem;
+            border: 1px solid #cbd5e1;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.08);
+        }
+
+        .panel-pedagogico h3 {
+            margin: 10px 0 6px 0;
+            color: #0f3b5c;
+        }
+
+        .panel-pedagogico span, .panel-pedagogico b {
+            color: #1e293b;
+        }
+
+        .btn-quiz-principal {
+            background: linear-gradient(95deg, #6a1b9a, #9c27b0);
+            border: none;
+            width: 100%;
+            padding: 16px 10px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: white;
+            border-radius: 100px;
+            cursor: pointer;
+            margin: 8px 0 8px 0;
+            box-shadow: 0 6px 0 #4a148c;
+            transition: 0.07s linear;
+        }
+
+        .btn-quiz-principal:active {
+            transform: translateY(2px);
+            box-shadow: 0 3px 0 #4a148c;
+        }
+
+        .quiz-wrapper {
+            background: #fef9e8;
+            border-radius: 32px;
+            margin-top: 20px;
+            padding: 18px 14px;
+            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.2);
+            border: 1px solid #ffdfa5;
+        }
+
+        .quiz-pregunta {
+            background: #fff6e5;
+            padding: 12px;
+            margin-bottom: 18px;
+            border-radius: 28px;
+            border-left: 10px solid #ff914d;
+        }
+
+        .quiz-pregunta p {
+            font-weight: 700;
+            margin: 0 0 8px 0;
+            font-size: 0.95rem;
+        }
+
+        .quiz-opciones label {
+            display: block;
+            margin: 8px 0;
+            font-size: 0.85rem;
+            background: #f0e5d2;
+            padding: 8px 12px;
+            border-radius: 50px;
+        }
+
+        input[type="radio"] {
+            margin-right: 12px;
+            transform: scale(1.1);
+            accent-color: #9c27b0;
+        }
+
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+            gap: 10px;
+        }
+
+        .nombre-input {
+            background: white;
+            border: 1px solid #ccb38c;
+            border-radius: 80px;
+            padding: 12px;
+            flex: 1;
+            font-size: 0.9rem;
+        }
+
+        .intentos-badge {
+            background: #2c3e50;
+            padding: 6px 16px;
+            border-radius: 60px;
+            color: white;
+            font-weight: bold;
+        }
+
+        .btn-calificar {
+            background: #2b7a4b;
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 12px;
+            border-radius: 60px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin: 12px 0;
+        }
+
+        .btn-pdf {
+            background: #d45a2b;
+            width: 100%;
+            padding: 10px;
+            border-radius: 60px;
+            font-weight: bold;
+            border: none;
+            margin-top: 8px;
+        }
+
+        .nota-final {
+            font-size: 1.4rem;
+            text-align: center;
+            font-weight: 800;
+            background: #e9c46a;
+            padding: 12px;
+            border-radius: 60px;
+            margin-top: 15px;
+        }
+
+        footer {
+            font-size: 0.7rem;
+            text-align: center;
+            color: #2d4a5c;
+            margin-top: 20px;
+        }
+
+        hr {
+            border-color: #bfa77a;
+        }
+    </style>
+</head>
+<body>
+<div class="simulador-container">
+    <h1>⚽ TIRO PARABÓLICO</h1>
+    <div style="text-align:center;"><span class="subtitulo">📐 Simulador interactivo | ICFES listo</span></div>
+
+    <!-- CANVAS PRINCIPAL -->
+    <canvas id="main" width="800" height="400" style="width:100%; height:auto;"></canvas>
+
+    <!-- botones de simulación CORREGIDOS -->
+    <div class="botonera">
+        <button id="btnPlay">▶</button>
+        <button id="btnPause">⏸</button>
+        <button id="btnReset">⟲</button>
+    </div>
+
+    <!-- controles velocidad y ángulo -->
+    <div class="control-group">
+        <label><b>🚀 Velocidad v₀ (m/s)</b></label>
+        <input id="v" type="number" value="20" step="0.5" min="0.1" max="50">
+    </div>
+    <div class="control-group">
+        <label><b>📐 Ángulo θ (°)</b></label>
+        <input id="ang" type="number" value="45" step="1" min="1" max="90">
+    </div>
+
+    <!-- GRÁFICO DE TRAYECTORIA (motor gráfico intacto) -->
+    <canvas id="grafico" width="800" height="300" style="width:100%; height:auto;"></canvas>
+
+    <!-- Panel pedagógico: fondo blanco + texto oscuro (ahora sí) -->
+    <div id="proc" class="panel-pedagogico"></div>
+
+    <!-- BOTÓN QUIZ -->
+    <button id="btnMostrarQuiz" class="btn-quiz-principal">📝 CONTESTAS EL QUIZ 📝</button>
+
+    <!-- ZONA DEL QUIZ (oculta inicialmente) -->
+    <div id="quizArea" style="display: none;">
+        <div class="quiz-wrapper" id="quizDynamicContainer"></div>
+    </div>
+    <footer>🎓 Diseñado por Eng. Medina H.A. | Simulador + Evaluación ICFES</footer>
+</div>
+
+<script>
+    // ---------- MOTOR FÍSICO Y GRÁFICO (CORREGIDO: ANIMACIÓN ESTABLE Y TRAYECTORIA) ----------
+    const canvas = document.getElementById("main");
+    const ctx = canvas.getContext("2d");
+    const gcanvas = document.getElementById("grafico");
+    const gctx = gcanvas.getContext("2d");
+    const vInput = document.getElementById("v");
+    const angInput = document.getElementById("ang");
+
+    // Variables de estado de simulación (UNIFICADAS)
+    let tiempoActual = 0;      // t en segundos
+    let animActiva = false;    // control de reproducción
+    let resultadoTexto = "";
+
+    // Constantes físicas
+    const g = 9.81;
+    const escalaX = 8;
+    const escalaY = 4;
+
+    // Referencias a botones
+    const btnPlay = document.getElementById("btnPlay");
+    const btnPause = document.getElementById("btnPause");
+    const btnReset = document.getElementById("btnReset");
+
+    // Funciones de dibujo de la cancha (ídem original)
+    function campo() {
+        let grad = ctx.createLinearGradient(0, 0, 800, 0);
+        grad.addColorStop(0, "#4CAF50");
+        grad.addColorStop(0.5, "#66bb6a");
+        grad.addColorStop(1, "#4CAF50");
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, 800, 400);
+        for (let i = 0; i < 800; i += 80) {
+            ctx.fillStyle = (i / 80) % 2 ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.06)";
+            ctx.fillRect(i, 0, 80, 400);
+        }
+        ctx.strokeStyle = "white";
+        ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.moveTo(0, 200); ctx.lineTo(800, 200); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(400, 0); ctx.lineTo(400, 400); ctx.stroke();
+        ctx.beginPath(); ctx.arc(400, 200, 60, 0, 2 * Math.PI); ctx.stroke();
+        ctx.strokeRect(660, 120, 140, 160);
+        ctx.strokeRect(730, 150, 70, 100);
+        ctx.strokeRect(760, 170, 30, 60);
+    }
+
+    function jugador(x, y) {
+        ctx.fillStyle = "black";
+        ctx.fillRect(x - 3, y - 12, 6, 12);
+        ctx.beginPath(); ctx.arc(x, y - 15, 3, 0, 2 * Math.PI); ctx.fill();
+    }
+
+    function portero(x, y) {
+        ctx.fillStyle = "#1f2937";
+        ctx.fillRect(x - 3, y - 12, 6, 12);
+        ctx.beginPath(); ctx.arc(x, y - 15, 3, 0, 2 * Math.PI); ctx.fill();
+    }
+
+    function balon(x, y, h) {
+        let s = Math.max(3, 8 - h / 20);
+        ctx.fillStyle = "rgba(0,0,0,0.25)";
+        ctx.beginPath(); ctx.ellipse(x, 200, s, s / 2, 0, 0, 2 * Math.PI); ctx.fill();
+        ctx.fillStyle = "white";
+        ctx.beginPath(); ctx.arc(x, y, 6, 0, 2 * Math.PI); ctx.fill(); ctx.stroke();
+        ctx.fillStyle = "black";
+        ctx.beginPath();
+        ctx.arc(x, y, 2, 0, 2 * Math.PI);
+        ctx.arc(x - 2, y + 1, 1, 0, 2 * Math.PI);
+        ctx.arc(x + 2, y - 1, 1, 0, 2 * Math.PI);
+        ctx.fill();
+    }
+
+    // Función que obtiene parámetros actuales y actualiza toda la simulación
+    function actualizarSimulacion() {
+        let v0 = parseFloat(vInput.value);
+        let angDeg = parseFloat(angInput.value);
+        if (isNaN(v0) || v0 <= 0) v0 = 0.1;
+        if (isNaN(angDeg)) angDeg = 45;
+        if (angDeg < 1) angDeg = 1;
+        if (angDeg > 90) angDeg = 90;
+        
+        let angRad = angDeg * Math.PI / 180;
+        let vx = v0 * Math.cos(angRad);
+        let vy = v0 * Math.sin(angRad);
+        
+        let tvuelo = (2 * vy) / g;
+        let alcance = (v0 * v0 * Math.sin(2 * angRad)) / g;
+        let alturaMax = (vy * vy) / (2 * g);
+        
+        // Evaluar resultado GOL/CORTO/LARGO
+        if (Math.abs(alcance - 100) < 0.5) resultadoTexto = '<span style="color:#22c55e; font-weight:bold;">⚽ GOL</span>';
+        else if (alcance < 100) resultadoTexto = '<span style="color:#ef4444; font-weight:bold;">❌ CORTO</span>';
+        else resultadoTexto = '<span style="color:#ef4444; font-weight:bold;">❌ LARGO</span>';
+        
+        // Avanzar tiempo si la animación está activa y el balón no ha tocado el suelo
+        if (animActiva) {
+            let y_actual = vy * tiempoActual - 0.5 * g * tiempoActual * tiempoActual;
+            if (y_actual >= 0 && tiempoActual <= tvuelo + 0.1) {
+                tiempoActual += 0.05;
+            } else {
+                // Si ya tocó suelo, detener animación automáticamente
+                animActiva = false;
+            }
+            // Evitar que supere el tiempo de vuelo
+            if (tiempoActual > tvuelo) tiempoActual = tvuelo;
+            if (tiempoActual < 0) tiempoActual = 0;
+        }
+        
+        // Coordenadas del balón en el canvas principal
+        let y_ball = vy * tiempoActual - 0.5 * g * tiempoActual * tiempoActual;
+        let x_ball = vx * tiempoActual * escalaX;
+        let y_canvas = 200 - y_ball * escalaY;
+        let alturaReal = y_ball;
+        
+        if (y_canvas > 200) {
+            y_canvas = 200;
+            if (animActiva) animActiva = false;
+        }
+        if (tiempoActual >= tvuelo && tvuelo > 0) {
+            y_canvas = 200;
+            animActiva = false;
+        }
+        
+        // Dibujar escenario principal
+        ctx.clearRect(0, 0, 800, 400);
+        campo();
+        jugador(10, 200);
+        portero(780, 200);
+        balon(x_ball, y_canvas, alturaReal);
+        
+        // Dibujar TRAYECTORIA completa desde t=0 hasta tiempoActual
+        ctx.strokeStyle = "#2563eb";
+        ctx.setLineDash([6, 4]);
+        ctx.beginPath();
+        let first = true;
+        for (let t_step = 0; t_step <= tiempoActual; t_step += 0.05) {
+            let x_t = vx * t_step * escalaX;
+            let y_t = 200 - (vy * t_step - 0.5 * g * t_step * t_step) * escalaY;
+            if (y_t > 200) y_t = 200;
+            if (first) {
+                ctx.moveTo(x_t, y_t);
+                first = false;
+            } else {
+                ctx.lineTo(x_t, y_t);
+            }
+        }
+        ctx.stroke();
+        ctx.setLineDash([]);
+        
+        // -------- GRÁFICO CINEMÁTICO (secundario) 100% original--------
+        gctx.clearRect(0, 0, 800, 300);
+        gctx.fillStyle = "black";
+        gctx.fillRect(0, 0, 800, 300);
+        gctx.fillStyle = "white";
+        gctx.font = "bold 18px Arial";
+        gctx.fillText("MODELO CINEMÁTICO", 300, 25);
+        let margen = 60, ox = margen, oy = 260;
+        let sx = (800 - margen * 2) / Math.max(alcance, 1);
+        let sy = (260 - margen * 2) / Math.max(alturaMax, 1);
+        gctx.strokeStyle = "#22c55e";
+        gctx.beginPath(); gctx.moveTo(ox, oy); gctx.lineTo(780, oy); gctx.stroke();
+        gctx.beginPath(); gctx.moveTo(ox, oy); gctx.lineTo(ox, 40); gctx.stroke();
+        gctx.strokeStyle = "#38bdf8";
+        gctx.beginPath();
+        let xm = 0, ym = 0;
+        for (let i = 0; i <= tvuelo; i += 0.05) {
+            let xr = vx * i;
+            let yr = vy * i - 0.5 * g * i * i;
+            if (yr > ym) { ym = yr; xm = xr; }
+            let xx = ox + xr * sx;
+            let yy = oy - yr * sy;
+            if (i === 0) gctx.moveTo(xx, yy);
+            else gctx.lineTo(xx, yy);
+        }
+        gctx.stroke();
+        let xp = ox + xm * sx;
+        let yp = oy - ym * sy;
+        let xr_fin = ox + alcance * sx;
+        gctx.fillStyle = "#a855f7";
+        gctx.beginPath(); gctx.arc(xp, yp, 7, 0, 2 * Math.PI); gctx.fill();
+        gctx.fillText("H=" + alturaMax.toFixed(2) + " m", xp + 10, yp - 10);
+        gctx.fillStyle = "#2563eb";
+        gctx.beginPath(); gctx.arc(xr_fin, oy, 7, 0, 2 * Math.PI); gctx.fill();
+        gctx.fillText("R=" + alcance.toFixed(2) + " m", xr_fin - 170, oy + 30);
+        gctx.fillStyle = "#ef4444";
+        gctx.fillText("t=" + tvuelo.toFixed(2) + " s", 520, 50);
+        let mag = Math.sqrt(vx * vx + vy * vy);
+        let ux = vx / mag, uy = vy / mag;
+        let L = 80;
+        let fx = ox + ux * L;
+        let fy = oy - uy * L;
+        gctx.strokeStyle = "#0ea5e9";
+        gctx.lineWidth = 3;
+        gctx.beginPath(); gctx.moveTo(ox, oy); gctx.lineTo(fx, fy); gctx.stroke();
+        let angVec = Math.atan2(-uy, ux);
+        let a = 10;
+        gctx.beginPath(); gctx.moveTo(fx, fy);
+        gctx.lineTo(fx - a * Math.cos(angVec - Math.PI / 6), fy - a * Math.sin(angVec - Math.PI / 6));
+        gctx.lineTo(fx - a * Math.cos(angVec + Math.PI / 6), fy - a * Math.sin(angVec + Math.PI / 6));
+        gctx.closePath(); gctx.fillStyle = "#0ea5e9"; gctx.fill();
+        gctx.fillStyle = "#0ea5e9"; gctx.fillText("v₀=" + v0 + " m/s", fx + 5, fy - 5);
+        gctx.strokeStyle = "#f97316";
+        gctx.beginPath(); gctx.arc(ox, oy, 40, 0, -angRad, true); gctx.stroke();
+        gctx.fillStyle = "#f97316"; gctx.fillText("θ=" + angDeg + "°", ox + 45, oy - 10);
+        
+        // ======= MOTOR PEDAGÓGICO COMPLETO (FONDO BLANCO, TEXTO OSCURO) =======
+        document.getElementById("proc").innerHTML = `
+            <h3>📌 FASE 1: DATOS</h3>
+            <span style="color:#0ea5e9;">v₀ = ${v0.toFixed(2)} m/s</span><br>
+            <span style="color:#f97316;">θ = ${angDeg}°</span><br><br>
+            <h3>📐 FASE 2: MODELO FÍSICO</h3>
+            <span style="color:#2563eb;">Vₓ = v₀ cosθ = ${vx.toFixed(2)} m/s</span><br>
+            <span style="color:#a855f7;">Vᵧ = v₀ senθ = ${vy.toFixed(2)} m/s</span><br><br>
+            <h3>🧮 FASE 3: DESARROLLO MATEMÁTICO</h3>
+            <span style="color:#ef4444;">t = (2·Vᵧ)/g = ${tvuelo.toFixed(2)} s</span><br>
+            <span style="color:#a855f7;">H = (Vᵧ²)/(2g) = ${alturaMax.toFixed(2)} m</span><br>
+            <span style="color:#2563eb;">R = (v₀²·sen(2θ))/g = ${alcance.toFixed(2)} m</span><br><br>
+            <h3>📊 FASE 4: RESULTADOS</h3>
+            <b style="color:#2563eb;">Alcance = ${alcance.toFixed(2)} m</b><br>
+            <b style="color:#a855f7;">Altura = ${alturaMax.toFixed(2)} m</b><br>
+            <b style="color:#ef4444;">Tiempo = ${tvuelo.toFixed(2)} s</b><br><br>
+            <h3>🧠 FASE 5: INTERPRETACIÓN</h3>
+            <b>${resultadoTexto}</b><br>
+            <span>El movimiento depende del ángulo y la velocidad inicial.</span><br>
+            <span>El alcance máximo ocurre cerca de 45°.</span><br>
+            <hr><p style="font-size:12px; color:#4b5563;">Diseñado por Eng. Medina H.A.</p>
+        `;
+    }
+    
+    // Función de animación continua
+    function bucleAnimacion() {
+        actualizarSimulacion();
+        requestAnimationFrame(bucleAnimacion);
+    }
+    
+    // Controladores de botones: funcionamiento CORREGIDO
+    btnPlay.addEventListener("click", () => {
+        let v0 = parseFloat(vInput.value);
+        let angDeg = parseFloat(angInput.value);
+        let angRad = angDeg * Math.PI / 180;
+        let vy = v0 * Math.sin(angRad);
+        let tvuelo = (2 * vy) / g;
+        // Si el tiempo actual ya alcanzó el tiempo de vuelo, reiniciamos automáticamente para que vuele de nuevo
+        if (tiempoActual >= tvuelo - 0.01 && tvuelo > 0) {
+            tiempoActual = 0;
+        }
+        animActiva = true;
+    });
+    
+    btnPause.addEventListener("click", () => {
+        animActiva = false;
+    });
+    
+    btnReset.addEventListener("click", () => {
+        animActiva = false;
+        tiempoActual = 0;
+        resultadoTexto = "";
+        actualizarSimulacion(); // refresca inmediatamente
+    });
+    
+    // Cuando el usuario cambie inputs, reiniciamos la posición (para evitar inconsistencias)
+    vInput.addEventListener("input", () => {
+        animActiva = false;
+        tiempoActual = 0;
+        actualizarSimulacion();
+    });
+    angInput.addEventListener("input", () => {
+        animActiva = false;
+        tiempoActual = 0;
+        actualizarSimulacion();
+    });
+    
+    // Iniciar el bucle
+    bucleAnimacion();
+    
+    // ---------- QUIZ: 15 PREGUNTAS TIPO ICFES (mov parabólico + simulador) ----------
+    const preguntasBanco = [
+        { texto: "¿Qué ángulo (aproximadamente) produce el máximo alcance horizontal en tiro parabólico (sin aire)?", opciones: ["30°", "45°", "60°", "90°"], correcta: 1 },
+        { texto: "En el simulador, si aumentas la velocidad inicial y mantienes el ángulo, el alcance:", opciones: ["Disminuye", "No cambia", "Aumenta", "Solo cambia la altura"], correcta: 2 },
+        { texto: "La componente horizontal de la velocidad en el movimiento parabólico (sin fricción):", opciones: ["Aumenta con el tiempo", "Disminuye", "Se mantiene constante", "Depende de la masa"], correcta: 2 },
+        { texto: "Según el simulador, ¿qué sucede si el ángulo es 90°?", opciones: ["Alcance máximo", "Altura máxima y alcance cero", "Movimiento rectilíneo", "Trayectoria circular"], correcta: 1 },
+        { texto: "La fórmula del tiempo de vuelo (tv) es:", opciones: ["2v₀ senθ / g", "v₀² senθ / g", "2v₀ cosθ / g", "v₀ senθ / (2g)"], correcta: 0 },
+        { texto: "En el canvas principal, ¿qué representa la línea punteada azul?", opciones: ["La trayectoria teórica", "El viento", "La altura máxima", "El ángulo de lanzamiento"], correcta: 0 },
+        { texto: "Si la velocidad inicial es 20 m/s y ángulo 45°, el alcance aproximado en el simulador es cercano a:", opciones: ["20 m", "30 m", "40 m", "50 m"], correcta: 2 },
+        { texto: "¿Cuál variable NO afecta el alcance en condiciones ideales?", opciones: ["Velocidad inicial", "Ángulo", "Gravedad", "Masa del proyectil"], correcta: 3 },
+        { texto: "En la gráfica cinemática del simulador, ¿qué representa el punto morado?", opciones: ["Alcance máximo", "Altura máxima", "Tiempo de vuelo", "Velocidad resultante"], correcta: 1 },
+        { texto: "Si el ángulo es menor a 45°, al aumentarlo el alcance:", opciones: ["Siempre disminuye", "Aumenta hasta 45°", "Disminuye hasta 45°", "Nunca cambia"], correcta: 1 },
+        { texto: "En el simulador, ¿para qué sirve el botón ⟲?", opciones: ["Pausar", "Reiniciar simulación", "Aumentar velocidad", "Cambiar ángulo"], correcta: 1 },
+        { texto: "¿Qué magnitud se calcula con (v₀²·sen(2θ))/g ?", opciones: ["Altura máxima", "Tiempo de vuelo", "Alcance horizontal", "Velocidad final"], correcta: 2 },
+        { texto: "En el panel pedagógico, ¿qué información NO aparece?", opciones: ["Vectores Vx y Vy", "Altura máxima", "Masa del objeto", "Interpretación de resultado"], correcta: 2 },
+        { texto: "Si se duplica la velocidad inicial, el alcance (en condiciones ideales) se:", opciones: ["Duplica", "Cuadruplica", "Mantiene igual", "Se reduce a la mitad"], correcta: 1 },
+        { texto: "¿Cuál es el propósito del gráfico de la derecha (modelo cinemático)?", opciones: ["Mostrar estadísticas", "Visualizar la parábola y vectores", "Controlar el tiempo", "Cambiar la gravedad"], correcta: 1 }
+    ];
+    
+    let intentosRestantes = 3;
+    let ultimaNota = null;
+    let alumnoNombre = "";
+    let quizActivo = false;
+    
+    function generarQuizDinamico() {
+        let html = `<div class="quiz-header">
+                        <input type="text" id="nombreAlumnoQuiz" class="nombre-input" placeholder="Nombre completo del alumno" autocomplete="off">
+                        <div class="intentos-badge">🎯 Intentos restantes: ${intentosRestantes}</div>
+                    </div>`;
+        for (let i = 0; i < preguntasBanco.length; i++) {
+            const p = preguntasBanco[i];
+            html += `<div class="quiz-pregunta">
+                        <p><strong>Pregunta ${i+1}:</strong> ${p.texto}</p>
+                        <div class="quiz-opciones">`;
+            for (let j = 0; j < p.opciones.length; j++) {
+                html += `<label>
+                            <input type="radio" name="q${i}" value="${j}">
+                            ${String.fromCharCode(65+j)}. ${p.opciones[j]}
+                         </label>`;
+            }
+            html += `</div></div>`;
+        }
+        html += `<button id="btnCalificarQuiz" class="btn-calificar">✅ CALIFICAR (${intentosRestantes} intentos restantes)</button>`;
+        html += `<div id="resultadoNota"></div>`;
+        if (ultimaNota !== null) {
+            html += `<div class="nota-final">Última nota: ${ultimaNota}/5.0</div>`;
+        }
+        html += `<button id="btnDescargarPDF" class="btn-pdf" style="background:#aa2e1e;">📄 DESCARGAR PDF (Nombre + Nota)</button>`;
+        return html;
+    }
+    
+    function actualizarQuizUI() {
+        const container = document.getElementById("quizDynamicContainer");
+        if (container) container.innerHTML = generarQuizDinamico();
+        const calificarBtn = document.getElementById("btnCalificarQuiz");
+        if (calificarBtn) calificarBtn.addEventListener("click", evaluarQuiz);
+        const pdfBtn = document.getElementById("btnDescargarPDF");
+        if (pdfBtn) pdfBtn.addEventListener("click", generarPDF);
+    }
+    
+    function evaluarQuiz() {
+        if (intentosRestantes <= 0) {
+            document.getElementById("resultadoNota").innerHTML = `<div style="background:#c44536; padding:12px; border-radius:40px;">❌ Ya no tienes más intentos. Última nota: ${ultimaNota}/5. Descarga PDF.</div>`;
+            return;
+        }
+        const nombreInput = document.getElementById("nombreAlumnoQuiz");
+        if (!nombreInput || !nombreInput.value.trim()) {
+            alert("Por favor ingresa el nombre del alumno para calificar.");
+            return;
+        }
+        alumnoNombre = nombreInput.value.trim();
+        let aciertos = 0;
+        for (let i = 0; i < preguntasBanco.length; i++) {
+            const radios = document.getElementsByName(`q${i}`);
+            let seleccionado = null;
+            for (let r of radios) if (r.checked) { seleccionado = parseInt(r.value); break; }
+            if (seleccionado !== null && seleccionado === preguntasBanco[i].correcta) aciertos++;
+        }
+        let nota = (aciertos / preguntasBanco.length) * 5;
+        nota = Math.round(nota * 10) / 10;
+        ultimaNota = nota;
+        intentosRestantes--;
+        const resultadoDiv = document.getElementById("resultadoNota");
+        resultadoDiv.innerHTML = `<div class="nota-final">🎓 NOTA: ${nota} / 5.0 (Aciertos: ${aciertos}/${preguntasBanco.length})<br>💡 Intentos restantes: ${intentosRestantes}</div>`;
+        if (intentosRestantes === 0) {
+            resultadoDiv.innerHTML += `<div style="background:#cf7500; border-radius:40px; padding:8px; margin-top:8px;">⚠️ Sin intentos, ya no puedes volver a calificar. Descarga tu PDF.</div>`;
+            const btnCal = document.getElementById("btnCalificarQuiz");
+            if (btnCal) btnCal.disabled = true;
+        }
+        actualizarQuizUI();
+    }
+    
+    function generarPDF() {
+        if (!alumnoNombre && document.getElementById("nombreAlumnoQuiz") && document.getElementById("nombreAlumnoQuiz").value) {
+            alumnoNombre = document.getElementById("nombreAlumnoQuiz").value.trim();
+        }
+        if (!alumnoNombre) {
+            alert("Ingresa el nombre del alumno antes de generar el PDF.");
+            return;
+        }
+        if (ultimaNota === null) {
+            alert("Aún no has calificado el quiz. Realiza al menos una calificación para obtener tu nota.");
+            return;
+        }
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        doc.setFont("helvetica");
+        doc.setFontSize(18);
+        doc.text("Certificado de Evaluación - Movimiento Parabólico", 20, 20);
+        doc.setFontSize(12);
+        doc.text(`Nombre del estudiante: ${alumnoNombre}`, 20, 45);
+        doc.text(`Calificación obtenida: ${ultimaNota} / 5.0`, 20, 60);
+        doc.text(`Intentos disponibles restantes: ${intentosRestantes}`, 20, 75);
+        doc.text(`Fecha: ${new Date().toLocaleDateString()}`, 20, 90);
+        doc.text("Evaluación tipo ICFES (15 preguntas - Simulador/Física)", 20, 110);
+        doc.setFontSize(10);
+        doc.text("Simulador de tiro parabólico - Diseño interactivo", 20, 140);
+        doc.save(`quiz_parabolico_${alumnoNombre.replace(/\s/g, '_')}.pdf`);
+    }
+    
+    // Mostrar/ocultar quiz
+    const btnMostrar = document.getElementById("btnMostrarQuiz");
+    const quizArea = document.getElementById("quizArea");
+    btnMostrar.addEventListener("click", () => {
+        if (quizArea.style.display === "none") {
+            quizArea.style.display = "block";
+            if (!quizActivo) {
+                actualizarQuizUI();
+                quizActivo = true;
+            } else {
+                actualizarQuizUI();
+            }
+            btnMostrar.textContent = "✖ CERRAR QUIZ ✖";
+        } else {
+            quizArea.style.display = "none";
+            btnMostrar.textContent = "📝 CONTESTAS EL QUIZ 📝";
+        }
+    });
+    quizArea.style.display = "none";
+</script>
+</body>
+</html>
