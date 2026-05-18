@@ -25,7 +25,7 @@ body{
 }
 
 /* =========================
-MENU SUPERIOR MEJORADO
+MENU SUPERIOR
 ========================= */
 
 nav{
@@ -72,7 +72,7 @@ nav{
 }
 
 /* =========================
-HEADER CON IMAGEN DE FONDO (restaurada)
+HEADER CON IMAGEN
 ========================= */
 
 header{
@@ -150,7 +150,7 @@ CARDS MODERNAS
 }
 
 /* =========================
-BOTONES MEJORADOS
+BOTONES
 ========================= */
 
 button{
@@ -173,8 +173,46 @@ button:hover{
     box-shadow:0 8px 18px rgba(0,0,0,0.3);
 }
 
+/* Botones pequeños dentro de tarjetas (para juegos) */
+.card-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 15px;
+}
+
+.btn-game {
+    background: #2563eb;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 40px;
+    font-weight: 600;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: 0.2s;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn-game.download {
+    background: #16a34a;
+}
+
+.btn-game.guide {
+    background: #7c3aed;
+}
+
+.btn-game:hover {
+    filter: brightness(1.1);
+    transform: scale(0.97);
+}
+
 /* =========================
-FOOTER MEJORADO
+FOOTER
 ========================= */
 
 footer{
@@ -228,7 +266,7 @@ RESPONSIVE
 <body>
 
 <!-- =========================
-MENU SUPERIOR (con Química incluida)
+MENU SUPERIOR
 ========================= -->
 
 <nav>
@@ -248,7 +286,7 @@ MENU SUPERIOR (con Química incluida)
 </nav>
 
 <!-- =========================
-HEADER CON IMAGEN RESTAURADA
+HEADER
 ========================= -->
 
 <header>
@@ -264,45 +302,88 @@ Interactive STEM simulations for Mathematics, Physics, Chemistry and rural educa
 </header>
 
 <!-- =========================
-CARDS (con Química)
+CARDS
 ========================= -->
 
 <section class="container">
 
+<!-- Student Zone -->
 <div class="card">
 <h2>🎓 Student Zone</h2>
 <p>Interactive simulations, virtual laboratories, quizzes and STEM learning activities.</p>
 <button onclick="window.location.href='student-zone/'">Open Student Zone</button>
 </div>
 
+<!-- Teacher Zone -->
 <div class="card">
 <h2>🧑‍🏫 Teacher Zone</h2>
 <p>Educational tools for grading, analytics, pedagogical reports and classroom support.</p>
 <button onclick="window.location.href='teacher-zone/'">Open Teacher Zone</button>
 </div>
 
+<!-- Primary Mathematics (Juegos de aritmética) -->
 <div class="card">
 <h2>🧮 Primary Mathematics</h2>
 <p>Interactive mathematical activities, basic arithmetic and educational tools for elementary school students.</p>
-<button onclick="window.location.href='primary/'">Open Primary Math</button>
+<div style="margin-top: 15px;">
+    <button onclick="window.location.href='primary/'">Open Primary Math</button>
+</div>
+<!-- Tarjetas internas de juegos (4) -->
+<div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:15px; margin-top:20px;">
+    <div style="background:#0f172a; border-radius:1.5rem; padding:12px;">
+        <strong>🎲 Sumas y Restas</strong>
+        <div class="card-buttons">
+            <a href="#" class="btn-game" onclick="alert('Próximamente: simulador de sumas y restas')">🎮 Jugar</a>
+            <a href="../downloads/sumas-restas.zip" class="btn-game download" download>📥 HTML</a>
+            <a href="../guides/sumas-restas-guide.pdf" class="btn-game guide" download>📘 Guía</a>
+        </div>
+    </div>
+    <div style="background:#0f172a; border-radius:1.5rem; padding:12px;">
+        <strong>✖️ Tablas de Multiplicar</strong>
+        <div class="card-buttons">
+            <a href="#" class="btn-game" onclick="alert('Próximamente: juego de tablas de multiplicar')">🎮 Jugar</a>
+            <a href="../downloads/tablas.zip" class="btn-game download" download>📥 HTML</a>
+            <a href="../guides/tablas-guide.pdf" class="btn-game guide" download>📘 Guía</a>
+        </div>
+    </div>
+    <div style="background:#0f172a; border-radius:1.5rem; padding:12px;">
+        <strong>📏 Recta Numérica</strong>
+        <div class="card-buttons">
+            <a href="https://phet.colorado.edu/es/simulations/number-line-operations" target="_blank" class="btn-game">🎮 Jugar</a>
+            <a href="../downloads/recta-numerica.zip" class="btn-game download" download>📥 HTML</a>
+            <a href="../guides/recta-numerica-guide.pdf" class="btn-game guide" download>📘 Guía</a>
+        </div>
+    </div>
+    <div style="background:#0f172a; border-radius:1.5rem; padding:12px;">
+        <strong>🧩 Fracciones Visuales</strong>
+        <div class="card-buttons">
+            <a href="#" class="btn-game" onclick="alert('Próximamente: simulador de fracciones')">🎮 Jugar</a>
+            <a href="../downloads/fracciones.zip" class="btn-game download" download>📥 HTML</a>
+            <a href="../guides/fracciones-guide.pdf" class="btn-game guide" download>📘 Guía</a>
+        </div>
+    </div>
+</div>
 </div>
 
+<!-- Physics Laboratory -->
 <div class="card">
 <h2>⚙️ Physics Laboratory</h2>
 <p>Dynamics, waves, Newton laws, pulleys, Doppler effect, sound and pendulums.</p>
 <button onclick="window.location.href='physics/'">Open Physics</button>
 </div>
 
+<!-- Chemistry Laboratory -->
 <div class="card">
 <h2>🧪 Chemistry Laboratory</h2>
 <p>Atomic models, chemical reactions, periodic table, molecular simulations and lab experiments.</p>
 <button onclick="window.location.href='chemistry/'">Open Chemistry</button>
 </div>
 
+<!-- Mathematics Laboratory -->
 <div class="card">
 <h2>📐 Mathematics Laboratory</h2>
 <p>Algebra, geometry, statistics, limits and interactive mathematical models.</p>
-<button onclick="window.location.href='mathematics/limits/index.html'">Open Mathematics</button>
+<button onclick="window.location.href='mathematics/'">Open Mathematics</button>
 </div>
 
 </section>
