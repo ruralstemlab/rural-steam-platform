@@ -2,289 +2,360 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Teacher Zone | Rural STEAM Lab</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analítica Educativa | Calificador Pedagógico RSL</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: 'Inter', sans-serif;
-            background: #0f172a;
-            color: #f1f5f9;
-            line-height: 1.5;
-            overflow-x: hidden;
+            font-family: 'Segoe UI', 'Inter', system-ui, sans-serif;
+            background: linear-gradient(135deg, #e0e7ff 0%, #f1f5f9 100%);
+            padding: 24px;
         }
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
+        .contenedor {
+            max-width: 1400px;
+            margin: 0 auto;
         }
-        @keyframes gradientShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-        @keyframes subtleZoom {
-            0% { background-position: 50% 50%; background-size: 110%; }
-            50% { background-position: 49% 51%; background-size: 115%; }
-            100% { background-position: 50% 50%; background-size: 110%; }
-        }
-        .topbar {
-            background: #020617;
-            padding: 1rem 2rem;
-            display: flex;
-            align-items: center;
-            gap: 1.5rem;
-            flex-wrap: wrap;
-            border-bottom: 1px solid #1e293b;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        .back-btn {
-            background: #2563eb;
-            color: white;
-            padding: 0.6rem 1.2rem;
-            border-radius: 40px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            transition: 0.2s;
-        }
-        .back-btn:hover { background: #3b82f6; transform: scale(0.98); }
-        .title-area h1 {
-            font-size: 1.7rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #c084fc, #60a5fa);
-            background-clip: text;
-            -webkit-background-clip: text;
-            color: transparent;
-        }
-        .title-area p { font-size: 0.9rem; color: #94a3b8; }
-
-        /* Banner con imagen y animación de zoom */
-        .hero {
+        .encabezado {
             text-align: center;
-            padding: 120px 20px;
-            background: url('../assets/profe-banner.png') no-repeat center center;
-            background-size: cover;
-            animation: subtleZoom 25s ease-in-out infinite;
-            position: relative;
+            margin-bottom: 28px;
         }
-        .hero h2 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #ffffff, #facc15);
+        .encabezado h1 {
+            font-size: 2rem;
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
             background-clip: text;
             -webkit-background-clip: text;
             color: transparent;
-            text-shadow: 2px 2px 10px rgba(0,0,0,0.6);
-            display: inline-block;
-            margin-bottom: 0.5rem;
         }
-        .hero p {
-            font-size: 1.2rem;
-            max-width: 700px;
-            margin: 0 auto;
-            color: #ffffff;
-            font-weight: 500;
-            text-shadow: 1px 1px 6px rgba(0,0,0,0.8);
-        }
-
-        .container {
-            max-width: 1300px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
-        .cards-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            margin-bottom: 3rem;
-        }
-        .card {
-            background: linear-gradient(145deg, #1e293b, #172132);
-            border-radius: 1.8rem;
-            padding: 2rem;
-            transition: all 0.3s ease;
-            border: 1px solid #334155;
+        .encabezado p { color: #334155; font-weight: 500; }
+        .grid {
             display: flex;
-            flex-direction: column;
-            animation: fadeInUp 0.5s ease-out backwards;
-            position: relative;
-            overflow: hidden;
+            flex-wrap: wrap;
+            gap: 24px;
         }
-        .card:hover {
-            transform: translateY(-8px);
-            border-color: #38bdf8;
-            box-shadow: 0 20px 30px -12px rgba(0,0,0,0.5);
-        }
-        .card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(56,189,248,0.1), transparent);
-            transition: left 0.5s;
-            pointer-events: none;
-        }
-        .card:hover::before { left: 100%; }
-        .card-icon {
-            font-size: 3rem;
-            background: #0f172a;
-            width: 80px;
-            height: 80px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 1.5rem;
-            margin-bottom: 1rem;
-            border: 1px solid #334155;
-        }
-        .card h3 {
-            font-size: 1.8rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            color: #38bdf8;
-        }
-        .card p {
-            color: #94a3b8;
-            font-size: 0.9rem;
-            margin-bottom: 1.5rem;
-            flex-grow: 1;
-        }
-        .btn-card {
-            background: #2563eb;
-            color: white;
-            border: none;
-            padding: 0.7rem 1.2rem;
-            border-radius: 40px;
-            font-weight: 600;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            transition: 0.2s;
-            width: fit-content;
-        }
-        .btn-card:hover { background: #3b82f6; transform: scale(0.98); }
-        .btn-card.disabled {
-            background: #475569;
-            cursor: not-allowed;
-            opacity: 0.6;
-            pointer-events: none;
-        }
-
-        .recursos-section {
-            background: #1e293b;
-            border-radius: 1.8rem;
+        .panel {
+            background: rgba(255,255,255,0.95);
+            border-radius: 32px;
             padding: 1.8rem;
-            margin-top: 1rem;
-            border: 1px solid #334155;
+            box-shadow: 0 20px 35px -10px rgba(0,0,0,0.15);
+            border: 1px solid rgba(255,255,255,0.5);
         }
-        .recursos-section h3 {
-            color: #facc15;
-            margin-bottom: 1rem;
-            font-size: 1.5rem;
+        .panel-izquierdo { flex: 2; }
+        .panel-derecho { flex: 1; }
+        label {
+            font-weight: 600;
+            color: #1e293b;
+            display: block;
+            margin: 16px 0 8px 0;
         }
-        .recursos-links {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
+        textarea {
+            width: 100%;
+            border-radius: 20px;
+            border: 1px solid #cbd5e1;
+            padding: 12px 16px;
+            font-family: monospace;
+            font-size: 0.85rem;
+            background: #f8fafc;
+            resize: vertical;
         }
-        .btn-rec {
-            background: #0f172a;
-            color: white;
-            padding: 0.5rem 1rem;
+        textarea:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,0.2); }
+        button {
+            padding: 10px 18px;
             border-radius: 40px;
-            text-decoration: none;
-            font-size: 0.8rem;
-            transition: 0.2s;
-            border: 1px solid #334155;
+            font-weight: 600;
+            font-size: 0.85rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-right: 8px;
+            margin-bottom: 8px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #f1f5f9;
+            color: #1e293b;
         }
-        .btn-rec:hover { background: #2563eb; border-color: #38bdf8; }
-        footer {
-            text-align: center;
-            padding: 2rem;
-            border-top: 1px solid #1e293b;
-            margin-top: 2rem;
-            font-size: 0.8rem;
-            color: #64748b;
-        }
-        @media (max-width: 700px) {
-            .container { padding: 1rem; }
-            .hero h2 { font-size: 1.6rem; }
-            .hero p { font-size: 1rem; }
-            .hero { padding: 80px 20px; }
-            .card h3 { font-size: 1.4rem; }
-        }
+        button:hover { transform: translateY(-2px); filter: brightness(0.96); }
+        .btn-calcular { background: #10b981; color: white; box-shadow: 0 4px 8px rgba(16,185,129,0.3); }
+        .btn-calcular:hover { background: #059669; transform: scale(1.02); }
+        .btn-excel { background: #2563eb; color: white; }
+        .btn-pdf { background: #dc2626; color: white; }
+        .btn-cargar { background: #f59e0b; color: white; }
+        .btn-reiniciar { background: #64748b; color: white; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; border-radius: 20px; overflow: hidden; }
+        th, td { padding: 10px 8px; text-align: center; border-bottom: 1px solid #e2e8f0; }
+        th { background: #1e3a8a; color: white; }
+        tr:hover { background: #f8fafc; }
+        .superior { background: #e6f4ea; color: #1e8e3e; font-weight: 600; }
+        .alto { background: #fff8e1; color: #b88900; font-weight: 600; }
+        .basico { background: #fff3e0; color: #d35400; font-weight: 600; }
+        .bajo { background: #fdecea; color: #c62828; font-weight: 600; }
+        .estadisticas { background: #f1f5f9; border-radius: 24px; padding: 16px; margin: 16px 0; }
+        canvas { max-height: 200px; margin: 16px 0; }
+        #interpretacion { background: #fef9e3; border-left: 4px solid #facc15; padding: 12px; border-radius: 16px; font-size: 0.8rem; white-space: pre-line; margin: 16px 0; }
+        #analisisItems { max-height: 250px; overflow-y: auto; background: #ffffffcc; border-radius: 20px; padding: 12px; }
+        .item-analisis { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px dashed #cbd5e1; }
+        footer { text-align: center; margin-top: 40px; font-size: 0.75rem; color: #475569; border-top: 1px solid #cbd5e1; padding-top: 20px; }
+        @media (max-width: 800px) { .grid { flex-direction: column; } .panel { padding: 1.2rem; } }
     </style>
 </head>
 <body>
-
-<div class="topbar">
-    <a href="../index.html" class="back-btn">⬅ Inicio</a>
-    <div class="title-area">
-        <h1>🧑‍🏫 Teacher Zone</h1>
-        <p>Herramientas para capacitación, evaluación automática y analítica educativa</p>
+<div class="contenedor">
+    <div class="encabezado">
+        <h1>📊 ANALÍTICA EDUCATIVA - RSL</h1>
+        <p>Calificador pedagógico · Carga de clave y respuestas desde Excel</p>
     </div>
+    <div class="grid">
+        <div class="panel panel-izquierdo">
+            <label>📌 Clave de respuestas correctas:</label>
+            <textarea id="clave" placeholder="Ejemplo: A B C D A B C ... (horizontal o vertical)"></textarea>
+            <input type="file" id="archivoClave" accept=".xlsx, .xls, .csv" style="display:none">
+            <button class="btn-cargar" onclick="document.getElementById('archivoClave').click()">📂 Cargar clave desde Excel</button>
+
+            <label>📋 Datos de estudiantes (nombre + respuestas):</label>
+            <textarea id="tablaInput" placeholder="Ejemplo:
+Juan Pérez A B C D A B
+María López B C D A B C"></textarea>
+            <input type="file" id="archivoRespuestas" accept=".xlsx, .xls, .csv" style="display:none">
+            <button class="btn-cargar" onclick="document.getElementById('archivoRespuestas').click()">📂 Cargar respuestas desde Excel</button>
+
+            <div style="margin-top: 12px;">
+                <button class="btn-calcular" onclick="calcular()">✅ Calcular resultados</button>
+                <button class="btn-excel" onclick="exportarExcel()">📊 Exportar Excel</button>
+                <button class="btn-pdf" onclick="exportarPDF()">📄 Exportar PDF</button>
+                <button class="btn-reiniciar" onclick="location.reload()">🔄 Nuevo</button>
+            </div>
+
+            <div style="overflow-x: auto;">
+                <table id="tablaResultados">
+                    <thead><tr><th>#</th><th>Nombre</th><th>Aciertos</th><th>Nota (0-5)</th><th>Nivel</th></tr></thead>
+                    <tbody id="tabla"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="panel panel-derecho">
+            <div class="estadisticas">
+                <h3>📈 Resumen estadístico</h3>
+                <table style="width:100%">
+                    <tr><td>📊 Promedio</td><td id="promedio">-</td></tr>
+                    <tr><td>🏆 Mejor nota</td><td id="mejor">-</td></tr>
+                    <tr><td>⚠️ Peor nota</td><td id="peor">-</td></tr>
+                    <tr><td>👥 Total estudiantes</td><td id="total">-</td></tr>
+                </table>
+            </div>
+            <canvas id="grafico"></canvas>
+            <h3>🧠 Interpretación pedagógica</h3>
+            <div id="interpretacion"></div>
+            <h3>📌 Análisis por ítems</h3>
+            <div id="analisisItems"></div>
+        </div>
+    </div>
+    <footer>🔷 Calificador Pedagógico RSL | Diseñado por Eng. Medina H. A.</footer>
 </div>
 
-<section class="hero">
-    <h2>📊 Potencia tu labor docente</h2>
-    <p>Capacitación, sistema OMR y analítica de aprendizaje en un solo lugar.</p>
-</section>
+<script>
+    let chart;
+    window.estadisticasItems = [];
 
-<div class="container">
-    <div class="cards-grid">
-        <div class="card">
-            <div class="card-icon">📖</div>
-            <h3>Capacitación Docente</h3>
-            <p>Módulo de formación para el uso de simuladores, evaluaciones automáticas y metodologías STEM en el aula rural.</p>
-            <a href="#" class="btn-card disabled">🚧 Próximamente</a>
-        </div>
+    function esValida(r) { return ["A","B","C","D"].includes(r.toUpperCase()); }
+    function parseClave(text) {
+        if (text.includes("\n")) return text.split("\n").map(x=>x.trim()).filter(x=>x!="");
+        return text.trim().split(/\s+|\t|,/).filter(x=>x!="");
+    }
+    function parseLinea(linea) {
+        if (linea.includes("\t")) return linea.split("\t");
+        let partes = linea.trim().split(/\s+/);
+        let idx = partes.findIndex(p => esValida(p));
+        if (idx === -1) return [];
+        let nombre = partes.slice(0, idx).join(" ");
+        let resp = partes.slice(idx);
+        return [nombre, ...resp];
+    }
 
-        <div class="card">
-            <div class="card-icon">📄</div>
-            <h3>Sistema OMR</h3>
-            <p>Lectura automática de hojas de respuesta con cámara o escáner. Calificación instantánea y exportación de resultados.</p>
-            <a href="./OMR/" class="btn-card">📸 Ir al Lector OMR</a>
-        </div>
+    document.getElementById('archivoClave').onchange = (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+            const data = new Uint8Array(evt.target.result);
+            const workbook = XLSX.read(data, { type: 'array' });
+            const sheet = workbook.Sheets[workbook.SheetNames[0]];
+            const rows = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: "" });
+            let respuestas = [];
+            for (let r = 0; r < rows.length; r++) {
+                let row = rows[r];
+                if (row && row.length > 0) {
+                    let posibles = row.filter(cell => cell && /^[A-D]$/i.test(cell.toString().trim()));
+                    if (posibles.length >= 3) {
+                        respuestas = row.map(cell => cell ? cell.toString().trim().toUpperCase() : "").filter(c => c !== "");
+                        break;
+                    }
+                }
+            }
+            if (respuestas.length === 0) {
+                for (let r = 0; r < rows.length; r++) {
+                    let cell = rows[r] && rows[r][0];
+                    if (cell && /^[A-D]$/i.test(cell.toString().trim())) {
+                        respuestas.push(cell.toString().trim().toUpperCase());
+                    }
+                }
+            }
+            if (respuestas.length === 0) { alert("No se encontraron respuestas válidas en el archivo."); return; }
+            document.getElementById("clave").value = respuestas.join(" ");
+            alert(`✅ Clave cargada (${respuestas.length} respuestas).`);
+        };
+        reader.readAsArrayBuffer(file);
+    };
 
-        <div class="card">
-            <div class="card-icon">📊</div>
-            <h3>Analítica Educativa</h3>
-            <p>Visualización de datos de aprendizaje, reportes por competencias, seguimiento de grupo y recomendaciones pedagógicas.</p>
-            <a href="./analytics/" class="btn-card">📈 Ingresar a Analítica</a>
-        </div>
-    </div>
+    document.getElementById('archivoRespuestas').onchange = (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+            const data = new Uint8Array(evt.target.result);
+            const workbook = XLSX.read(data, { type: 'array' });
+            const sheet = workbook.Sheets[workbook.SheetNames[0]];
+            const rows = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: "" });
+            if (!rows.length) { alert("El archivo está vacío."); return; }
+            let lineas = [];
+            for (let i = 0; i < rows.length; i++) {
+                let row = rows[i];
+                if (!row || row.length === 0) continue;
+                let nombre = row[0] ? row[0].toString().trim() : "Estudiante";
+                let respuestas = row.slice(1).map(c => c ? c.toString().trim().toUpperCase() : "").filter(c => c !== "");
+                if (respuestas.length > 0) {
+                    lineas.push(nombre + " " + respuestas.join(" "));
+                }
+            }
+            if (lineas.length === 0) { alert("No se encontraron datos de estudiantes."); return; }
+            document.getElementById("tablaInput").value = lineas.join("\n");
+            alert(`✅ Cargadas ${lineas.length} líneas de estudiantes.`);
+        };
+        reader.readAsArrayBuffer(file);
+    };
 
-    <div class="recursos-section">
-        <h3>📥 Recursos para docentes</h3>
-        <div class="recursos-links">
-            <a href="../simulators/tablas-selva/tablas-guide.pdf" class="btn-rec" download>📘 Guía - Tablas de la Selva</a>
-            <a href="../simulators/sumas-magicas/sumas-guide.pdf" class="btn-rec" download>📘 Guía - Sumas Mágicas</a>
-            <a href="../simulators/restas-marinas/restas-guide.pdf" class="btn-rec" download>📘 Guía - Restas Marinas</a>
-            <a href="../simulators/simple-pendulum/simple-pendulum-guide.pdf" class="btn-rec" download>📘 Guía - Péndulo Simple</a>
-            <a href="../simulators/sound-intensity/sound-intensity-guide.pdf" class="btn-rec" download>📘 Guía - Intensidad Sonora</a>
-        </div>
-        <div class="recursos-links" style="margin-top: 1rem;">
-            <a href="../simulators/tablas-selva/tablas-selva.html" class="btn-rec">🎮 Tablas de la Selva (App)</a>
-            <a href="../simulators/sumas-magicas/sumas-magicas.html" class="btn-rec">🧮 Sumas Mágicas (App)</a>
-            <a href="../simulators/restas-marinas/restas-marinas.html" class="btn-rec">🐠 Restas Marinas (App)</a>
-        </div>
-    </div>
-</div>
+    function calcular() {
+        let claveRaw = document.getElementById("clave").value.trim();
+        if (!claveRaw) { alert("Ingresa o carga la clave."); return; }
+        let clave = parseClave(claveRaw);
+        for (let c of clave) if (!esValida(c)) { alert("Clave inválida."); return; }
 
-<footer>
-    <p>Rural STEAM Lab — Teacher Zone | Capacitación, OMR y Analítica</p>
-    <p>✨ Diseñado por: ENG. MEDINA H. A. ✨</p>
-</footer>
+        let lineas = document.getElementById("tablaInput").value.trim().split("\n");
+        let estudiantes = [];
+        let conteo = { SUPERIOR:0, ALTO:0, BASICO:0, BAJO:0 };
+        window.estadisticasItems = [];
 
+        for (let linea of lineas) {
+            let d = parseLinea(linea);
+            if (d.length < 2) continue;
+            let nombre = d[0];
+            let resp = d.slice(1);
+            let total = Math.min(clave.length, resp.length);
+            if (total === 0) continue;
+            let aciertos = 0;
+            for (let i=0; i<total; i++) {
+                if (!window.estadisticasItems[i]) window.estadisticasItems[i] = { correctas:0, total:0 };
+                if (!resp[i] || !esValida(resp[i])) continue;
+                window.estadisticasItems[i].total++;
+                if (clave[i].toUpperCase() === resp[i].toUpperCase()) {
+                    aciertos++;
+                    window.estadisticasItems[i].correctas++;
+                }
+            }
+            let nota = (aciertos / total) * 5;
+            let nivel = nota >= 4 ? "SUPERIOR" : (nota >= 3.5 ? "ALTO" : (nota >= 3 ? "BASICO" : "BAJO"));
+            let clase = nivel.toLowerCase();
+            conteo[nivel]++;
+            estudiantes.push({ nombre, aciertos, total, nota, nivel, clase });
+        }
+        if (estudiantes.length === 0) { alert("No hay datos de estudiantes."); return; }
+
+        estudiantes.sort((a,b)=>b.nota - a.nota);
+        const tabla = document.getElementById("tabla");
+        tabla.innerHTML = "";
+        estudiantes.forEach((e,i) => {
+            tabla.innerHTML += `<tr class="${e.clase}"><td>${i+1}</td><td>${e.nombre}</td><td>${e.aciertos}/${e.total}</td><td>${e.nota.toFixed(2)}</td><td>${e.nivel}</td></tr>`;
+        });
+
+        let notas = estudiantes.map(e=>e.nota);
+        let prom = notas.reduce((a,b)=>a+b,0)/notas.length;
+        document.getElementById("promedio").innerText = prom.toFixed(2);
+        document.getElementById("mejor").innerText = Math.max(...notas).toFixed(2);
+        document.getElementById("peor").innerText = Math.min(...notas).toFixed(2);
+        document.getElementById("total").innerText = notas.length;
+
+        let totalEst = estudiantes.length;
+        let pBajo = (conteo.BAJO/totalEst)*100;
+        let pBasico = (conteo.BASICO/totalEst)*100;
+        let pAlto = (conteo.ALTO/totalEst)*100;
+        let pSuperior = (conteo.SUPERIOR/totalEst)*100;
+        let texto = `🧠 ANÁLISIS PEDAGÓGICO\n\nPromedio: ${prom.toFixed(2)}\nDistribución:\nSuperior: ${pSuperior.toFixed(1)}%\nAlto: ${pAlto.toFixed(1)}%\nBásico: ${pBasico.toFixed(1)}%\nBajo: ${pBajo.toFixed(1)}%\n\n`;
+        if (pBajo >= 40) texto += "⚠️ Grupo en nivel crítico. Intervención urgente.\n";
+        else if (pBajo+pBasico >= 60) texto += "📌 Grupo en riesgo académico. Refuerzo necesario.\n";
+        else if (pAlto+pSuperior >= 60) texto += "🌟 Grupo con desempeño adecuado. Mantener estrategias.\n";
+        if (prom < 3) texto += "📉 Promedio bajo. Reforzar contenidos fundamentales.\n";
+        else if (prom < 4) texto += "📈 Proceso en consolidación.\n";
+        else texto += "🎉 Buen desempeño general.\n";
+        texto += "\n🔍 Recomendación: reforzar preguntas con menor % de acierto.";
+        document.getElementById("interpretacion").innerHTML = texto.replace(/\n/g,'<br>');
+
+        if (chart) chart.destroy();
+        chart = new Chart(document.getElementById("grafico"), {
+            type: "pie",
+            data: { labels: ["Superior","Alto","Básico","Bajo"], datasets: [{ data: [conteo.SUPERIOR, conteo.ALTO, conteo.BASICO, conteo.BAJO], backgroundColor: ["#10b981","#facc15","#f97316","#ef4444"] }] },
+            options: { responsive: true, plugins: { legend: { position: 'bottom' }, datalabels: { color: "#1e293b", font: { weight: "bold" }, formatter: (v,ctx) => { let total = ctx.chart.data.datasets[0].data.reduce((a,b)=>a+b,0); return total ? ((v/total)*100).toFixed(0)+"%" : ""; } } } },
+            plugins: [ChartDataLabels]
+        });
+
+        let cont = document.getElementById("analisisItems");
+        cont.innerHTML = "";
+        window.estadisticasItems.forEach((it,i) => {
+            let p = it.total ? (it.correctas/it.total) : 0;
+            let nivel = p >= 0.8 ? "Fácil" : (p >= 0.5 ? "Media" : "Difícil");
+            let color = p >= 0.8 ? "#10b981" : (p >= 0.5 ? "#f59e0b" : "#ef4444");
+            cont.innerHTML += `<div class="item-analisis"><span>Pregunta ${i+1}</span><span>${(p*100).toFixed(1)}%</span><span style="color:${color}">${nivel}</span></div>`;
+        });
+    }
+
+    function exportarExcel() {
+        let data = [["Ranking","Nombre","Aciertos","Nota","Nivel"]];
+        document.querySelectorAll("#tabla tr").forEach(tr => {
+            let f = []; tr.querySelectorAll("td").forEach(td => f.push(td.innerText));
+            if (f.length) data.push(f);
+        });
+        let wb = XLSX.utils.book_new();
+        let ws = XLSX.utils.aoa_to_sheet(data);
+        XLSX.utils.book_append_sheet(wb, ws, "Resultados_RSL");
+        XLSX.writeFile(wb, `Reporte_RSL_${new Date().toISOString().slice(0,19)}.xlsx`);
+    }
+
+    function exportarPDF() {
+        const { jsPDF } = window.jspdf;
+        let doc = new jsPDF();
+        doc.setFontSize(16);
+        doc.text("CALIFICADOR PEDAGÓGICO RSL", 10, 15);
+        doc.setFontSize(10);
+        doc.text(`Promedio: ${document.getElementById("promedio").innerText}`, 10, 25);
+        let rows = [];
+        document.querySelectorAll("#tabla tr").forEach(tr => {
+            let f = []; tr.querySelectorAll("td").forEach(td => f.push(td.innerText));
+            if (f.length) rows.push(f);
+        });
+        doc.autoTable({ head: [["#","Nombre","Aciertos","Nota","Nivel"]], body: rows, startY: 35, styles: { fontSize: 8 } });
+        let y = doc.lastAutoTable.finalY || 60;
+        let img = document.getElementById("grafico").toDataURL("image/png");
+        doc.addImage(img, "PNG", 10, y+10, 80, 80);
+        let interpretacion = document.getElementById("interpretacion").innerText.replace(/<br>/g, "\n");
+        doc.setFontSize(8);
+        doc.text(interpretacion, 100, y+15, { maxWidth: 90 });
+        doc.text("Design by Eng. Medina H. A. - Rural STEAM Lab", 70, doc.internal.pageSize.height - 10);
+        doc.save(`Reporte_RSL_${Date.now()}.pdf`);
+    }
+</script>
 </body>
 </html>
