@@ -6,54 +6,313 @@
     <title>Primaria | Juegos Matemáticos</title>
     <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Comic Neue', cursive; background: #f9eec1; color: #2d3748; line-height: 1.5; }
-        .topbar { background: #ffb347; padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; border-bottom: 5px solid #ff8c00; }
-        .back-btn { background: #fff0d4; color: #d45a00; padding: 0.6rem 1.2rem; border-radius: 60px; font-weight: bold; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; border: 2px solid #ff8c00; }
-        .back-btn:hover { background: #ffe0b5; transform: scale(0.97); }
-        .title-area h1 { font-size: 1.8rem; background: linear-gradient(135deg, #ff8c00, #ffd966); background-clip: text; -webkit-background-clip: text; color: transparent; }
-        .title-area p { font-size: 0.9rem; color: #fff0d4; font-weight: bold; }
-        .hero { background: linear-gradient(135deg, #ffd966, #ffb347); text-align: center; padding: 2rem; border-radius: 0 0 50px 50px; margin-bottom: 2rem; }
-        .hero h2 { font-size: 2.5rem; color: #2d3748; text-shadow: 3px 3px 0 #fff0b5; }
-        .hero p { font-size: 1.2rem; color: #2d3748; max-width: 600px; margin: 0.5rem auto 0; }
-        .container { max-width: 1300px; margin: 0 auto; padding: 1rem 2rem 2rem; display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 2rem; }
-        .game-card { background: #ffffffdd; backdrop-filter: blur(4px); border-radius: 40px; padding: 1.5rem; transition: transform 0.2s; border: 3px solid #ffb347; box-shadow: 0 12px 20px rgba(0,0,0,0.1); display: flex; flex-direction: column; }
-        .game-card:hover { transform: translateY(-8px); background: white; border-color: #ff8c00; }
-        .game-icon { font-size: 4rem; background: #ffe0b5; width: 90px; height: 90px; display: flex; align-items: center; justify-content: center; border-radius: 50%; margin-bottom: 1rem; border: 3px solid #ffb347; }
-        .game-card h3 { font-size: 1.8rem; color: #d45a00; margin-bottom: 0.5rem; }
-        .game-card p { color: #4a5568; font-size: 0.95rem; margin-bottom: 1rem; flex-grow: 1; }
-        .button-group { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 0.5rem; }
-        .btn-game { background: #ffb347; color: #2d3748; border: none; padding: 0.5rem 1rem; border-radius: 60px; font-weight: bold; font-size: 0.75rem; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 5px; font-family: 'Comic Neue', cursive; }
-        .btn-game.download { background: #4caf50; color: white; }
-        .btn-game.guide { background: #9c27b0; color: white; }
-        .external-section { background: #fff7e6; border-radius: 50px; margin: 2rem 2rem 1rem; padding: 1.5rem; border: 2px dashed #ffb347; }
-        .external-section h3 { font-size: 1.8rem; color: #d45a00; text-align: center; margin-bottom: 1rem; }
-        .external-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; }
-        .external-card { background: white; border-radius: 30px; padding: 1rem; text-align: center; border: 2px solid #ffb347; transition: 0.2s; }
-        .external-card:hover { background: #ffe0b5; }
-        .external-card a { text-decoration: none; font-weight: bold; color: #d45a00; display: block; margin-top: 8px; }
-        footer { text-align: center; padding: 2rem; background: #ffb347; margin-top: 2rem; color: #2d3748; font-weight: bold; border-radius: 40px 40px 0 0; }
-        @media (max-width: 700px) { .container { padding: 1rem; } .hero h2 { font-size: 1.8rem; } }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Comic Neue', cursive;
+            background: #f9eec1;
+            color: #2d3748;
+            line-height: 1.5;
+        }
+
+        .topbar {
+            background: #ffb347;
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+            border-bottom: 5px solid #ff8c00;
+        }
+
+        .back-btn {
+            background: #fff0d4;
+            color: #d45a00;
+            padding: 0.6rem 1.2rem;
+            border-radius: 60px;
+            font-weight: bold;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: 2px solid #ff8c00;
+        }
+
+        .back-btn:hover {
+            background: #ffe0b5;
+            transform: scale(0.97);
+        }
+
+        .title-area h1 {
+            font-size: 1.8rem;
+            background: linear-gradient(135deg, #ff8c00, #ffd966);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        .title-area p {
+            font-size: 0.9rem;
+            color: #fff0d4;
+            font-weight: bold;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #ffd966, #ffb347);
+            text-align: center;
+            padding: 2rem;
+            border-radius: 0 0 50px 50px;
+            margin-bottom: 2rem;
+        }
+
+        .hero h2 {
+            font-size: 2.5rem;
+            color: #2d3748;
+            text-shadow: 3px 3px 0 #fff0b5;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: #2d3748;
+            max-width: 600px;
+            margin: 0.5rem auto 0;
+        }
+
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 1rem 2rem 2rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .game-card {
+            background: #ffffffdd;
+            backdrop-filter: blur(4px);
+            border-radius: 40px;
+            padding: 1.5rem;
+            transition: transform 0.2s;
+            border: 3px solid #ffb347;
+            box-shadow: 0 12px 20px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .game-card:hover {
+            transform: translateY(-8px);
+            background: white;
+            border-color: #ff8c00;
+        }
+
+        .game-icon {
+            font-size: 4rem;
+            background: #ffe0b5;
+            width: 90px;
+            height: 90px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            margin-bottom: 1rem;
+            border: 3px solid #ffb347;
+        }
+
+        .game-card h3 {
+            font-size: 1.8rem;
+            color: #d45a00;
+            margin-bottom: 0.5rem;
+        }
+
+        .game-card p {
+            color: #4a5568;
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+            flex-grow: 1;
+        }
+
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+            margin-top: 0.5rem;
+        }
+
+        .btn-game {
+            background: #ffb347;
+            color: #2d3748;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 60px;
+            font-weight: bold;
+            font-size: 0.75rem;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-family: 'Comic Neue', cursive;
+        }
+
+        .btn-game.download {
+            background: #4caf50;
+            color: white;
+        }
+
+        .btn-game.guide {
+            background: #9c27b0;
+            color: white;
+        }
+
+        .external-section {
+            background: #fff7e6;
+            border-radius: 50px;
+            margin: 2rem 2rem 1rem;
+            padding: 1.5rem;
+            border: 2px dashed #ffb347;
+        }
+
+        .external-section h3 {
+            font-size: 1.8rem;
+            color: #d45a00;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .external-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1rem;
+        }
+
+        .external-card {
+            background: white;
+            border-radius: 30px;
+            padding: 1rem;
+            text-align: center;
+            border: 2px solid #ffb347;
+            transition: 0.2s;
+        }
+
+        .external-card:hover {
+            background: #ffe0b5;
+        }
+
+        .external-card a {
+            text-decoration: none;
+            font-weight: bold;
+            color: #d45a00;
+            display: block;
+            margin-top: 8px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            background: #ffb347;
+            margin-top: 2rem;
+            color: #2d3748;
+            font-weight: bold;
+            border-radius: 40px 40px 0 0;
+        }
+
+        @media (max-width: 700px) {
+            .container {
+                padding: 1rem;
+            }
+            .hero h2 {
+                font-size: 1.8rem;
+            }
+        }
     </style>
 </head>
 <body>
 <div class="topbar">
     <a href="../index.html" class="back-btn">⬅ Volver al Inicio</a>
-    <div class="title-area"><h1>🎈 Zona de Juegos</h1><p>¡Aprende matemáticas jugando!</p></div>
+    <div class="title-area">
+        <h1>🎈 Zona de Juegos</h1>
+        <p>¡Aprende matemáticas jugando!</p>
+    </div>
 </div>
-<section class="hero"><h2>🧸 ¡Bienvenidos a la aventura matemática! 🧸</h2><p>Sumas, restas, tablas, rectas numéricas y muchos juegos divertidos.</p></section>
+<section class="hero">
+    <h2>🧸 ¡Bienvenidos a la aventura matemática! 🧸</h2>
+    <p>Sumas, restas, tablas, rectas numéricas y muchos juegos divertidos.</p>
+</section>
 <div class="container">
-    <div class="game-card"><div class="game-icon">➕</div><h3>Sumas Mágicas</h3><p>Aprende a sumar con animales, frutas y mucha diversión.</p><div class="button-group"><a href="#" class="btn-game">🎮 Abrir</a><a href="#" class="btn-game download">📥 HTML</a><a href="#" class="btn-game guide">📘 Guía</a></div></div>
-    <div class="game-card"><div class="game-icon">➖</div><h3>Restas Divertidas</h3><p>Resta jugando con globos, estrellas y personajes.</p><div class="button-group"><a href="#" class="btn-game">🎮 Abrir</a><a href="#" class="btn-game download">📥 HTML</a><a href="#" class="btn-game guide">📘 Guía</a></div></div>
-    <div class="game-card"><div class="game-icon">✖️</div><h3>Tablas de Multiplicar</h3><p>Practica las tablas del 1 al 10 con preguntas y respuestas.</p><div class="button-group"><a href="#" class="btn-game">🎮 Abrir</a><a href="#" class="btn-game download">📥 HTML</a><a href="#" class="btn-game guide">📘 Guía</a></div></div>
-    <div class="game-card"><div class="game-icon">📏</div><h3>Recta Numérica</h3><p>Desliza el punto y aprende a sumar y restar en la recta numérica.</p><div class="button-group"><a href="#" class="btn-game">🎮 Abrir</a><a href="#" class="btn-game download">📥 HTML</a><a href="#" class="btn-game guide">📘 Guía</a></div></div>
+    <div class="game-card">
+        <div class="game-icon">➕</div>
+        <h3>Sumas Mágicas</h3>
+        <p>Aprende a sumar con animales, frutas y mucha diversión.</p>
+        <div class="button-group">
+            <a href="#" class="btn-game">🎮 Abrir</a>
+            <a href="#" class="btn-game download">📥 HTML</a>
+            <a href="#" class="btn-game guide">📘 Guía</a>
+        </div>
+    </div>
+    <div class="game-card">
+        <div class="game-icon">➖</div>
+        <h3>Restas Divertidas</h3>
+        <p>Resta jugando con globos, estrellas y personajes.</p>
+        <div class="button-group">
+            <a href="#" class="btn-game">🎮 Abrir</a>
+            <a href="#" class="btn-game download">📥 HTML</a>
+            <a href="#" class="btn-game guide">📘 Guía</a>
+        </div>
+    </div>
+    <div class="game-card">
+        <div class="game-icon">✖️</div>
+        <h3>Tablas de Multiplicar</h3>
+        <p>Practica las tablas del 1 al 10 con preguntas y respuestas.</p>
+        <div class="button-group">
+            <a href="#" class="btn-game">🎮 Abrir</a>
+            <a href="#" class="btn-game download">📥 HTML</a>
+            <a href="#" class="btn-game guide">📘 Guía</a>
+        </div>
+    </div>
+    <div class="game-card">
+        <div class="game-icon">📏</div>
+        <h3>Recta Numérica</h3>
+        <p>Desliza el punto y aprende a sumar y restar en la recta numérica.</p>
+        <div class="button-group">
+            <a href="#" class="btn-game">🎮 Abrir</a>
+            <a href="#" class="btn-game download">📥 HTML</a>
+            <a href="#" class="btn-game guide">📘 Guía</a>
+        </div>
+    </div>
 </div>
-<div class="external-section"><h3>🌐 Más juegos online recomendados</h3><div class="external-grid">
-    <div class="external-card"><span style="font-size: 2rem;">📏</span><a href="https://phet.colorado.edu/es/simulations/number-line-operations" target="_blank">PhET: Recta numérica</a><p style="font-size:0.7rem;">Sumas y restas interactivas</p></div>
-    <div class="external-card"><span style="font-size: 2rem;">🎲</span><a href="https://toytheater.com/category/math/" target="_blank">Toy Theater</a><p style="font-size:0.7rem;">Muchos juegos de matemáticas</p></div>
-    <div class="external-card"><span style="font-size: 2rem;">🕹️</span><a href="https://www.mathplayground.com/" target="_blank">Math Playground</a><p style="font-size:0.7rem;">Lógica y operaciones</p></div>
-    <div class="external-card"><span style="font-size: 2rem;">🧩</span><a href="https://www.geogebra.org/math/primary" target="_blank">GeoGebra Primaria</a><p style="font-size:0.7rem;">Geometría y números</p></div>
-</div></div>
-<footer><p>🎈 Rural STEAM Lab — Juegos matemáticos para primaria</p><p>✨ Diseñado con 💛 para niños y niñas ✨</p></footer>
+<div class="external-section">
+    <h3>🌐 Más juegos online recomendados</h3>
+    <div class="external-grid">
+        <div class="external-card">
+            <span style="font-size: 2rem;">📏</span>
+            <a href="https://phet.colorado.edu/es/simulations/number-line-operations" target="_blank">PhET: Recta numérica</a>
+            <p style="font-size:0.7rem;">Sumas y restas interactivas</p>
+        </div>
+        <div class="external-card">
+            <span style="font-size: 2rem;">🎲</span>
+            <a href="https://toytheater.com/category/math/" target="_blank">Toy Theater</a>
+            <p style="font-size:0.7rem;">Muchos juegos de matemáticas</p>
+        </div>
+        <div class="external-card">
+            <span style="font-size: 2rem;">🕹️</span>
+            <a href="https://www.mathplayground.com/" target="_blank">Math Playground</a>
+            <p style="font-size:0.7rem;">Lógica y operaciones</p>
+        </div>
+        <div class="external-card">
+            <span style="font-size: 2rem;">🧩</span>
+            <a href="https://www.geogebra.org/math/primary" target="_blank">GeoGebra Primaria</a>
+            <p style="font-size:0.7rem;">Geometría y números</p>
+        </div>
+    </div>
+</div>
+<footer>
+    <p>🎈 Rural STEAM Lab — Juegos matemáticos para primaria</p>
+    <p>✨ Diseñado con 💛 para niños y niñas ✨</p>
+</footer>
 </body>
 </html>
