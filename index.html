@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>Rural STEAM Lab</title>
-    <!-- MathJax para fórmulas -->
+    <!-- MathJax para fórmulas (opcional) -->
     <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" id="MathJax-script" async></script>
     <style>
         * {
@@ -33,11 +33,11 @@
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
         }
-        /* Animación más rápida y notoria para la imagen de fondo */
-        @keyframes fastZoom {
-            0% { background-position: 50% 50%; background-size: 115%; }
-            50% { background-position: 45% 55%; background-size: 125%; }
-            100% { background-position: 50% 50%; background-size: 115%; }
+        /* Movimiento más sutil (menos zoom y desplazamiento, más lento) */
+        @keyframes subtleZoom {
+            0% { background-position: 50% 50%; background-size: 105%; }
+            50% { background-position: 49% 51%; background-size: 108%; }
+            100% { background-position: 50% 50%; background-size: 105%; }
         }
 
         /* Menu superior */
@@ -91,17 +91,16 @@
             transform: translateY(-2px);
         }
 
-        /* Header con imagen SIN GRADIENTE OSCURO */
+        /* Header con imagen SIN GRADIENTE, sin fondo en el texto */
         header {
             padding: 130px 20px;
             background: url('assets/stem-banner-full.png');
-            background-size: 115%;
+            background-size: 105%;
             background-position: 50% 50%;
             background-repeat: no-repeat;
-            animation: fastZoom 15s ease-in-out infinite;
+            animation: subtleZoom 25s ease-in-out infinite;
             position: relative;
         }
-        /* Texto con sombra y fondo suave para legibilidad */
         h1 {
             font-size: 4rem;
             margin-bottom: 20px;
@@ -109,27 +108,19 @@
             background-clip: text;
             -webkit-background-clip: text;
             color: transparent;
-            text-shadow: 2px 2px 8px rgba(0,0,0,0.5);
+            text-shadow: 2px 2px 10px rgba(0,0,0,0.6);
             animation: gradientShift 6s ease infinite;
             background-size: 200% 200%;
             display: inline-block;
-            padding: 0 15px;
-            border-radius: 20px;
         }
         header p {
             font-size: 1.3rem;
             max-width: 800px;
             margin: auto;
             color: #ffffff;
-            font-weight: 600;
-            text-shadow: 1px 1px 4px rgba(0,0,0,0.7);
-            background: rgba(0,0,0,0.3);
-            display: inline-block;
-            padding: 8px 20px;
-            border-radius: 50px;
-            backdrop-filter: blur(2px);
-            position: relative;
-            z-index: 2;
+            font-weight: 500;
+            text-shadow: 1px 1px 6px rgba(0,0,0,0.8);
+            /* Sin fondo, sin blur */
         }
 
         /* Tarjetas en grid horizontal para escritorio (6 columnas) */
