@@ -64,10 +64,13 @@
         }
         .title-area p { font-size: 0.9rem; color: #94a3b8; }
 
+        /* Banner mejorado con gradiente animado (sin dependencia de imágenes) */
         .hero {
             text-align: center;
             padding: 120px 20px;
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 40%, #312e81 100%);
+            background-size: 200% 200%;
+            animation: gradientShift 10s ease infinite;
             position: relative;
         }
         .hero h2 {
@@ -78,8 +81,6 @@
             -webkit-background-clip: text;
             color: transparent;
             text-shadow: 2px 2px 10px rgba(0,0,0,0.6);
-            animation: gradientShift 6s ease infinite;
-            background-size: 200% 200%;
             display: inline-block;
             margin-bottom: 0.5rem;
         }
@@ -227,7 +228,6 @@
 <body>
 
 <div class="topbar">
-    <!-- Ruta al inicio de la plataforma (sube un nivel, asumiendo que teacher-zone está dentro de la raíz) -->
     <a href="../index.html" class="back-btn">⬅ Inicio</a>
     <div class="title-area">
         <h1>🧑‍🏫 Teacher Zone</h1>
@@ -242,7 +242,6 @@
 
 <div class="container">
     <div class="cards-grid">
-        <!-- Tarjeta Capacitación (todavía en desarrollo) -->
         <div class="card">
             <div class="card-icon">📖</div>
             <h3>Capacitación Docente</h3>
@@ -250,7 +249,6 @@
             <a href="#" class="btn-card disabled">🚧 Próximamente</a>
         </div>
 
-        <!-- Tarjeta Sistema OMR (apunta a la carpeta OMR dentro de teacher-zone) -->
         <div class="card">
             <div class="card-icon">📄</div>
             <h3>Sistema OMR</h3>
@@ -258,7 +256,6 @@
             <a href="./OMR/" class="btn-card">📸 Ir al Lector OMR</a>
         </div>
 
-        <!-- Tarjeta Analítica Educativa (apunta a la carpeta analytics dentro de teacher-zone) -->
         <div class="card">
             <div class="card-icon">📊</div>
             <h3>Analítica Educativa</h3>
@@ -267,7 +264,6 @@
         </div>
     </div>
 
-    <!-- Recursos para docentes (rutas relativas a la raíz, asumiendo que los simuladores están en ../simulators) -->
     <div class="recursos-section">
         <h3>📥 Recursos para docentes</h3>
         <div class="recursos-links">
