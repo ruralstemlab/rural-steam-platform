@@ -22,11 +22,6 @@
             100% { transform: translateY(0px); }
         }
 
-        @keyframes bounce {
-            0%, 100% { transform: translateX(0); }
-            50% { transform: translateX(8px); }
-        }
-
         @keyframes fadeInUp {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
@@ -217,6 +212,13 @@
             transform: scale(0.96);
         }
 
+        /* Estilo para botones deshabilitados temporalmente */
+        .btn-game.disabled {
+            opacity: 0.5;
+            pointer-events: none;
+            background: #cbd5e1;
+        }
+
         .external-section {
             background: #fff7e6;
             border-radius: 60px;
@@ -295,56 +297,56 @@
 </section>
 
 <div class="container">
-    <!-- Sumas Mágicas -->
+    <!-- ========== SU MAS MÁGICAS ========= -->
     <div class="game-card">
         <div class="game-icon">🐮 ➕</div>
         <h3>Sumas Mágicas</h3>
         <p>Aprende a sumar con la vaca Lola, el pato Lucas y muchos animales más.</p>
         <div class="button-group">
-            <a href="#" class="btn-game">🎮 Jugar</a>
-            <a href="#" class="btn-game download">📥 Descargar App</a>
-            <a href="#" class="btn-game guide">📝 Tarea</a>
+            <a href="../simulators/sumas-magicas/" class="btn-game">🎮 Jugar</a>
+            <a href="../simulators/sumas-magicas/sumas-magicas.html" class="btn-game download" download>📥 Descargar Juego</a>
+            <a href="../simulators/sumas-magicas/sumas-guide.pdf" class="btn-game guide" download>📝 Tarea</a>
         </div>
     </div>
 
-    <!-- Restas Divertidas -->
+    <!-- ========== RESTAS MARINAS ========= -->
     <div class="game-card">
-        <div class="game-icon">🐔 ➖</div>
-        <h3>Restas Divertidas</h3>
-        <p>Resta jugando con la gallina Clara y los pollitos traviesos.</p>
+        <div class="game-icon">🐟 ➖</div>
+        <h3>Restas Marinas</h3>
+        <p>Resta jugando con peces, pulpos y tortugas. ¡Aventura en el océano!</p>
         <div class="button-group">
-            <a href="#" class="btn-game">🎮 Jugar</a>
-            <a href="#" class="btn-game download">📥 Descargar App</a>
-            <a href="#" class="btn-game guide">📝 Tarea</a>
+            <a href="../simulators/restas-marinas/" class="btn-game">🎮 Jugar</a>
+            <a href="../simulators/restas-marinas/restas-marinas.html" class="btn-game download" download>📥 Descargar Juego</a>
+            <a href="../simulators/restas-marinas/restas-guide.pdf" class="btn-game guide" download>📝 Tarea</a>
         </div>
     </div>
 
-    <!-- Tablas de Multiplicar -->
+    <!-- ========== TABLAS DE MULTIPLICAR (SELVA) - PRÓXIMAMENTE ========= -->
     <div class="game-card">
-        <div class="game-icon">🐷 ✖️</div>
-        <h3>Tablas de Multiplicar</h3>
-        <p>Practica las tablas con el cerdito Pancho y sus amigos.</p>
+        <div class="game-icon">🦁 ✖️</div>
+        <h3>Tablas de la Selva</h3>
+        <p>Multiplica con el león, el mono y la cebra. ¡Próximamente!</p>
         <div class="button-group">
-            <a href="#" class="btn-game">🎮 Jugar</a>
-            <a href="#" class="btn-game download">📥 Descargar App</a>
-            <a href="#" class="btn-game guide">📝 Tarea</a>
+            <a href="#" class="btn-game disabled">🎮 Próximamente</a>
+            <a href="#" class="btn-game download disabled">📥 Descargar Juego</a>
+            <a href="#" class="btn-game guide disabled">📝 Tarea</a>
         </div>
     </div>
 
-    <!-- Recta Numérica -->
+    <!-- ========== RECTA POLAR (PINGÜINOS Y OSOS) - PRÓXIMAMENTE ========= -->
     <div class="game-card">
-        <div class="game-icon">🐑 📏</div>
-        <h3>Recta Numérica</h3>
-        <p>Desliza la oveja en la recta y aprende a sumar y restar.</p>
+        <div class="game-icon">🐧 📏</div>
+        <h3>Recta Polar</h3>
+        <p>Desliza pingüinos y osos polares en la recta numérica. ¡Próximamente!</p>
         <div class="button-group">
-            <a href="#" class="btn-game">🎮 Jugar</a>
-            <a href="#" class="btn-game download">📥 Descargar App</a>
-            <a href="#" class="btn-game guide">📝 Tarea</a>
+            <a href="#" class="btn-game disabled">🎮 Próximamente</a>
+            <a href="#" class="btn-game download disabled">📥 Descargar Juego</a>
+            <a href="#" class="btn-game guide disabled">📝 Tarea</a>
         </div>
     </div>
 </div>
 
-<!-- Recursos externos -->
+<!-- ========== RECURSOS EXTERNOS ========= -->
 <div class="external-section">
     <h3>🌐 Más juegos online recomendados</h3>
     <div class="external-grid">
@@ -373,7 +375,7 @@
 
 <footer>
     <p>🐄 Rural STEAM Lab — Granja Matemática 🐓</p>
-    <p>✨ Diseñado por Medina H. A, con 💛 para niños y niñas ✨</p>
+    <p>✨ Diseñado por Medina H. A con 💛 para niños y niñas ✨</p>
 </footer>
 
 </body>
