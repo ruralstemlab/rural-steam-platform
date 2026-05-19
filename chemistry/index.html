@@ -64,11 +64,11 @@
         }
         .title-area p { font-size: 0.9rem; color: #94a3b8; }
 
-        /* Header con imagen animada */
+        /* Header con imagen animada (ruta con C mayúscula) */
         .hero {
             text-align: center;
             padding: 100px 20px;
-            background: url('assets/chemistry-banner.png');
+            background: url('../assets/Chemistry-banner.png');
             background-size: 105%;
             background-position: 50% 50%;
             background-repeat: no-repeat;
@@ -97,7 +97,6 @@
             text-shadow: 1px 1px 6px rgba(0,0,0,0.8);
         }
 
-        /* Contenedor de tarjetas */
         .container {
             max-width: 1300px;
             margin: 0 auto;
@@ -177,13 +176,7 @@
         }
         .btn-sim.download { background: #16a34a; }
         .btn-sim.guide { background: #7c3aed; }
-        .btn-sim.disabled {
-            background: #475569;
-            cursor: not-allowed;
-            opacity: 0.6;
-            pointer-events: none;
-        }
-        .btn-sim:hover:not(.disabled) { filter: brightness(1.1); transform: scale(0.97); }
+        .btn-sim:hover { filter: brightness(1.1); transform: scale(0.97); }
         .coming-badge {
             background: #334155;
             border-radius: 2rem;
@@ -215,97 +208,91 @@
     <a href="../index.html" class="back-btn">⬅ Inicio</a>
     <div class="title-area">
         <h1>🧪 Chemistry Laboratory</h1>
-        <p>Interactive simulations for chemical education — Rural STEAM Platform</p>
+        <p>Interactive simulations for atomic structure, chemical reactions, stoichiometry and more — Rural STEAM Platform</p>
     </div>
 </div>
 
 <section class="hero">
-    <h2>⚗️ Explore Chemistry Through Simulation</h2>
+    <h2>🔬 Explore Chemistry Through Simulation</h2>
     <p>Virtual labs for atomic structure, chemical reactions, stoichiometry, and more. All simulators are under development and will be available soon.</p>
 </section>
 
 <div class="container">
-    <!-- ========== TABLA PERIÓDICA ========== -->
-    <div class="card">
-        <div class="card-icon">🧪</div>
-        <h3>Tabla Periódica</h3>
-        <p>Explora elementos, propiedades y tendencias periódicas.</p>
-        <div class="button-group">
-            <span class="btn-sim disabled">🚧 Próximamente</span>
-            <span class="btn-sim download disabled">📥 Descargar App</span>
-            <span class="btn-sim guide disabled">📘 Guía PDF</span>
-        </div>
-        <div class="coming-badge">🚧 En desarrollo</div>
-    </div>
-
-    <!-- ========== MODELOS ATÓMICOS ========== -->
+    <!-- Atomic Models -->
     <div class="card">
         <div class="card-icon">⚛️</div>
-        <h3>Modelos Atómicos</h3>
-        <p>Bohr, mecánica cuántica y estructura del átomo.</p>
+        <h3>Atomic Models</h3>
+        <p>Bohr, quantum model and atomic structure simulations.</p>
         <div class="button-group">
-            <span class="btn-sim disabled">🚧 Próximamente</span>
-            <span class="btn-sim download disabled">📥 Descargar App</span>
-            <span class="btn-sim guide disabled">📘 Guía PDF</span>
+            <a href="../simulators/atomic-models/" class="btn-sim">🎮 Abrir</a>
+            <a href="../simulators/atomic-models/atomic-models.html" class="btn-sim download" download>📥 Descargar App</a>
+            <a href="../simulators/atomic-models/atomic-guide.pdf" class="btn-sim guide" download>📘 Guía PDF</a>
         </div>
-        <div class="coming-badge">🚧 En desarrollo</div>
     </div>
 
-    <!-- ========== ENLACES QUÍMICOS ========== -->
+    <!-- Periodic Table -->
     <div class="card">
-        <div class="card-icon">🔗</div>
-        <h3>Enlaces Químicos</h3>
-        <p>Enlace iónico, covalente y metálico.</p>
+        <div class="card-icon">🧪</div>
+        <h3>Periodic Table</h3>
+        <p>Interactive periodic table with properties and trends.</p>
         <div class="button-group">
-            <span class="btn-sim disabled">🚧 Próximamente</span>
-            <span class="btn-sim download disabled">📥 Descargar App</span>
-            <span class="btn-sim guide disabled">📘 Guía PDF</span>
+            <a href="../simulators/periodic-table/" class="btn-sim">🎮 Abrir</a>
+            <a href="../simulators/periodic-table/periodic-table.html" class="btn-sim download" download>📥 Descargar App</a>
+            <a href="../simulators/periodic-table/periodic-guide.pdf" class="btn-sim guide" download>📘 Guía PDF</a>
         </div>
-        <div class="coming-badge">🚧 En desarrollo</div>
     </div>
 
-    <!-- ========== REACCIONES Y ESTEQUIOMETRÍA ========== -->
+    <!-- Chemical Bonding -->
+    <div class="card">
+        <div class="card-icon">🧪</div>
+        <h3>Chemical Bonding</h3>
+        <p>Ionic, covalent and metallic bonding simulations.</p>
+        <div class="button-group">
+            <a href="../simulators/chemical-bonding/" class="btn-sim">🎮 Abrir</a>
+            <a href="../simulators/chemical-bonding/chemical-bonding.html" class="btn-sim download" download>📥 Descargar App</a>
+            <a href="../simulators/chemical-bonding/bonding-guide.pdf" class="btn-sim guide" download>📘 Guía PDF</a>
+        </div>
+    </div>
+
+    <!-- Stoichiometry -->
     <div class="card">
         <div class="card-icon">⚖️</div>
-        <h3>Reacciones y Estequiometría</h3>
-        <p>Balanceo de ecuaciones, cálculos molares y rendimiento.</p>
+        <h3>Stoichiometry</h3>
+        <p>Mole ratios, limiting reactants and yield simulations.</p>
         <div class="button-group">
-            <span class="btn-sim disabled">🚧 Próximamente</span>
-            <span class="btn-sim download disabled">📥 Descargar App</span>
-            <span class="btn-sim guide disabled">📘 Guía PDF</span>
+            <a href="../simulators/stoichiometry/" class="btn-sim">🎮 Abrir</a>
+            <a href="../simulators/stoichiometry/stoichiometry.html" class="btn-sim download" download>📥 Descargar App</a>
+            <a href="../simulators/stoichiometry/stoichiometry-guide.pdf" class="btn-sim guide" download>📘 Guía PDF</a>
         </div>
-        <div class="coming-badge">🚧 En desarrollo</div>
     </div>
 
-    <!-- ========== CINÉTICA Y EQUILIBRIO ========== -->
+    <!-- Combustion Reactions -->
     <div class="card">
-        <div class="card-icon">⏱️</div>
-        <h3>Cinética y Equilibrio</h3>
-        <p>Velocidad de reacción, equilibrio químico y Le Châtelier.</p>
+        <div class="card-icon">🔥</div>
+        <h3>Combustion Reactions</h3>
+        <p>Complete and incomplete combustion of hydrocarbons.</p>
         <div class="button-group">
-            <span class="btn-sim disabled">🚧 Próximamente</span>
-            <span class="btn-sim download disabled">📥 Descargar App</span>
-            <span class="btn-sim guide disabled">📘 Guía PDF</span>
+            <a href="../simulators/combustion/" class="btn-sim">🎮 Abrir</a>
+            <a href="../simulators/combustion/combustion.html" class="btn-sim download" download>📥 Descargar App</a>
+            <a href="../simulators/combustion/combustion-guide.pdf" class="btn-sim guide" download>📘 Guía PDF</a>
         </div>
-        <div class="coming-badge">🚧 En desarrollo</div>
     </div>
 
-    <!-- ========== ÁCIDOS Y BASES ========== -->
+    <!-- Acid-Base Titration -->
     <div class="card">
         <div class="card-icon">💧</div>
-        <h3>Ácidos y Bases</h3>
-        <p>pH, titulación y soluciones amortiguadoras.</p>
+        <h3>Acid-Base Titration</h3>
+        <p>Virtual titration with pH curves and indicators.</p>
         <div class="button-group">
-            <span class="btn-sim disabled">🚧 Próximamente</span>
-            <span class="btn-sim download disabled">📥 Descargar App</span>
-            <span class="btn-sim guide disabled">📘 Guía PDF</span>
+            <a href="../simulators/titration/" class="btn-sim">🎮 Abrir</a>
+            <a href="../simulators/titration/titration.html" class="btn-sim download" download>📥 Descargar App</a>
+            <a href="../simulators/titration/titration-guide.pdf" class="btn-sim guide" download>📘 Guía PDF</a>
         </div>
-        <div class="coming-badge">🚧 En desarrollo</div>
     </div>
 </div>
 
 <footer>
-    <p>Rural STEAM Platform — Interactive Chemistry Laboratory | All simulators are coming soon. Stay tuned for updates!</p>
+    <p>Rural STEAM Platform — Interactive Chemistry Laboratory | All simulators include pedagogical guides and downloadable resources.</p>
     <p style="margin-top: 0.5rem;">✨ Designed by: ENG. MEDINA H. A. ✨</p>
 </footer>
 
