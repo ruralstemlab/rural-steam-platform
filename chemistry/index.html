@@ -6,19 +6,28 @@
     <title>Chemistry Lab | Rural STEAM Platform</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Inter', sans-serif;
             background: #0f172a;
             color: #f1f5f9;
             line-height: 1.5;
+            overflow-x: hidden;
         }
-
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        @keyframes subtleZoom {
+            0% { background-position: 50% 50%; background-size: 105%; }
+            50% { background-position: 49% 51%; background-size: 108%; }
+            100% { background-position: 50% 50%; background-size: 105%; }
+        }
         .topbar {
             background: #020617;
             padding: 1rem 2rem;
@@ -27,29 +36,24 @@
             gap: 1.5rem;
             flex-wrap: wrap;
             border-bottom: 1px solid #1e293b;
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
-
         .back-btn {
             background: #2563eb;
             color: white;
-            border: none;
             padding: 0.6rem 1.2rem;
             border-radius: 40px;
             font-weight: 600;
             font-size: 0.9rem;
-            cursor: pointer;
-            transition: all 0.2s ease;
+            text-decoration: none;
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            text-decoration: none;
+            transition: 0.2s;
         }
-
-        .back-btn:hover {
-            background: #3b82f6;
-            transform: scale(0.98);
-        }
-
+        .back-btn:hover { background: #3b82f6; transform: scale(0.98); }
         .title-area h1 {
             font-size: 1.7rem;
             font-weight: 700;
@@ -58,67 +62,81 @@
             -webkit-background-clip: text;
             color: transparent;
         }
+        .title-area p { font-size: 0.9rem; color: #94a3b8; }
 
-        .title-area p {
-            font-size: 0.9rem;
-            color: #94a3b8;
-        }
-
+        /* Header con imagen animada */
         .hero {
             text-align: center;
-            padding: 3rem 2rem 2rem;
+            padding: 100px 20px;
+            background: url('assets/chemistry-banner.png');
+            background-size: 105%;
+            background-position: 50% 50%;
+            background-repeat: no-repeat;
+            animation: subtleZoom 25s ease-in-out infinite;
+            position: relative;
         }
-
         .hero h2 {
-            font-size: 2.2rem;
+            font-size: 2.5rem;
             font-weight: 700;
+            background: linear-gradient(135deg, #ffffff, #facc15);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            text-shadow: 2px 2px 10px rgba(0,0,0,0.6);
+            animation: gradientShift 6s ease infinite;
+            background-size: 200% 200%;
+            display: inline-block;
             margin-bottom: 0.5rem;
         }
-
         .hero p {
-            color: #cbd5e1;
+            font-size: 1.2rem;
             max-width: 700px;
-            margin: 0 auto;
+            margin: 0.5rem auto 0;
+            color: #ffffff;
+            font-weight: 500;
+            text-shadow: 1px 1px 6px rgba(0,0,0,0.8);
         }
 
-        .section {
+        /* Contenedor de tarjetas */
+        .container {
             max-width: 1300px;
-            margin: 2rem auto;
-            padding: 0 2rem;
-        }
-
-        .section-title {
-            font-size: 1.8rem;
-            font-weight: 700;
-            margin-bottom: 1.5rem;
-            border-left: 5px solid #3b82f6;
-            padding-left: 1rem;
-        }
-
-        .sim-grid {
+            margin: 0 auto;
+            padding: 2rem;
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 1.8rem;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 2rem;
         }
-
-        .sim-card {
-            background: #1e293b;
+        .card {
+            background: linear-gradient(145deg, #1e293b, #172132);
             border-radius: 1.8rem;
-            padding: 1.5rem;
-            transition: transform 0.2s, box-shadow 0.2s;
+            padding: 1.8rem;
+            transition: all 0.3s ease;
             border: 1px solid #334155;
             display: flex;
             flex-direction: column;
+            animation: fadeInUp 0.5s ease-out backwards;
+            position: relative;
+            overflow: hidden;
         }
-
-        .sim-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 30px -12px rgba(0, 0, 0, 0.4);
-            border-color: #475569;
+        .card:hover {
+            transform: translateY(-8px);
+            border-color: #38bdf8;
+            box-shadow: 0 20px 30px -12px rgba(0,0,0,0.5);
         }
-
-        .sim-icon {
-            font-size: 3rem;
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(56,189,248,0.1), transparent);
+            transition: left 0.5s;
+            pointer-events: none;
+        }
+        .card:hover::before { left: 100%; }
+        .card-icon {
+            font-size: 2.8rem;
             background: #0f172a;
             width: 70px;
             height: 70px;
@@ -129,27 +147,19 @@
             margin-bottom: 1rem;
             border: 1px solid #334155;
         }
-
-        .sim-card h3 {
-            font-size: 1.4rem;
+        .card h3 {
+            font-size: 1.5rem;
             font-weight: 600;
             margin-bottom: 0.5rem;
+            color: #06b6d4;
         }
-
-        .sim-card p {
-            color: #94a3b8;
-            font-size: 0.85rem;
-            margin-bottom: 1.2rem;
-            flex-grow: 1;
-        }
-
+        .card p { color: #94a3b8; font-size: 0.85rem; margin-bottom: 1.2rem; flex-grow: 1; }
         .button-group {
             display: flex;
             flex-wrap: wrap;
             gap: 0.6rem;
             margin-top: 0.5rem;
         }
-
         .btn-sim {
             background: #2563eb;
             color: white;
@@ -165,27 +175,15 @@
             align-items: center;
             gap: 5px;
         }
-
-        .btn-sim.download {
-            background: #16a34a;
-        }
-
-        .btn-sim.guide {
-            background: #7c3aed;
-        }
-
+        .btn-sim.download { background: #16a34a; }
+        .btn-sim.guide { background: #7c3aed; }
         .btn-sim.disabled {
             background: #475569;
             cursor: not-allowed;
             opacity: 0.6;
             pointer-events: none;
         }
-
-        .btn-sim:hover {
-            filter: brightness(1.1);
-            transform: scale(0.97);
-        }
-
+        .btn-sim:hover:not(.disabled) { filter: brightness(1.1); transform: scale(0.97); }
         .coming-badge {
             background: #334155;
             border-radius: 2rem;
@@ -196,7 +194,6 @@
             margin-top: 0.5rem;
             text-align: center;
         }
-
         footer {
             text-align: center;
             padding: 2rem;
@@ -205,14 +202,10 @@
             font-size: 0.8rem;
             color: #64748b;
         }
-
         @media (max-width: 680px) {
-            .section {
-                padding: 0 1rem;
-            }
-            .hero h2 {
-                font-size: 1.6rem;
-            }
+            .container { padding: 1rem; }
+            .hero h2 { font-size: 1.6rem; }
+            .hero p { font-size: 1rem; }
         }
     </style>
 </head>
@@ -227,139 +220,93 @@
 </div>
 
 <section class="hero">
-    <h2>🔬 Explore Chemistry Through Simulation</h2>
+    <h2>⚗️ Explore Chemistry Through Simulation</h2>
     <p>Virtual labs for atomic structure, chemical reactions, stoichiometry, and more. All simulators are under development and will be available soon.</p>
 </section>
 
-<!-- QUÍMICA GENERAL -->
-<div class="section">
-    <div class="section-title">⚛️ General Chemistry</div>
-    <div class="sim-grid">
-        <div class="sim-card">
-            <div class="sim-icon">⚛️</div>
-            <h3>Atomic Models</h3>
-            <p>Bohr, quantum model and atomic structure simulations.</p>
-            <div class="button-group">
-                <button class="btn-sim disabled" disabled>🚧 Próximamente</button>
-                <button class="btn-sim download disabled" disabled>📥 HTML</button>
-                <button class="btn-sim guide disabled" disabled>📘 Guía</button>
-            </div>
-            <div class="coming-badge">🚧 En desarrollo</div>
+<div class="container">
+    <!-- ========== TABLA PERIÓDICA ========== -->
+    <div class="card">
+        <div class="card-icon">🧪</div>
+        <h3>Tabla Periódica</h3>
+        <p>Explora elementos, propiedades y tendencias periódicas.</p>
+        <div class="button-group">
+            <span class="btn-sim disabled">🚧 Próximamente</span>
+            <span class="btn-sim download disabled">📥 Descargar App</span>
+            <span class="btn-sim guide disabled">📘 Guía PDF</span>
         </div>
-
-        <div class="sim-card">
-            <div class="sim-icon">🧪</div>
-            <h3>Periodic Table</h3>
-            <p>Interactive periodic table with properties and trends.</p>
-            <div class="button-group">
-                <button class="btn-sim disabled" disabled>🚧 Próximamente</button>
-                <button class="btn-sim download disabled" disabled>📥 HTML</button>
-                <button class="btn-sim guide disabled" disabled>📘 Guía</button>
-            </div>
-            <div class="coming-badge">🚧 En desarrollo</div>
-        </div>
-
-        <div class="sim-card">
-            <div class="sim-icon">🧪</div>
-            <h3>Chemical Bonding</h3>
-            <p>Ionic, covalent and metallic bonding simulations.</p>
-            <div class="button-group">
-                <button class="btn-sim disabled" disabled>🚧 Próximamente</button>
-                <button class="btn-sim download disabled" disabled>📥 HTML</button>
-                <button class="btn-sim guide disabled" disabled>📘 Guía</button>
-            </div>
-            <div class="coming-badge">🚧 En desarrollo</div>
-        </div>
+        <div class="coming-badge">🚧 En desarrollo</div>
     </div>
-</div>
 
-<!-- REACCIONES QUÍMICAS -->
-<div class="section">
-    <div class="section-title">🔥 Chemical Reactions</div>
-    <div class="sim-grid">
-        <div class="sim-card">
-            <div class="sim-icon">⚖️</div>
-            <h3>Stoichiometry</h3>
-            <p>Mole ratios, limiting reactants and yield simulations.</p>
-            <div class="button-group">
-                <button class="btn-sim disabled" disabled>🚧 Próximamente</button>
-                <button class="btn-sim download disabled" disabled>📥 HTML</button>
-                <button class="btn-sim guide disabled" disabled>📘 Guía</button>
-            </div>
-            <div class="coming-badge">🚧 En desarrollo</div>
+    <!-- ========== MODELOS ATÓMICOS ========== -->
+    <div class="card">
+        <div class="card-icon">⚛️</div>
+        <h3>Modelos Atómicos</h3>
+        <p>Bohr, mecánica cuántica y estructura del átomo.</p>
+        <div class="button-group">
+            <span class="btn-sim disabled">🚧 Próximamente</span>
+            <span class="btn-sim download disabled">📥 Descargar App</span>
+            <span class="btn-sim guide disabled">📘 Guía PDF</span>
         </div>
-
-        <div class="sim-card">
-            <div class="sim-icon">🔥</div>
-            <h3>Combustion Reactions</h3>
-            <p>Complete and incomplete combustion of hydrocarbons.</p>
-            <div class="button-group">
-                <button class="btn-sim disabled" disabled>🚧 Próximamente</button>
-                <button class="btn-sim download disabled" disabled>📥 HTML</button>
-                <button class="btn-sim guide disabled" disabled>📘 Guía</button>
-            </div>
-            <div class="coming-badge">🚧 En desarrollo</div>
-        </div>
-
-        <div class="sim-card">
-            <div class="sim-icon">💧</div>
-            <h3>Acid-Base Titration</h3>
-            <p>Virtual titration with pH curves and indicators.</p>
-            <div class="button-group">
-                <button class="btn-sim disabled" disabled>🚧 Próximamente</button>
-                <button class="btn-sim download disabled" disabled>📥 HTML</button>
-                <button class="btn-sim guide disabled" disabled>📘 Guía</button>
-            </div>
-            <div class="coming-badge">🚧 En desarrollo</div>
-        </div>
+        <div class="coming-badge">🚧 En desarrollo</div>
     </div>
-</div>
 
-<!-- QUÍMICA ORGÁNICA -->
-<div class="section">
-    <div class="section-title">🌿 Organic Chemistry</div>
-    <div class="sim-grid">
-        <div class="sim-card">
-            <div class="sim-icon">🌿</div>
-            <h3>Molecular Modeling</h3>
-            <p>3D visualization of organic molecules and isomers.</p>
-            <div class="button-group">
-                <button class="btn-sim disabled" disabled>🚧 Próximamente</button>
-                <button class="btn-sim download disabled" disabled>📥 HTML</button>
-                <button class="btn-sim guide disabled" disabled>📘 Guía</button>
-            </div>
-            <div class="coming-badge">🚧 En desarrollo</div>
+    <!-- ========== ENLACES QUÍMICOS ========== -->
+    <div class="card">
+        <div class="card-icon">🔗</div>
+        <h3>Enlaces Químicos</h3>
+        <p>Enlace iónico, covalente y metálico.</p>
+        <div class="button-group">
+            <span class="btn-sim disabled">🚧 Próximamente</span>
+            <span class="btn-sim download disabled">📥 Descargar App</span>
+            <span class="btn-sim guide disabled">📘 Guía PDF</span>
         </div>
+        <div class="coming-badge">🚧 En desarrollo</div>
+    </div>
 
-        <div class="sim-card">
-            <div class="sim-icon">🔬</div>
-            <h3>Functional Groups</h3>
-            <p>Identification and properties of organic functional groups.</p>
-            <div class="button-group">
-                <button class="btn-sim disabled" disabled>🚧 Próximamente</button>
-                <button class="btn-sim download disabled" disabled>📥 HTML</button>
-                <button class="btn-sim guide disabled" disabled>📘 Guía</button>
-            </div>
-            <div class="coming-badge">🚧 En desarrollo</div>
+    <!-- ========== REACCIONES Y ESTEQUIOMETRÍA ========== -->
+    <div class="card">
+        <div class="card-icon">⚖️</div>
+        <h3>Reacciones y Estequiometría</h3>
+        <p>Balanceo de ecuaciones, cálculos molares y rendimiento.</p>
+        <div class="button-group">
+            <span class="btn-sim disabled">🚧 Próximamente</span>
+            <span class="btn-sim download disabled">📥 Descargar App</span>
+            <span class="btn-sim guide disabled">📘 Guía PDF</span>
         </div>
+        <div class="coming-badge">🚧 En desarrollo</div>
+    </div>
 
-        <div class="sim-card">
-            <div class="sim-icon">⚗️</div>
-            <h3>Polymerization</h3>
-            <p>Addition and condensation polymerization simulations.</p>
-            <div class="button-group">
-                <button class="btn-sim disabled" disabled>🚧 Próximamente</button>
-                <button class="btn-sim download disabled" disabled>📥 HTML</button>
-                <button class="btn-sim guide disabled" disabled>📘 Guía</button>
-            </div>
-            <div class="coming-badge">🚧 En desarrollo</div>
+    <!-- ========== CINÉTICA Y EQUILIBRIO ========== -->
+    <div class="card">
+        <div class="card-icon">⏱️</div>
+        <h3>Cinética y Equilibrio</h3>
+        <p>Velocidad de reacción, equilibrio químico y Le Châtelier.</p>
+        <div class="button-group">
+            <span class="btn-sim disabled">🚧 Próximamente</span>
+            <span class="btn-sim download disabled">📥 Descargar App</span>
+            <span class="btn-sim guide disabled">📘 Guía PDF</span>
         </div>
+        <div class="coming-badge">🚧 En desarrollo</div>
+    </div>
+
+    <!-- ========== ÁCIDOS Y BASES ========== -->
+    <div class="card">
+        <div class="card-icon">💧</div>
+        <h3>Ácidos y Bases</h3>
+        <p>pH, titulación y soluciones amortiguadoras.</p>
+        <div class="button-group">
+            <span class="btn-sim disabled">🚧 Próximamente</span>
+            <span class="btn-sim download disabled">📥 Descargar App</span>
+            <span class="btn-sim guide disabled">📘 Guía PDF</span>
+        </div>
+        <div class="coming-badge">🚧 En desarrollo</div>
     </div>
 </div>
 
 <footer>
     <p>Rural STEAM Platform — Interactive Chemistry Laboratory | All simulators are coming soon. Stay tuned for updates!</p>
-    <p style="margin-top: 0.5rem;">✨ Designed by Medina H. A.</p>
+    <p style="margin-top: 0.5rem;">✨ Designed by: ENG. MEDINA H. A. ✨</p>
 </footer>
 
 </body>
