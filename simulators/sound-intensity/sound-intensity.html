@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>Sonido STEM | Nivel de Intensidad Sonora</title>
+<!-- MathJax para LaTeX -->
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" id="MathJax-script" async></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: #0f172a;
+    color: #f1f5f9;
+    padding: 16px;
+    line-height: 1.5;
+  }
+  .container { max-width: 700px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
+  .card {
+    background: #1e293b;
+    border-radius: 2rem;
+    padding: 1.2rem;
+    border: 1px solid #334155;
+  }
+  .card-header {
+    font-size: 1.4rem;
+    font-weight: bold;
+    margin-bottom: 0.8rem;
+    border-left: 4px solid #3b82f6;
+    padding-left: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  canvas {
+    background: #0f1722;
+    border-radius: 24px;
+    width: 100%;
+    height: auto;
+    border: 1px solid #334155;
+    display: block;
+  }
+  .control-group { margin-bottom: 12px; }
+  label { display: block; font-weight: 600; margin-bottom: 4px; }
+  input, select, button {
+    width: 100%;
+    padding: 10px;
+    border-radius: 60px;
+    border: none;
+    font-size: 1rem;
+    margin-top: 4px;
+  }
+  input, select {
+    background: #0f172a;
+    color: white;
+    border: 1px solid #3b82f6;
+  }
+  button {
+    background: #3b82f6;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+  button:hover { background: #2563eb; transform: scale(0.98); }
+  .resultado-card {
+    background: #0f172a;
+    border-radius: 1rem;
+    padding: 12px;
+    margin-top: 12px;
+    text-align: center;
+  }
+  /* Estilos quiz elegante */
+  .quiz-item {
+    background: #0f172a;
+    border-radius: 1.5rem;
+    padding: 1rem;
+    margin-bottom: 1.2rem;
+    border-left: 4px solid #f59e0b;
+  }
+  .quiz-pregunta { font-weight: bold; margin-bottom: 12px; font-size: 1.05rem; }
+  .quiz-opcion {
+    background: #1e293b;
+    border-radius: 60px;
+    padding: 10px 16px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 1px solid #334155;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .quiz-opcion:hover { background: #2d3a5e; transform: translateX(4px); }
+  .quiz-opcion.selected {
+    background: #10b981;
+    border-color: #34d399;
+    color: white;
+    box-shadow: 0 2px 8px rgba(16,185,129,0.3);
+  }
+  .quiz-opcion .letra {
+    font-weight: bold;
+    background: #0f172a;
+    width: 28px;
+    height: 28px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 40px;
+  }
+  .quiz-opcion.selected .letra { background: #0a714b; color: white; }
+  input[type="radio"] { display: none; }
+  .score-area {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 16px;
+  }
+  .feedback {
+    background: #1e293b;
+    border-radius: 1.5rem;
+    padding: 12px;
+    margin-top: 12px;
+    text-align: center;
+  }
+  .motivacion {
+    background: #fef9c3;
+    color: #854d0e;
+    padding: 12px;
+    border-radius: 60px;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 12px;
+  }
+  footer { text-align: center; font-size: 0.8rem; color: #94a3b8; margin-top: 20px; }
+  @media (max-width: 600px) { .card-header { font-size: 1.2rem; } button { padding: 8px; } }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="card" style="text-align: center;">
+    <h1 style="color:#38bdf8;">🔊 Nivel de Intensidad Sonora</h1>
+    <p>Simulador + Evaluación ICFES (10 preguntas aleatorias)</p>
+  </div>
+
+  <!-- SIMULADOR -->
+  <div class="card">
+    <div class="card-header">🎛️ Panel de simulación</div>
+    <div class="control-group"><label>🔊 Potencia (W):</label><input type="number" id="potencia" value="1" step="0.1"></div>
+    <div class="control-group"><label>🎵 Frecuencia (Hz):</label><input type="number" id="frecuencia" value="500" step="10"></div>
+    <div class="control-group"><label>🧪 Modo laboratorio (ondas físicas):</label><button id="toggleFisicoBtn">Activar modo físico</button></div>
+    <div class="control-group"><label>🔊 Sonido (requiere clic previo):</label><button id="toggleSonidoBtn">Activar sonido</button></div>
+    <div class="control-group"><label>👥 Número de observadores:</label><select id="numObs"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></div>
+    <div id="obsInputsContainer"></div>
+    <button id="calcularBtn">Calcular niveles</button>
+    <div id="resultadosSimulador" class="resultado-card"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">🗺️ Mapa de intensidad</div>
+    <canvas id="mapaCanvas" width="600" height="400" style="width:100%; height:auto; background:black;"></canvas>
+  </div>
+
+  <!-- SECCIÓN PEDAGÓGICA CON LATEX CORREGIDO -->
+  <div class="card">
+    <div class="card-header">📘 Desarrollo matemático (LaTeX)</div>
+    <div id="pedagogicoLatex" style="background:#0f172a; border-radius:1.5rem; padding:1rem; overflow-x:auto;"></div>
+  </div>
+
+  <!-- EVALUACIÓN ICFES -->
+  <div class="card">
+    <div class="card-header">📝 Evaluación ICFES - Sonido</div>
+    <div><label>👤 Tu nombre (estudiante):</label><input type="text" id="nombreEstudiante" placeholder="Ej: Sofía Ramírez"></div>
+    <div id="quizContainer"></div>
+    <div class="score-area">
+      <button id="btnCalificar">✅ Calificar (10 preguntas)</button>
+      <button id="btnDescargarPDF" disabled>📄 Descargar PDF</button>
+      <div id="puntajeMostrado" style="background:#0f172a; padding:8px 16px; border-radius:40px;">Puntaje: -- / 100</div>
+    </div>
+    <div id="feedbackQuiz" class="feedback"></div>
+    <div id="motivacion" class="motivacion">✨ ¡Demuestra tu conocimiento en acústica! ✨</div>
+  </div>
+  <footer>Diseñado por: Eng. Medina H. A. | Simulador + ICFES</footer>
+</div>
+
+<script>
+  // ====================== 1. SIMULADOR DE SONIDO ======================
+  const canvas = document.getElementById('mapaCanvas');
+  const ctx = canvas.getContext('2d');
+  const potenciaInput = document.getElementById('potencia');
+  const frecuenciaInput = document.getElementById('frecuencia');
+  const toggleFisicoBtn = document.getElementById('toggleFisicoBtn');
+  const toggleSonidoBtn = document.getElementById('toggleSonidoBtn');
+  const numObsSelect = document.getElementById('numObs');
+  const obsContainer = document.getElementById('obsInputsContainer');
+  const calcularBtn = document.getElementById('calcularBtn');
+  const resultadosDiv = document.getElementById('resultadosSimulador');
+  const pedagogicoDiv = document.getElementById('pedagogicoLatex');
+
+  let modoFisico = false;
+  let sonidoActivo = false;
+  let audioCtx = null;
+  let oscillator = null;
+  const I0 = 1e-12;
+  const velocidadSonido = 343;
+  let ondas = [0, 15, 30, 45, 60];
+
+  function toggleModoFisico() { modoFisico = !modoFisico; toggleFisicoBtn.textContent = modoFisico ? "Desactivar modo físico" : "Activar modo físico"; }
+  function toggleSonido() {
+    if (!sonidoActivo) {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const freq = parseFloat(frecuenciaInput.value) || 500;
+      oscillator = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      oscillator.type = 'sine';
+      oscillator.frequency.setValueAtTime(freq, audioCtx.currentTime);
+      gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+      oscillator.connect(gain);
+      gain.connect(audioCtx.destination);
+      oscillator.start();
+      sonidoActivo = true;
+      toggleSonidoBtn.textContent = "Desactivar sonido";
+    } else {
+      if (oscillator) { oscillator.stop(); oscillator.disconnect(); oscillator = null; }
+      sonidoActivo = false;
+      toggleSonidoBtn.textContent = "Activar sonido";
+    }
+  }
+  frecuenciaInput.addEventListener('input', () => {
+    if (oscillator && audioCtx) oscillator.frequency.setValueAtTime(parseFloat(frecuenciaInput.value) || 500, audioCtx.currentTime);
+  });
+  
+  function actualizarObservadoresUI() {
+    const n = parseInt(numObsSelect.value);
+    let html = '';
+    for (let i=1; i<=n; i++) {
+      html += `<div style="margin-top:10px; padding:8px; background:#0f172a; border-radius:20px;">
+        <b>Observador ${i}</b>
+        <label>Distancia r (m):</label>
+        <input type="number" id="r_${i}" value="${2*i}" step="0.5">
+        <label>Ángulo θ (°):</label>
+        <input type="number" id="theta_${i}" value="${30*i}" step="5">
+      </div>`;
+    }
+    obsContainer.innerHTML = html;
+    actualizarPedagogia(); 
+  }
+  numObsSelect.addEventListener('change', actualizarObservadoresUI);
+  actualizarObservadoresUI();
+
+  function betaDesdePotenciaDistancia(P, r) {
+    if (r <= 0) return 0;
+    const I = P / (4 * Math.PI * r * r);
+    return 10 * Math.log10(I / I0);
+  }
+  function interpretarNivel(db) {
+    if (db < 60) return "🔵 Bajo: sin riesgo.";
+    if (db < 80) return "🟢 Moderado: seguro.";
+    if (db < 90) return "🟡 Alerta: puede afectar.";
+    if (db < 100) return "🟠 Riesgo: daño posible.";
+    return "🔴 Alto: daño rápido.";
+  }
+  function escalarPixeles(r) { return Math.log10(r + 1) * 70; }
+
+  function dibujarMapa(P) {
+    if (!ctx) return;
+    const w = canvas.width, h = canvas.height;
+    ctx.clearRect(0, 0, w, h);
+    const cx = w/2, cy = h/2;
+    const zonas = [{ db: 60, color: "green" }, { db: 80, color: "yellow" }, { db: 90, color: "orange" }, { db: 100, color: "red" }];
+    zonas.forEach(z => {
+      const I = I0 * Math.pow(10, z.db/10);
+      const r = Math.sqrt(P / (4 * Math.PI * I));
+      const rad = escalarPixeles(r);
+      ctx.beginPath(); ctx.arc(cx, cy, rad, 0, Math.PI*2);
+      ctx.fillStyle = z.color; ctx.fill();
+    });
+    ctx.fillStyle = "rgba(0,0,0,0.6)";
+    ctx.fillRect(w-110, 10, 100, 130);
+    ctx.fillStyle = "white";
+    ctx.font = "bold 12px sans-serif";
+    ctx.fillText("dB", w-100, 30);
+    ctx.fillStyle = "green"; ctx.fillRect(w-100, 40, 20, 15); ctx.fillStyle = "white"; ctx.fillText("<60", w-75, 52);
+    ctx.fillStyle = "yellow"; ctx.fillRect(w-100, 60, 20, 15); ctx.fillText("60-80", w-75, 72);
+    ctx.fillStyle = "orange"; ctx.fillRect(w-100, 80, 20, 15); ctx.fillText("80-90", w-75, 92);
+    ctx.fillStyle = "red"; ctx.fillRect(w-100, 100, 20, 15); ctx.fillText(">90", w-75, 112);
+  }
+  function dibujarOndas(cx, cy, lambda) {
+    ondas = ondas.map(r => (r + (modoFisico ? lambda*0.5 : 2)) % 250);
+    ondas.forEach(rad => { 
+      ctx.beginPath(); ctx.arc(cx, cy, rad, 0, Math.PI*2); 
+      ctx.strokeStyle = "rgba(255,255,255,0.5)"; 
+      ctx.lineWidth = 2; 
+      ctx.stroke(); 
+    });
+  }
+  function dibujarObservadores(cx, cy, P) {
+    const n = parseInt(numObsSelect.value);
+    for (let i=1; i<=n; i++) {
+      const r = parseFloat(document.getElementById(`r_${i}`)?.value);
+      const theta = parseFloat(document.getElementById(`theta_${i}`)?.value);
+      if (isNaN(r) || isNaN(theta)) continue;
+      const beta = betaDesdePotenciaDistancia(P, r);
+      const px = cx + escalarPixeles(r) * Math.cos(theta * Math.PI/180);
+      const py = cy - escalarPixeles(r) * Math.sin(theta * Math.PI/180);
+      ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(px, py); ctx.strokeStyle = "#a5f3fc"; ctx.setLineDash([5,5]); ctx.stroke(); ctx.setLineDash([]);
+      ctx.beginPath(); ctx.arc(px, py, 10, 0, 2*Math.PI); ctx.fillStyle = "#facc15"; ctx.fill();
+      ctx.font = "bold 10px sans-serif";
+      ctx.fillStyle = "white";
+      ctx.shadowBlur = 0;
+      ctx.fillText(`Ob${i} (${r}m, ${theta}°)`, px-20, py-8);
+      ctx.fillText(`${beta.toFixed(1)} dB`, px-15, py+12);
+    }
+  }
+
+  function animar() {
+    const P = parseFloat(potenciaInput.value) || 1;
+    const freq = parseFloat(frecuenciaInput.value) || 500;
+    const lambda = velocidadSonido / freq;
+    const w = canvas.width, h = canvas.height;
+    canvas.width = w; canvas.height = h;
+    ctx.clearRect(0,0,w,h);
+    dibujarMapa(P);
+    dibujarOndas(w/2, h/2, lambda);
+    ctx.beginPath(); ctx.arc(w/2, h/2, 12, 0, 2*Math.PI); ctx.fillStyle = "#ffb347"; ctx.fill(); 
+    ctx.fillStyle = "white"; ctx.font = "bold 12px"; ctx.fillText("Fuente", w/2+12, h/2);
+    dibujarObservadores(w/2, h/2, P);
+    requestAnimationFrame(animar);
+  }
+  animar();
+
+  // Función pedagógica con LaTeX bien formateado (corregida)
+  function actualizarPedagogia() {
+    const P = parseFloat(potenciaInput.value) || 1;
+    const n = parseInt(numObsSelect.value);
+    let html = "";
+    for (let i=1; i<=n; i++) {
+      const r = parseFloat(document.getElementById(`r_${i}`)?.value);
+      const theta = parseFloat(document.getElementById(`theta_${i}`)?.value);
+      if (isNaN(r) || isNaN(theta)) continue;
+      const I = P / (4 * Math.PI * r * r);
+      const beta = 10 * Math.log10(I / I0);
+      html += `
+        <div style="margin-bottom: 1.5rem; border-bottom: 1px solid #334155; padding-bottom: 1rem;">
+          <h3 style="color:#38bdf8;">Observador ${i}</h3>
+          <p><strong>📌 Datos suministrados:</strong></p>
+          <p>\\( P = ${P} \\, \\text{W} \\), \\( r = ${r} \\, \\text{m} \\), \\( \\theta = ${theta}^\\circ \\)</p>
+          <p><strong>📐 Fórmulas a usar:</strong></p>
+          <p>\\[ I = \\frac{P}{4\\pi r^2} \\]</p>
+          <p>\\[ \\beta = 10 \\log_{10} \\left( \\frac{I}{I_0} \\right) \\] donde \\( I_0 = 10^{-12} \\, \\text{W/m}^2 \\) (umbral de audición).</p>
+          <p><strong>🧮 Desarrollo paso a paso:</strong></p>
+          <p>1. Sustituimos en la intensidad:</p>
+          <p>\\[ I = \\frac{${P}}{4\\pi (${r})^2} = \\frac{${P}}{4\\pi \\cdot ${r*r}} = ${I.toExponential(2)} \\, \\text{W/m}^2 \\]</p>
+          <p>2. Ahora calculamos el nivel de intensidad sonora:</p>
+          <p>\\[ \\beta = 10 \\log_{10} \\left( \\frac{${I.toExponential(2)}}{10^{-12}} \\right) = 10 \\log_{10} (${(I/I0).toExponential(2)}) \\]</p>
+          <p>\\[ \\beta = 10 \\times ${Math.log10(I/I0).toFixed(4)} = ${beta.toFixed(2)} \\, \\text{dB} \\]</p>
+          <p><strong>🎯 Resultado e interpretación:</strong></p>
+          <p>El nivel de intensidad sonora en el observador ${i} es <strong style="color:#facc15;">${beta.toFixed(2)} dB</strong>. Esto significa: ${interpretarNivel(beta)}</p>
+        </div>
+      `;
+    }
+    if (n===0) html = "<p>Agrega observadores para ver el desarrollo matemático con LaTeX.</p>";
+    pedagogicoDiv.innerHTML = html;
+    if (window.MathJax) MathJax.typesetPromise();
+  }
+
+  calcularBtn.addEventListener('click', () => {
+    const P = parseFloat(potenciaInput.value) || 1;
+    const n = parseInt(numObsSelect.value);
+    let resultadoHTML = '';
+    for (let i=1; i<=n; i++) {
+      const r = parseFloat(document.getElementById(`r_${i}`)?.value);
+      const theta = parseFloat(document.getElementById(`theta_${i}`)?.value);
+      if (isNaN(r) || isNaN(theta)) continue;
+      const beta = betaDesdePotenciaDistancia(P, r);
+      resultadoHTML += `<strong>Obs ${i}:</strong> ${beta.toFixed(1)} dB (r=${r}m, θ=${theta}°) - ${interpretarNivel(beta)}<br>`;
+    }
+    resultadosDiv.innerHTML = resultadoHTML || "No hay observadores";
+    actualizarPedagogia();
+  });
+
+  toggleFisicoBtn.addEventListener('click', toggleModoFisico);
+  toggleSonidoBtn.addEventListener('click', toggleSonido);
+  actualizarPedagogia();
+
+  // ====================== 2. EVALUACIÓN ICFES ======================
+  const bancoPreguntas = [
+    { texto: "El nivel de intensidad sonora se mide en:", opciones: ["Hertz", "Decibelios (dB)", "Vatios", "Newtons"], correcta: "b" },
+    { texto: "La intensidad sonora (I) se define como:", opciones: ["Potencia × área", "Potencia / área", "Área / potencia", "Presión × velocidad"], correcta: "b" },
+    { texto: "El umbral de audición (I₀) es aproximadamente:", opciones: ["1 W/m²", "10⁻¹² W/m²", "10⁻⁶ W/m²", "0 dB"], correcta: "b" },
+    { texto: "Si se duplica la distancia a la fuente, la intensidad sonora:", opciones: ["Se duplica", "Se reduce a la mitad", "Se reduce a la cuarta parte", "No cambia"], correcta: "c" },
+    { texto: "Un sonido de 80 dB es considerado:", opciones: ["Silencio", "Conversación normal", "Tráfico intenso", "Umbral del dolor"], correcta: "c" },
+    { texto: "La fórmula del nivel de intensidad es:", opciones: ["β = 10 log(I/I₀)", "β = 20 log(I/I₀)", "β = log(I/I₀)", "β = 10 I/I₀"], correcta: "a" },
+    { texto: "¿Qué ocurre con el nivel de intensidad si la potencia se cuadruplica?", opciones: ["Aumenta 4 dB", "Aumenta 6 dB", "Aumenta 10 dB", "Aumenta 40 dB"], correcta: "b" },
+    { texto: "El oído humano percibe desde 0 dB hasta aprox.:", opciones: ["60 dB", "100 dB", "120 dB", "200 dB"], correcta: "c" },
+    { texto: "Fuente puntual: a 2m la intensidad es I. ¿A 4m?", opciones: ["I/2", "I/4", "I/8", "I/16"], correcta: "b" },
+    { texto: "El sonido se propaga más rápido en:", opciones: ["Aire", "Agua", "Acero", "Vacío"], correcta: "c" },
+    { texto: "La frecuencia determina:", opciones: ["Intensidad", "Altura (tono)", "Timbre", "Amplitud"], correcta: "b" },
+    { texto: "100 dB puede causar:", opciones: ["Molestia leve", "Daño auditivo progresivo", "Umbral del dolor inmediato", "Ningún efecto"], correcta: "b" },
+    { texto: "La ley inversa del cuadrado aplica a:", opciones: ["Frecuencia", "Intensidad sonora", "Velocidad", "Longitud de onda"], correcta: "b" },
+    { texto: "Rango de audición humana en Hz:", opciones: ["20-20000", "200-2000", "0.1-1000", "10000-20000"], correcta: "a" },
+    { texto: "Si I se multiplica por 10, β aumenta:", opciones: ["1 dB", "10 dB", "20 dB", "100 dB"], correcta: "b" },
+    { texto: "La sonometría mide:", opciones: ["Frecuencia", "Nivel de presión sonora", "Potencia", "Velocidad"], correcta: "b" }
+  ];
+
+  let preguntasExamen = [], respuestasUsuario = new Array(10).fill(null), calificacionActual = null, nombreActual = "";
+  function seleccionarPreguntasAleatorias() {
+    const copia = [...bancoPreguntas];
+    for (let i = copia.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [copia[i], copia[j]] = [copia[j], copia[i]]; }
+    return copia.slice(0, 10);
+  }
+  function renderQuiz() {
+    preguntasExamen = seleccionarPreguntasAleatorias();
+    respuestasUsuario.fill(null);
+    let html = '';
+    preguntasExamen.forEach((p, idx) => {
+      html += `<div class="quiz-item"><div class="quiz-pregunta">${idx+1}. ${p.texto}</div>`;
+      const letras = ['a', 'b', 'c', 'd'];
+      p.opciones.forEach((op, optIdx) => {
+        const letra = letras[optIdx];
+        html += `<div class="quiz-opcion" data-idx="${idx}" data-letra="${letra}">
+          <span class="letra">${letra.toUpperCase()}</span>
+          <span class="texto">${op}</span>
+        </div>`;
+      });
+      html += `</div>`;
+    });
+    document.getElementById('quizContainer').innerHTML = html;
+    document.querySelectorAll('.quiz-opcion').forEach(el => {
+      el.addEventListener('click', (e) => {
+        const idx = parseInt(el.dataset.idx);
+        const letra = el.dataset.letra;
+        const parent = el.parentNode;
+        parent.querySelectorAll('.quiz-opcion').forEach(opt => opt.classList.remove('selected'));
+        el.classList.add('selected');
+        respuestasUsuario[idx] = letra;
+      });
+    });
+  }
+  function calcularPuntaje() {
+    let correctas = 0;
+    for (let i=0; i<10; i++) if (respuestasUsuario[i] === preguntasExamen[i].correcta) correctas++;
+    return (correctas/10)*100;
+  }
+  function obtenerMensaje(p) {
+    if (p>=90) return "🏆 ¡Genio del Sonido! Excelente dominio.";
+    if (p>=70) return "🎧 ¡Muy bien! Tienes buen conocimiento.";
+    if (p>=50) return "📢 Puedes mejorar repasando intensidad-distancia.";
+    return "🔊 ¡Ánimo! Sigue practicando.";
+  }
+  function calificar() {
+    const nombre = document.getElementById('nombreEstudiante').value.trim();
+    if (!nombre) { document.getElementById('feedbackQuiz').innerHTML = "⚠️ Escribe tu nombre."; return; }
+    if (respuestasUsuario.some(r => r===null)) { document.getElementById('feedbackQuiz').innerHTML = "⚠️ Responde todas las preguntas."; return; }
+    let puntaje = calcularPuntaje();
+    calificacionActual = puntaje;
+    let nota05 = puntaje/20;
+    document.getElementById('puntajeMostrado').innerHTML = `🎯 Puntaje: ${puntaje.toFixed(0)}/100 (Nota: ${nota05.toFixed(1)}/5)`;
+    let msg = obtenerMensaje(puntaje);
+    document.getElementById('motivacion').innerHTML = `✨ ${msg} ✨`;
+    document.getElementById('feedbackQuiz').innerHTML = `✅ Completaste la evaluación. Calificación: ${puntaje.toFixed(0)}/100. ${msg}`;
+    document.getElementById('btnDescargarPDF').disabled = false;
+    nombreActual = nombre;
+  }
+  async function generarPDF() {
+    if (calificacionActual === null) { document.getElementById('feedbackQuiz').innerHTML = "Primero califica para generar el PDF."; return; }
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    doc.setFont("helvetica");
+    doc.setFontSize(16);
+    doc.text("Informe de Evaluación - Sonido y Acústica", 15, 20);
+    doc.setFontSize(12);
+    doc.text(`Estudiante: ${nombreActual}`, 15, 32);
+    doc.text(`Fecha: ${new Date().toLocaleString()}`, 15, 40);
+    doc.text(`Calificación: ${calificacionActual.toFixed(0)}/100 → Nota: ${(calificacionActual/20).toFixed(1)}/5`, 15, 48);
+    doc.text(obtenerMensaje(calificacionActual), 15, 56);
+    doc.text("Detalle de respuestas:", 15, 68);
+    let y = 78;
+    for (let i=0; i<10; i++) {
+      let user = respuestasUsuario[i] || "Sin responder";
+      let correcta = preguntasExamen[i].correcta;
+      let estado = (user === correcta) ? "✓ Correcta" : (user !== "Sin responder" ? "✗ Incorrecta" : "? No respondida");
+      doc.text(`${i+1}. ${preguntasExamen[i].texto.substring(0,55)}`, 15, y);
+      doc.text(`   Respuesta: ${user} | Correcta: ${correcta} | ${estado}`, 20, y+6);
+      y += 12;
+      if (y > 270) { doc.addPage(); y = 20; }
+    }
+    doc.save(`sonido_${nombreActual.replace(/\s/g,"_")}.pdf`);
+    document.getElementById('feedbackQuiz').innerHTML = "📄 PDF generado exitosamente.";
+  }
+  document.getElementById('btnCalificar').addEventListener('click', calificar);
+  document.getElementById('btnDescargarPDF').addEventListener('click', generarPDF);
+  renderQuiz();
+</script>
+</body>
+</html>
