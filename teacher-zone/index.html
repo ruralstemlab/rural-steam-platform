@@ -64,15 +64,10 @@
         }
         .title-area p { font-size: 0.9rem; color: #94a3b8; }
 
-        /* Banner más alto */
         .hero {
             text-align: center;
-            padding: 150px 20px;
-            background: url('../assets/profe-banner.png');
-            background-size: cover;
-            background-position: 50% 50%;
-            background-repeat: no-repeat;
-            animation: subtleZoom 25s ease-in-out infinite;
+            padding: 120px 20px;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
             position: relative;
         }
         .hero h2 {
@@ -102,7 +97,6 @@
             margin: 0 auto;
             padding: 2rem;
         }
-        /* Grid de tres tarjetas */
         .cards-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -185,7 +179,6 @@
             pointer-events: none;
         }
 
-        /* Sección de recursos adicionales (opcional) */
         .recursos-section {
             background: #1e293b;
             border-radius: 1.8rem;
@@ -226,7 +219,7 @@
             .container { padding: 1rem; }
             .hero h2 { font-size: 1.6rem; }
             .hero p { font-size: 1rem; }
-            .hero { padding: 100px 20px; }
+            .hero { padding: 80px 20px; }
             .card h3 { font-size: 1.4rem; }
         }
     </style>
@@ -234,6 +227,7 @@
 <body>
 
 <div class="topbar">
+    <!-- Ruta al inicio de la plataforma (sube un nivel, asumiendo que teacher-zone está dentro de la raíz) -->
     <a href="../index.html" class="back-btn">⬅ Inicio</a>
     <div class="title-area">
         <h1>🧑‍🏫 Teacher Zone</h1>
@@ -247,9 +241,8 @@
 </section>
 
 <div class="container">
-    <!-- Tres tarjetas principales -->
     <div class="cards-grid">
-        <!-- Tarjeta 1: Capacitación (vacía, mañana se llena) -->
+        <!-- Tarjeta Capacitación (todavía en desarrollo) -->
         <div class="card">
             <div class="card-icon">📖</div>
             <h3>Capacitación Docente</h3>
@@ -257,24 +250,24 @@
             <a href="#" class="btn-card disabled">🚧 Próximamente</a>
         </div>
 
-        <!-- Tarjeta 2: Sistema OMR (vacío, mañana se llena) -->
+        <!-- Tarjeta Sistema OMR (apunta a la carpeta OMR dentro de teacher-zone) -->
         <div class="card">
             <div class="card-icon">📄</div>
             <h3>Sistema OMR</h3>
             <p>Lectura automática de hojas de respuesta con cámara o escáner. Calificación instantánea y exportación de resultados.</p>
-            <a href="#" class="btn-card disabled">🚧 Próximamente</a>
+            <a href="./OMR/" class="btn-card">📸 Ir al Lector OMR</a>
         </div>
 
-        <!-- Tarjeta 3: Analítica Educativa (activo, enlace a analytics/index.html) -->
+        <!-- Tarjeta Analítica Educativa (apunta a la carpeta analytics dentro de teacher-zone) -->
         <div class="card">
             <div class="card-icon">📊</div>
             <h3>Analítica Educativa</h3>
             <p>Visualización de datos de aprendizaje, reportes por competencias, seguimiento de grupo y recomendaciones pedagógicas.</p>
-            <a href="analytics/index.html" class="btn-card">📈 Ingresar a Analítica</a>
+            <a href="./analytics/" class="btn-card">📈 Ingresar a Analítica</a>
         </div>
     </div>
 
-    <!-- Sección adicional: Recursos y guías (opcional, se puede conservar) -->
+    <!-- Recursos para docentes (rutas relativas a la raíz, asumiendo que los simuladores están en ../simulators) -->
     <div class="recursos-section">
         <h3>📥 Recursos para docentes</h3>
         <div class="recursos-links">
@@ -285,9 +278,9 @@
             <a href="../simulators/sound-intensity/sound-intensity-guide.pdf" class="btn-rec" download>📘 Guía - Intensidad Sonora</a>
         </div>
         <div class="recursos-links" style="margin-top: 1rem;">
-            <a href="../simulators/tablas-selva/tablas-selva.html" class="btn-rec" download>📥 Tablas de la Selva (App)</a>
-            <a href="../simulators/sumas-magicas/sumas-magicas.html" class="btn-rec" download>📥 Sumas Mágicas (App)</a>
-            <a href="../simulators/restas-marinas/restas-marinas.html" class="btn-rec" download>📥 Restas Marinas (App)</a>
+            <a href="../simulators/tablas-selva/tablas-selva.html" class="btn-rec">🎮 Tablas de la Selva (App)</a>
+            <a href="../simulators/sumas-magicas/sumas-magicas.html" class="btn-rec">🧮 Sumas Mágicas (App)</a>
+            <a href="../simulators/restas-marinas/restas-marinas.html" class="btn-rec">🐠 Restas Marinas (App)</a>
         </div>
     </div>
 </div>
