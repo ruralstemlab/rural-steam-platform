@@ -52,18 +52,6 @@ ANIMACIONES GLOBALES
     }
 }
 
-@keyframes borderGlow {
-    0% {
-        border-color: rgba(56,189,248,0.3);
-    }
-    50% {
-        border-color: rgba(56,189,248,0.8);
-    }
-    100% {
-        border-color: rgba(56,189,248,0.3);
-    }
-}
-
 /* =========================
 MENU SUPERIOR
 ========================= */
@@ -298,7 +286,7 @@ RESPONSIVE
 <body>
 
 <!-- =========================
-MENU SUPERIOR
+MENU SUPERIOR (con Elementary en lugar de Primary)
 ========================= -->
 
 <nav>
@@ -312,7 +300,7 @@ MENU SUPERIOR
 <a href="physics/">⚙️ Physics</a>
 <a href="chemistry/">🧪 Chemistry</a>
 <a href="mathematics/">📐 Mathematics</a>
-<a href="primary/">📚 Primary</a>
+<a href="elementary/">🧸 Elementary</a>   <!-- ✅ cambiado de primary/ a elementary/ -->
 </div>
 
 </nav>
@@ -339,7 +327,7 @@ CARDS
 
 <section class="container">
 
-<!-- Student Zone (solo un botón, sin sub-botones) -->
+<!-- Student Zone -->
 <div class="card">
 <h2>🎓 Student Zone</h2>
 <p>Interactive simulations, virtual laboratories, quizzes and STEM learning activities.</p>
@@ -353,9 +341,9 @@ CARDS
 </div>
 
 <div class="card">
-<h2>🧮 Primary Mathematics</h2>
-<p>Interactive mathematical activities, basic arithmetic and educational tools for elementary school students.</p>
-<button onclick="window.location.href='primary/'">Open Primary Math</button>
+<h2>🧸 Elementary Mathematics</h2>   <!-- ✅ título actualizado -->
+<p>Interactive mathematical activities, basic arithmetic and educational games for elementary school students.</p>
+<button onclick="window.location.href='elementary/'">Open Elementary Math</button>   <!-- ✅ ruta actualizada -->
 </div>
 
 <div class="card">
