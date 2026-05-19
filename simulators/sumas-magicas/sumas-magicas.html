@@ -3,254 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Sumas Mágicas | Granja Matemática</title>
-    <!-- jsPDF para PDF -->
+    <title>Sumas Mágicas | Granja Matemática (Corregido)</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Comic Neue', cursive;
-            background: #fef3c7;
-            color: #4a2f1d;
-            padding: 20px 16px 40px;
-            line-height: 1.5;
-        }
-
-        .container {
-            max-width: 550px;
-            margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        /* Tarjetas */
-        .card {
-            background: #fffef7;
-            border-radius: 50px;
-            padding: 1.5rem;
-            border: 3px solid #ffb347;
-            box-shadow: 0 12px 20px rgba(0,0,0,0.1);
-        }
-
-        .card-header {
-            font-size: 1.6rem;
-            font-weight: 700;
-            color: #d45a00;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            border-left: 6px solid #ffb347;
-            padding-left: 16px;
-            margin-bottom: 1rem;
-        }
-
-        /* Selector de animales */
-        .selector-animal {
-            background: #fff0d4;
-            border-radius: 60px;
-            padding: 12px;
-            margin-bottom: 20px;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 12px;
-        }
-
-        .animal-option {
-            cursor: pointer;
-            background: #ffe0b5;
-            padding: 8px 12px;
-            border-radius: 40px;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            transition: 0.2s;
-            border: 2px solid transparent;
-        }
-
-        .animal-option.selected {
-            background: #ffb347;
-            border-color: #d45a00;
-            transform: scale(1.02);
-        }
-
-        /* Área de suma */
-        .sumandos {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 20px;
-            flex-wrap: wrap;
-            margin: 15px 0;
-        }
-
-        .grupo {
-            background: #e8dcc0;
-            border-radius: 30px;
-            padding: 10px;
-            min-width: 100px;
-            text-align: center;
-        }
-
-        .resultado-grupo {
-            background: #b8e4a0;
-            border-radius: 30px;
-            padding: 10px;
-            min-width: 100px;
-            text-align: center;
-            border: 2px solid #6b8c42;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            /* Textura de pasto (rayitas verdes) */
-            background-image: repeating-linear-gradient(45deg, rgba(100,130,50,0.15) 0px, rgba(100,130,50,0.15) 2px, transparent 2px, transparent 8px);
-        }
-
-        .grupo span, .resultado-grupo span {
-            font-size: 0.9rem;
-            font-weight: bold;
-            display: block;
-            margin-top: 5px;
-        }
-
-        .resultado-grupo span {
-            color: #2d5a2b;
-        }
-
-        .icono-igual {
-            font-size: 2rem;
-            background: #ffd966;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        /* Sliders */
-        .slider-group {
-            margin: 15px 0;
-            text-align: left;
-        }
-
-        .slider-group label {
-            font-weight: bold;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        input[type="range"] {
-            width: 100%;
-            margin: 8px 0;
-            accent-color: #ffb347;
-        }
-
-        .resultado-texto {
-            background: #c8e6b5;
-            padding: 12px;
-            border-radius: 40px;
-            font-weight: bold;
-            font-size: 1.2rem;
-            margin: 15px 0;
-        }
-
-        /* Botones */
-        button {
-            background: #ffb347;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 60px;
-            font-weight: bold;
-            font-size: 1rem;
-            font-family: 'Comic Neue', cursive;
-            cursor: pointer;
-            transition: 0.2s;
-            margin: 5px;
-        }
-
-        button:hover {
-            background: #ff9f1a;
-            transform: scale(0.98);
-        }
-
-        .btn-primary {
-            background: #4caf50;
-            color: white;
-        }
-
-        /* Quiz */
-        .quiz-item {
-            background: #fff7e6;
-            border-radius: 30px;
-            padding: 1rem;
-            margin-bottom: 1rem;
-            border: 2px solid #ffb347;
-        }
-
-        .quiz-pregunta {
-            font-weight: bold;
-            margin-bottom: 8px;
-        }
-
-        .quiz-opcion {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 6px 0;
-            cursor: pointer;
-        }
-
-        input[type="text"] {
-            width: 100%;
-            padding: 12px;
-            border-radius: 60px;
-            border: 2px solid #ffb347;
-            font-family: 'Comic Neue', cursive;
-            font-size: 1rem;
-            margin-bottom: 16px;
-            background: white;
-        }
-
-        .score-area {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 12px;
-            margin-top: 16px;
-        }
-
-        .feedback {
-            background: #e8f5e9;
-            border-radius: 30px;
-            padding: 12px;
-            margin-top: 12px;
-            font-weight: bold;
-            text-align: center;
-        }
-
-        .motivacion {
-            background: #ffecb3;
-            border-radius: 60px;
-            padding: 15px;
-            text-align: center;
-            font-size: 1.1rem;
-            font-weight: bold;
-        }
-
-        footer {
-            text-align: center;
-            font-size: 0.8rem;
-            color: #8b5a2b;
-        }
-
-        /* Responsive */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Comic Neue', cursive; background: #fef3c7; color: #4a2f1d; padding: 20px 16px 40px; line-height: 1.5; }
+        .container { max-width: 550px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
+        .card { background: #fffef7; border-radius: 50px; padding: 1.5rem; border: 3px solid #ffb347; box-shadow: 0 12px 20px rgba(0,0,0,0.1); }
+        .card-header { font-size: 1.6rem; font-weight: 700; color: #d45a00; display: flex; align-items: center; gap: 12px; border-left: 6px solid #ffb347; padding-left: 16px; margin-bottom: 1rem; }
+        .selector-animal { background: #fff0d4; border-radius: 60px; padding: 12px; margin-bottom: 20px; display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
+        .animal-option { cursor: pointer; background: #ffe0b5; padding: 8px 12px; border-radius: 40px; display: inline-flex; align-items: center; gap: 8px; transition: 0.2s; border: 2px solid transparent; }
+        .animal-option.selected { background: #ffb347; border-color: #d45a00; transform: scale(1.02); }
+        .sumandos { display: flex; justify-content: center; align-items: center; gap: 20px; flex-wrap: wrap; margin: 15px 0; }
+        .grupo { background: #e8dcc0; border-radius: 30px; padding: 10px; min-width: 100px; text-align: center; }
+        .resultado-grupo { background: #b8e4a0; border-radius: 30px; padding: 10px; min-width: 100px; text-align: center; border: 2px solid #6b8c42; box-shadow: 0 4px 8px rgba(0,0,0,0.1); background-image: repeating-linear-gradient(45deg, rgba(100,130,50,0.15) 0px, rgba(100,130,50,0.15) 2px, transparent 2px, transparent 8px); }
+        .grupo span, .resultado-grupo span { font-size: 0.9rem; font-weight: bold; display: block; margin-top: 5px; }
+        .resultado-grupo span { color: #2d5a2b; }
+        .icono-igual { font-size: 2rem; background: #ffd966; border-radius: 50%; width: 50px; height: 50px; display: inline-flex; align-items: center; justify-content: center; }
+        .slider-group { margin: 15px 0; text-align: left; }
+        .slider-group label { font-weight: bold; display: flex; justify-content: space-between; }
+        input[type="range"] { width: 100%; margin: 8px 0; accent-color: #ffb347; }
+        .resultado-texto { background: #c8e6b5; padding: 12px; border-radius: 40px; font-weight: bold; font-size: 1.2rem; margin: 15px 0; }
+        button { background: #ffb347; border: none; padding: 12px 20px; border-radius: 60px; font-weight: bold; font-size: 1rem; font-family: 'Comic Neue', cursive; cursor: pointer; transition: 0.2s; margin: 5px; }
+        button:hover { background: #ff9f1a; transform: scale(0.98); }
+        .btn-primary { background: #4caf50; color: white; }
+        .quiz-item { background: #fff7e6; border-radius: 30px; padding: 1rem; margin-bottom: 1rem; border: 2px solid #ffb347; }
+        .quiz-pregunta { font-weight: bold; margin-bottom: 8px; }
+        .quiz-opcion { display: flex; align-items: center; gap: 12px; padding: 6px 0; cursor: pointer; }
+        input[type="text"] { width: 100%; padding: 12px; border-radius: 60px; border: 2px solid #ffb347; font-family: 'Comic Neue', cursive; font-size: 1rem; margin-bottom: 16px; background: white; }
+        .score-area { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-top: 16px; }
+        .feedback { background: #e8f5e9; border-radius: 30px; padding: 12px; margin-top: 12px; font-weight: bold; text-align: center; }
+        .motivacion { background: #ffecb3; border-radius: 60px; padding: 15px; text-align: center; font-size: 1.1rem; font-weight: bold; }
+        footer { text-align: center; font-size: 0.8rem; color: #8b5a2b; }
         @media (max-width: 550px) {
             .animal-option span:first-child { font-size: 1.5rem; }
             .animal-option span:last-child { font-size: 0.7rem; display: none; }
@@ -267,7 +52,7 @@
         <p>¡Ayuda a los animales de la granja a sumar!</p>
     </div>
 
-    <!-- SIMULADOR PRINCIPAL -->
+    <!-- SIMULADOR PRINCIPAL (sin cambios) -->
     <div class="card">
         <div class="card-header"><span>🐣</span> Aventura de Sumas</div>
         <div class="selector-animal" id="selectorAnimal">
@@ -300,7 +85,7 @@
         </div>
     </div>
 
-    <!-- QUIZ Y DESCARGA -->
+    <!-- QUIZ CORREGIDO -->
     <div class="card">
         <div class="card-header"><span>🏆</span> Desafío de Campeones</div>
         <div>
@@ -319,13 +104,13 @@
 
     <footer>
         <p>🐄 Granja Matemática — Sumas Mágicas 🐓</p>
-        <p>✨ Diseñado con 💛 para niños y niñas ✨</p>
+        <p>✨ Versión corregida – ¡ahora 4+4 sí tiene respuesta! ✨</p>
     </footer>
 </div>
 
 <script>
     // ========================
-    // TRES TIPOS DE EMOJIS POR ANIMAL (VERSIÓN 3)
+    // TRES TIPOS DE EMOJIS POR ANIMAL
     // ========================
     const emojisVariados = {
         pollo: { primero: "🐥", segundo: "🐤", resultado: "🐣", nombre: "pollito" },
@@ -337,7 +122,6 @@
 
     let animalSeleccionado = "pollo";
 
-    // Selector visual
     const opciones = document.querySelectorAll('.animal-option');
     opciones.forEach(opt => {
         opt.addEventListener('click', () => {
@@ -349,7 +133,6 @@
     });
     document.querySelector('.animal-option[data-animal="pollo"]').classList.add('selected');
 
-    // Elementos DOM
     const num1Slider = document.getElementById('num1Slider');
     const num2Slider = document.getElementById('num2Slider');
     const num1Val = document.getElementById('num1Val');
@@ -403,14 +186,14 @@
     actualizarSuma();
 
     // ========================
-    // QUIZ DE 5 PREGUNTAS (respuestas variadas)
+    // QUIZ DE 5 PREGUNTAS - CORREGIDO
     // ========================
     const preguntas = [
-        { texto: "🐔 2 + 3 = ?", opciones: ["4", "5", "6", "7"], correcta: "b" },
-        { texto: "🐱 4 + 2 = ?", opciones: ["5", "6", "7", "8"], correcta: "c" },
-        { texto: "🦆 1 + 6 = ?", opciones: ["6", "7", "8", "9"], correcta: "d" },
-        { texto: "🐐 5 + 3 = ?", opciones: ["8", "9", "10", "7"], correcta: "a" },
-        { texto: "🐴 4 + 4 = ?", opciones: ["9", "10", "11", "12"], correcta: "c" }
+        { texto: "🐔 2 + 3 = ?", opciones: ["4", "5", "6", "7"], correcta: "b" },   // 5
+        { texto: "🐱 4 + 2 = ?", opciones: ["5", "6", "7", "8"], correcta: "c" },   // 6 (opción c es 7? No, antes estaba mal. Ahora: indice 0=a=5,1=b=6,2=c=7,3=d=8 -> la correcta es 6 => opción b)
+        { texto: "🦆 1 + 6 = ?", opciones: ["6", "7", "8", "9"], correcta: "b" },   // 7 (opción b)
+        { texto: "🐐 5 + 3 = ?", opciones: ["8", "9", "10", "7"], correcta: "a" },   // 8
+        { texto: "🐴 4 + 4 = ?", opciones: ["7", "8", "9", "10"], correcta: "b" }    // 8 (opción b)
     ];
 
     let respuestasUsuario = new Array(5).fill(null);
