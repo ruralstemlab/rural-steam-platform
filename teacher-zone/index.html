@@ -24,9 +24,9 @@
             100% { background-position: 0% 50%; }
         }
         @keyframes subtleZoom {
-            0% { background-position: 50% 50%; background-size: 105%; }
-            50% { background-position: 49% 51%; background-size: 108%; }
-            100% { background-position: 50% 50%; background-size: 105%; }
+            0% { background-position: 50% 50%; background-size: 110%; }
+            50% { background-position: 49% 51%; background-size: 115%; }
+            100% { background-position: 50% 50%; background-size: 110%; }
         }
         .topbar {
             background: #020617;
@@ -64,12 +64,12 @@
         }
         .title-area p { font-size: 0.9rem; color: #94a3b8; }
 
-        /* Header más alto */
+        /* Banner más alto */
         .hero {
             text-align: center;
-            padding: 140px 20px;
+            padding: 150px 20px;
             background: url('../assets/profe-banner.png');
-            background-size: 105%;
+            background-size: cover;
             background-position: 50% 50%;
             background-repeat: no-repeat;
             animation: subtleZoom 25s ease-in-out infinite;
@@ -102,53 +102,71 @@
             margin: 0 auto;
             padding: 2rem;
         }
-        /* Grid para las tres tarjetas principales */
-        .grid-3 {
+        /* Grid de tres tarjetas */
+        .cards-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.8rem;
-            margin-bottom: 2rem;
+            gap: 2rem;
+            margin-bottom: 3rem;
         }
-        .card-principal {
+        .card {
             background: linear-gradient(145deg, #1e293b, #172132);
             border-radius: 1.8rem;
-            padding: 1.8rem;
-            border: 1px solid #334155;
+            padding: 2rem;
             transition: all 0.3s ease;
-            animation: fadeInUp 0.5s ease-out;
+            border: 1px solid #334155;
+            display: flex;
+            flex-direction: column;
+            animation: fadeInUp 0.5s ease-out backwards;
+            position: relative;
+            overflow: hidden;
         }
-        .card-principal:hover {
-            transform: translateY(-5px);
+        .card:hover {
+            transform: translateY(-8px);
             border-color: #38bdf8;
-            box-shadow: 0 15px 30px -10px rgba(0,0,0,0.5);
+            box-shadow: 0 20px 30px -12px rgba(0,0,0,0.5);
         }
-        .card-principal h3 {
-            font-size: 1.8rem;
-            color: #facc15;
-            margin-bottom: 1rem;
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(56,189,248,0.1), transparent);
+            transition: left 0.5s;
+            pointer-events: none;
+        }
+        .card:hover::before { left: 100%; }
+        .card-icon {
+            font-size: 3rem;
+            background: #0f172a;
+            width: 80px;
+            height: 80px;
             display: flex;
             align-items: center;
-            gap: 12px;
-        }
-        .card-principal p {
-            color: #cbd5e1;
-            margin-bottom: 1rem;
-        }
-        .card-secundaria {
-            background: #1e293b;
+            justify-content: center;
             border-radius: 1.5rem;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
             border: 1px solid #334155;
-            transition: 0.2s;
         }
-        .card-secundaria:hover { border-color: #38bdf8; }
-        .card-secundaria h3 { color: #38bdf8; margin-bottom: 1rem; }
-        .btn {
+        .card h3 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #38bdf8;
+        }
+        .card p {
+            color: #94a3b8;
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+            flex-grow: 1;
+        }
+        .btn-card {
             background: #2563eb;
             color: white;
             border: none;
-            padding: 0.6rem 1.2rem;
+            padding: 0.7rem 1.2rem;
             border-radius: 40px;
             font-weight: 600;
             cursor: pointer;
@@ -157,29 +175,45 @@
             align-items: center;
             gap: 8px;
             transition: 0.2s;
+            width: fit-content;
         }
-        .btn:hover { background: #3b82f6; transform: scale(0.98); }
-        .btn-secondary { background: #16a34a; }
-        .quiz-item {
-            background: #0f172a;
-            border-radius: 1rem;
-            padding: 1rem;
-            margin-bottom: 1rem;
+        .btn-card:hover { background: #3b82f6; transform: scale(0.98); }
+        .btn-card.disabled {
+            background: #475569;
+            cursor: not-allowed;
+            opacity: 0.6;
+            pointer-events: none;
         }
-        .quiz-pregunta { font-weight: bold; margin-bottom: 0.5rem; }
-        .quiz-opcion {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 6px 0;
-            cursor: pointer;
-        }
-        .resultado-analisis {
-            background: #0f172a;
-            border-radius: 1rem;
-            padding: 1rem;
+
+        /* Sección de recursos adicionales (opcional) */
+        .recursos-section {
+            background: #1e293b;
+            border-radius: 1.8rem;
+            padding: 1.8rem;
             margin-top: 1rem;
+            border: 1px solid #334155;
         }
+        .recursos-section h3 {
+            color: #facc15;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+        .recursos-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .btn-rec {
+            background: #0f172a;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 40px;
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: 0.2s;
+            border: 1px solid #334155;
+        }
+        .btn-rec:hover { background: #2563eb; border-color: #38bdf8; }
         footer {
             text-align: center;
             padding: 2rem;
@@ -193,6 +227,7 @@
             .hero h2 { font-size: 1.6rem; }
             .hero p { font-size: 1rem; }
             .hero { padding: 100px 20px; }
+            .card h3 { font-size: 1.4rem; }
         }
     </style>
 </head>
@@ -202,169 +237,65 @@
     <a href="../index.html" class="back-btn">⬅ Inicio</a>
     <div class="title-area">
         <h1>🧑‍🏫 Teacher Zone</h1>
-        <p>Capacitación, OMR y analítica educativa</p>
+        <p>Herramientas para capacitación, evaluación automática y analítica educativa</p>
     </div>
 </div>
 
 <section class="hero">
-    <h2>📚 Rural STEM Lab - Zona del Profesor</h2>
-    <p>Herramientas para capacitación, calificación automática y análisis pedagógico</p>
+    <h2>📊 Potencia tu labor docente</h2>
+    <p>Capacitación, sistema OMR y analítica de aprendizaje en un solo lugar.</p>
 </section>
 
 <div class="container">
-    <!-- TRES TARJETAS PRINCIPALES -->
-    <div class="grid-3">
-        <div class="card-principal">
-            <h3>📖 Capacitación Docente</h3>
-            <p>Guía completa sobre el uso de simuladores, módulo Elementary, evaluaciones automáticas y estrategias para motivar a estudiantes.</p>
-            <p><strong>Contenido:</strong> Objetivos, beneficios, demostración en vivo, taller práctico y recomendaciones para el aula.</p>
-            <a href="#" class="btn" style="margin-top: 1rem;">Ver materiales de capacitación</a>
+    <!-- Tres tarjetas principales -->
+    <div class="cards-grid">
+        <!-- Tarjeta 1: Capacitación (vacía, mañana se llena) -->
+        <div class="card">
+            <div class="card-icon">📖</div>
+            <h3>Capacitación Docente</h3>
+            <p>Módulo de formación para el uso de simuladores, evaluaciones automáticas y metodologías STEM en el aula rural.</p>
+            <a href="#" class="btn-card disabled">🚧 Próximamente</a>
         </div>
-        <div class="card-principal">
-            <h3>🧪 Modelo OMR</h3>
-            <p>Sistema de lectura óptica de hojas de respuesta (Optical Mark Recognition).</p>
-            <p><strong>¿Cómo funciona?</strong> Sube una foto o escaneo de la hoja, el sistema detecta las marcas, califica automáticamente y genera reportes.</p>
-            <p><strong>Ventajas:</strong> Ahorro de tiempo, cero errores de calificación, retroalimentación inmediata.</p>
-            <a href="#" class="btn" style="margin-top: 1rem;">Próximamente: subir hoja</a>
+
+        <!-- Tarjeta 2: Sistema OMR (vacío, mañana se llena) -->
+        <div class="card">
+            <div class="card-icon">📄</div>
+            <h3>Sistema OMR</h3>
+            <p>Lectura automática de hojas de respuesta con cámara o escáner. Calificación instantánea y exportación de resultados.</p>
+            <a href="#" class="btn-card disabled">🚧 Próximamente</a>
         </div>
-        <div class="card-principal">
-            <h3>📊 Analítica Educativa</h3>
-            <p>Análisis automático del desempeño grupal e individual.</p>
-            <p><strong>Qué puedes ver:</strong> preguntas con mayor dificultad, distribución de calificaciones, tendencias de aprendizaje, recomendaciones pedagógicas.</p>
-            <p><strong>Uso:</strong> Identifica temas críticos y ajusta tu plan de clases con datos reales.</p>
-            <a href="#" class="btn" style="margin-top: 1rem;">Ver reportes de ejemplo</a>
+
+        <!-- Tarjeta 3: Analítica Educativa (activo, enlace a analytics/index.html) -->
+        <div class="card">
+            <div class="card-icon">📊</div>
+            <h3>Analítica Educativa</h3>
+            <p>Visualización de datos de aprendizaje, reportes por competencias, seguimiento de grupo y recomendaciones pedagógicas.</p>
+            <a href="analytics/index.html" class="btn-card">📈 Ingresar a Analítica</a>
         </div>
     </div>
 
-    <!-- TALLER PRÁCTICO (multiplicación) -->
-    <div class="card-secundaria">
-        <h3>✍️ Taller práctico: Tablas de Multiplicar</h3>
-        <p>Resuelve las siguientes 5 preguntas. Al finalizar, el sistema corregirá automáticamente y mostrará el análisis (simulación OMR).</p>
-        <div id="quizTaller"></div>
-        <button id="btnCorregirTaller" class="btn btn-secondary" style="margin-top: 1rem;">✅ Corregir y analizar</button>
-        <div id="resultadoTaller" class="resultado-analisis" style="margin-top: 1rem; display: none;"></div>
-    </div>
-
-    <!-- RECURSOS Y GUÍAS -->
-    <div class="card-secundaria">
-        <h3>📥 Recursos y guías PDF descargables</h3>
-        <p>Haz clic para descargar las guías pedagógicas de los simuladores (ubicadas en sus respectivas carpetas).</p>
-        <ul style="list-style: none; padding-left: 0; display: flex; flex-wrap: wrap; gap: 0.5rem;">
-            <li><a href="../simulators/tablas-selva/tablas-guide.pdf" class="btn" style="margin: 0;" download>📘 Tablas Selva</a></li>
-            <li><a href="../simulators/sumas-magicas/sumas-guide.pdf" class="btn" style="margin: 0;" download>📘 Sumas Mágicas</a></li>
-            <li><a href="../simulators/restas-marinas/restas-guide.pdf" class="btn" style="margin: 0;" download>📘 Restas Marinas</a></li>
-            <li><a href="../simulators/simple-pendulum/simple-pendulum-guide.pdf" class="btn" style="margin: 0;" download>📘 Péndulo</a></li>
-            <li><a href="../simulators/sound-intensity/sound-intensity-guide.pdf" class="btn" style="margin: 0;" download>📘 Sonido</a></li>
-        </ul>
-        <p style="margin-top: 1rem;">📂 <strong>Simuladores descargables (HTML):</strong></p>
-        <ul style="list-style: none; padding-left: 0; display: flex; flex-wrap: wrap; gap: 0.5rem;">
-            <li><a href="../simulators/tablas-selva/tablas-selva.html" class="btn" download>📥 Tablas Selva</a></li>
-            <li><a href="../simulators/sumas-magicas/sumas-magicas.html" class="btn" download>📥 Sumas Mágicas</a></li>
-            <li><a href="../simulators/restas-marinas/restas-marinas.html" class="btn" download>📥 Restas Marinas</a></li>
-        </ul>
-    </div>
-
-    <!-- ANÁLISIS DE RESULTADOS (después del taller) -->
-    <div class="card-secundaria">
-        <h3>📊 Análisis automático de resultados</h3>
-        <div id="analisisDetallado" class="resultado-analisis">
-            <p>🔍 Completa el taller práctico para ver el análisis detallado (simulación de lo que OMR haría con una hoja física).</p>
+    <!-- Sección adicional: Recursos y guías (opcional, se puede conservar) -->
+    <div class="recursos-section">
+        <h3>📥 Recursos para docentes</h3>
+        <div class="recursos-links">
+            <a href="../simulators/tablas-selva/tablas-guide.pdf" class="btn-rec" download>📘 Guía - Tablas de la Selva</a>
+            <a href="../simulators/sumas-magicas/sumas-guide.pdf" class="btn-rec" download>📘 Guía - Sumas Mágicas</a>
+            <a href="../simulators/restas-marinas/restas-guide.pdf" class="btn-rec" download>📘 Guía - Restas Marinas</a>
+            <a href="../simulators/simple-pendulum/simple-pendulum-guide.pdf" class="btn-rec" download>📘 Guía - Péndulo Simple</a>
+            <a href="../simulators/sound-intensity/sound-intensity-guide.pdf" class="btn-rec" download>📘 Guía - Intensidad Sonora</a>
+        </div>
+        <div class="recursos-links" style="margin-top: 1rem;">
+            <a href="../simulators/tablas-selva/tablas-selva.html" class="btn-rec" download>📥 Tablas de la Selva (App)</a>
+            <a href="../simulators/sumas-magicas/sumas-magicas.html" class="btn-rec" download>📥 Sumas Mágicas (App)</a>
+            <a href="../simulators/restas-marinas/restas-marinas.html" class="btn-rec" download>📥 Restas Marinas (App)</a>
         </div>
     </div>
 </div>
 
 <footer>
-    <p>Rural STEAM Lab — Teacher Zone | Capacitación, OMR y analítica</p>
+    <p>Rural STEAM Lab — Teacher Zone | Capacitación, OMR y Analítica</p>
     <p>✨ Diseñado por: ENG. MEDINA H. A. ✨</p>
 </footer>
 
-<script>
-    // Taller práctico (5 preguntas multiplicación)
-    const preguntasTaller = [
-        { texto: "🦁 3 × 4 = ?", opciones: ["10", "11", "12", "13"], correcta: "c" },
-        { texto: "🐒 5 × 2 = ?", opciones: ["7", "8", "9", "10"], correcta: "d" },
-        { texto: "🦜 6 × 3 = ?", opciones: ["15", "16", "17", "18"], correcta: "d" },
-        { texto: "🦓 7 × 1 = ?", opciones: ["6", "7", "8", "9"], correcta: "b" },
-        { texto: "🐘 4 × 4 = ?", opciones: ["14", "15", "16", "17"], correcta: "c" }
-    ];
-
-    let respuestasTaller = new Array(5).fill(null);
-
-    function renderizarTaller() {
-        let html = '';
-        preguntasTaller.forEach((p, idx) => {
-            html += `<div class="quiz-item">
-                        <div class="quiz-pregunta">${idx+1}. ${p.texto}</div>`;
-            p.opciones.forEach((op, optIdx) => {
-                const letra = String.fromCharCode(97 + optIdx);
-                const checked = (respuestasTaller[idx] === letra) ? 'checked' : '';
-                html += `<label class="quiz-opcion">
-                            <input type="radio" name="q${idx}" value="${letra}" ${checked}>
-                            ${letra.toUpperCase()}) ${op}
-                         </label>`;
-            });
-            html += `</div>`;
-        });
-        document.getElementById('quizTaller').innerHTML = html;
-        for (let i=0; i<5; i++) {
-            const radios = document.querySelectorAll(`input[name="q${i}"]`);
-            radios.forEach(radio => {
-                radio.addEventListener('change', (e) => {
-                    respuestasTaller[i] = e.target.value;
-                });
-            });
-        }
-    }
-
-    function corregirTaller() {
-        let todas = respuestasTaller.every(r => r !== null);
-        if (!todas) {
-            document.getElementById('resultadoTaller').style.display = 'block';
-            document.getElementById('resultadoTaller').innerHTML = `<p style="color:#facc15;">⚠️ Debes responder todas las preguntas del taller.</p>`;
-            document.getElementById('analisisDetallado').innerHTML = `<p>⚠️ Completa el taller primero.</p>`;
-            return;
-        }
-        let correctas = 0;
-        let detalles = [];
-        for (let i=0; i<5; i++) {
-            const esCorrecta = (respuestasTaller[i] === preguntasTaller[i].correcta);
-            if (esCorrecta) correctas++;
-            detalles.push({
-                numero: i+1,
-                texto: preguntasTaller[i].texto,
-                respuestaUsuario: respuestasTaller[i],
-                correcta: preguntasTaller[i].correcta,
-                esCorrecta: esCorrecta
-            });
-        }
-        const puntaje = (correctas / 5) * 100;
-        const nota = (puntaje / 100) * 5;
-        let resultadoHtml = `<h4>📋 Resultados del taller</h4>
-        <p><strong>Calificación:</strong> ${puntaje.toFixed(0)}/100 (Nota: ${nota.toFixed(1)}/5)</p>
-        <p><strong>Respuestas correctas:</strong> ${correctas} de 5</p>`;
-        detalles.forEach(d => {
-            resultadoHtml += `<p><strong>Pregunta ${d.numero}:</strong> ${d.texto}<br>
-            Tu respuesta: ${d.respuestaUsuario.toUpperCase()} | Correcta: ${d.correcta.toUpperCase()} | ${d.esCorrecta ? '✅ Correcta' : '❌ Incorrecta'}</p>`;
-        });
-        document.getElementById('resultadoTaller').style.display = 'block';
-        document.getElementById('resultadoTaller').innerHTML = resultadoHtml;
-
-        let analisisHtml = `<h4>📊 Análisis automático (simulación OMR)</h4>
-        <p>✅ <strong>Desempeño general:</strong> ${puntaje.toFixed(0)}% de aciertos.</p>
-        <p>📌 <strong>Preguntas con mayor dificultad:</strong> `;
-        const dificiles = detalles.filter(d => !d.esCorrecta);
-        if (dificiles.length > 0) {
-            analisisHtml += dificiles.map(d => `Pregunta ${d.numero}`).join(', ');
-        } else {
-            analisisHtml += "Ninguna, excelente dominio.";
-        }
-        analisisHtml += `</p><p>💡 <strong>Recomendación pedagógica:</strong> Reforzar las tablas de multiplicar con el simulador "Tablas de la Selva" y las guías descargables.</p>
-        <p>🎯 <strong>Próximo paso:</strong> Subir hojas físicas para calificación masiva mediante OMR.</p>`;
-        document.getElementById('analisisDetallado').innerHTML = analisisHtml;
-    }
-
-    renderizarTaller();
-    document.getElementById('btnCorregirTaller').addEventListener('click', corregirTaller);
-</script>
 </body>
 </html>
