@@ -16,44 +16,31 @@
             font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
             background: #0f172a;
             color: white;
+            text-align: center;
             line-height: 1.6;
             overflow-x: hidden;
         }
 
-        /* Animaciones globales */
+        /* Animaciones */
         @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(40px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-
         @keyframes gradientShift {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
         }
-
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-8px); }
-            100% { transform: translateY(0px); }
-        }
-
-        @keyframes borderGlow {
-            0% { border-color: rgba(56,189,248,0.3); }
-            50% { border-color: rgba(56,189,248,0.9); }
-            100% { border-color: rgba(56,189,248,0.3); }
+        /* Animación sutil de zoom y desplazamiento para la imagen de fondo */
+        @keyframes slowZoom {
+            0% { background-position: 50% 50%; background-size: 110%; }
+            50% { background-position: 48% 52%; background-size: 115%; }
+            100% { background-position: 50% 50%; background-size: 110%; }
         }
 
         /* Menu superior */
         nav {
-            background: #020617cc;
-            backdrop-filter: blur(10px);
+            background: #020617;
             padding: 15px 30px;
             display: flex;
             justify-content: space-between;
@@ -63,6 +50,7 @@
             top: 0;
             z-index: 1000;
             box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            backdrop-filter: blur(8px);
             border-bottom: 1px solid #38bdf8;
         }
 
@@ -75,23 +63,18 @@
             color: transparent;
             letter-spacing: -0.5px;
             cursor: pointer;
-            transition: 0.3s;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
+            transition: 0.2s;
         }
-
         .logo:hover {
             transform: scale(1.02);
-            text-shadow: 0 0 12px rgba(56,189,248,0.6);
+            text-shadow: 0 0 8px rgba(56,189,248,0.5);
         }
 
         .menu {
             display: flex;
-            gap: 25px;
+            gap: 20px;
             flex-wrap: wrap;
         }
-
         .menu a {
             color: #e2e8f0;
             text-decoration: none;
@@ -100,81 +83,88 @@
             padding: 5px 0;
             border-bottom: 2px solid transparent;
         }
-
         .menu a:hover {
             color: #38bdf8;
             border-bottom-color: #38bdf8;
             transform: translateY(-2px);
         }
 
-        /* Header con parallax */
+        /* Header con imagen animada (sin romperla) */
         header {
             padding: 130px 20px;
-            background: linear-gradient(135deg, rgba(15,23,42,0.7), rgba(30,27,75,0.8)), url('assets/stem-bg.png');
-            background-size: cover;
-            background-attachment: fixed;
-            background-position: center;
+            background: linear-gradient(135deg, rgba(15,23,42,0.75), rgba(30,27,75,0.85)), url('assets/stem-bg.png');
+            background-size: 110%;
+            background-position: 50% 50%;
             background-repeat: no-repeat;
-            text-align: center;
+            animation: slowZoom 20s ease-in-out infinite;
             position: relative;
         }
-
-        header::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 80px;
-            background: linear-gradient(to top, #0f172a, transparent);
-        }
-
         h1 {
             font-size: 4rem;
             margin-bottom: 20px;
-            background: linear-gradient(135deg, #ffffff, #a5f3fc);
+            background: linear-gradient(135deg, #ffffff, #94a3f8);
             background-clip: text;
             -webkit-background-clip: text;
             color: transparent;
-            text-shadow: 0 2px 15px rgba(0,0,0,0.3);
-            animation: gradientShift 8s ease infinite;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            animation: gradientShift 6s ease infinite;
             background-size: 200% 200%;
         }
-
         header p {
             font-size: 1.3rem;
             max-width: 800px;
             margin: auto;
             color: #cbd5e6;
             font-weight: 500;
+            position: relative;
+            z-index: 2;
         }
 
-        /* Contenedor de tarjetas: 6 columnas fijas en escritorio */
+        /* Tarjetas en grid horizontal para escritorio (6 columnas) */
         .container {
-            max-width: 1400px;
-            margin: 60px auto;
-            padding: 0 40px;
             display: grid;
             grid-template-columns: repeat(6, 1fr);
             gap: 30px;
+            padding: 50px 40px;
+            max-width: 1600px;
+            margin: auto;
+        }
+        /* En pantallas grandes pero no enormes */
+        @media (max-width: 1400px) {
+            .container {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        @media (max-width: 900px) {
+            .container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        @media (max-width: 600px) {
+            .container {
+                grid-template-columns: 1fr;
+                padding: 30px 20px;
+            }
         }
 
-        /* Tarjeta moderna */
         .card {
             background: linear-gradient(145deg, #1e293b, #172132);
             border-radius: 28px;
             padding: 30px 20px;
             transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-            border: 1px solid #334155;
+            border: 1px solid rgba(71,85,105,0.5);
             box-shadow: 0 15px 35px rgba(0,0,0,0.3);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
+            animation: fadeInUp 0.6s ease-out backwards;
             position: relative;
             overflow: hidden;
-            animation: fadeInUp 0.6s ease-out backwards;
+            backdrop-filter: blur(2px);
         }
+        .card:nth-child(1) { animation-delay: 0.05s; }
+        .card:nth-child(2) { animation-delay: 0.1s; }
+        .card:nth-child(3) { animation-delay: 0.15s; }
+        .card:nth-child(4) { animation-delay: 0.2s; }
+        .card:nth-child(5) { animation-delay: 0.25s; }
+        .card:nth-child(6) { animation-delay: 0.3s; }
 
         .card::before {
             content: '';
@@ -187,72 +177,44 @@
             transition: left 0.6s;
             pointer-events: none;
         }
-
         .card:hover::before {
             left: 100%;
         }
-
         .card:hover {
-            transform: translateY(-12px);
+            transform: translateY(-10px);
             border-color: #38bdf8;
             box-shadow: 0 30px 45px rgba(0,0,0,0.5);
-            animation: borderGlow 0.5s ease;
         }
-
-        .card-icon {
-            font-size: 3.2rem;
-            background: #0f172a;
-            width: 85px;
-            height: 85px;
+        .card h2 {
+            font-size: 1.7rem;
+            margin-bottom: 18px;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 2rem;
-            margin-bottom: 1.2rem;
-            border: 1px solid #334155;
-            transition: transform 0.3s;
+            gap: 12px;
         }
-
-        .card:hover .card-icon {
-            transform: scale(1.08);
-            animation: float 2s infinite;
-        }
-
-        .card h2 {
-            font-size: 1.6rem;
-            margin-bottom: 12px;
-            color: #facc15;
-            letter-spacing: -0.3px;
-        }
-
         .card p {
             color: #cbd5e1;
-            font-size: 0.85rem;
+            line-height: 1.7;
             margin-bottom: 20px;
-            line-height: 1.6;
-            flex-grow: 1;
+            font-size: 0.9rem;
         }
-
-        /* Botones con gradiente animado */
-        .card button {
-            margin-top: 5px;
-            padding: 10px 20px;
+        button {
+            margin-top: 10px;
+            padding: 12px 28px;
             border: none;
             border-radius: 50px;
             background: linear-gradient(95deg, #2563eb, #3b82f6);
-            background-size: 200% auto;
             color: white;
-            font-size: 0.9rem;
+            font-size: 1rem;
             cursor: pointer;
             font-weight: bold;
-            transition: 0.3s;
+            transition: 0.25s;
             box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-            width: 100%;
         }
-
-        .card button:hover {
-            background-position: right center;
-            transform: translateY(-2px);
+        button:hover {
+            background: linear-gradient(95deg, #1d4ed8, #2563eb);
+            transform: scale(1.02);
             box-shadow: 0 8px 18px rgba(0,0,0,0.3);
         }
 
@@ -261,16 +223,16 @@
             padding: 40px 20px;
             background: #020617;
             color: #94a3b8;
+            margin-top: 50px;
             border-top: 1px solid #1e293b;
         }
-
         footer h3 {
             color: #f1f5f9;
             margin-bottom: 12px;
             font-size: 1.3rem;
         }
 
-        /* ========= MODAL MEJORADO ========= */
+        /* MODAL INSTITUCIONAL MEJORADO */
         .modal {
             display: none;
             position: fixed;
@@ -279,68 +241,61 @@
             top: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(12px);
+            background-color: rgba(0,0,0,0.85);
+            backdrop-filter: blur(8px);
             justify-content: center;
             align-items: center;
             animation: fadeInUp 0.3s ease;
         }
-
         .modal-content {
             background: linear-gradient(145deg, #1e293b, #0f172a);
             margin: 20px;
-            padding: 30px;
+            padding: 25px;
             border-radius: 2rem;
-            max-width: 1000px;
+            max-width: 950px;
             max-height: 85vh;
             overflow-y: auto;
             border: 1px solid #38bdf8;
-            box-shadow: 0 25px 40px rgba(0, 0, 0, 0.6);
-            position: relative;
+            box-shadow: 0 25px 45px rgba(0,0,0,0.6);
+            animation: fadeInUp 0.4s ease;
         }
-
         .modal-content h2 {
             color: #38bdf8;
             text-align: center;
             margin-bottom: 20px;
-            font-size: 1.8rem;
-            border-bottom: 2px solid #334155;
+            border-bottom: 2px solid #38bdf8;
             display: inline-block;
             padding-bottom: 8px;
-            width: 100%;
+            width: auto;
         }
-
-        /* Tabla más elegante */
-        .modal-table {
+        .modal-content table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
+            background: rgba(0,0,0,0.2);
+            border-radius: 1rem;
+            overflow: hidden;
         }
-
-        .modal-table th, .modal-table td {
+        .modal-content td, .modal-content th {
             border: 1px solid #334155;
-            padding: 12px;
+            padding: 10px;
             vertical-align: top;
             text-align: left;
         }
-
-        .modal-table th {
-            background: #020617;
+        .modal-content th {
+            background: #0f172a;
             color: #facc15;
             font-weight: bold;
             width: 30%;
         }
-
-        .modal-table td {
-            background: #0f172a80;
-            color: #cbd5e6;
+        .modal-content td {
+            background: #1e293b;
         }
-
         .close-modal {
-            background: #ef4444;
+            background: linear-gradient(95deg, #ef4444, #dc2626);
             color: white;
             border: none;
-            padding: 10px 24px;
+            padding: 10px 28px;
             border-radius: 40px;
             cursor: pointer;
             font-weight: bold;
@@ -351,57 +306,24 @@
             margin-right: auto;
             transition: 0.2s;
         }
-
         .close-modal:hover {
-            background: #dc2626;
-            transform: scale(0.96);
+            transform: scale(1.02);
+            background: linear-gradient(95deg, #dc2626, #b91c1c);
         }
-
-        /* Responsive: en pantallas medianas, pasar a 3 columnas; en móvil, 1 columna */
-        @media (max-width: 1100px) {
-            .container {
-                grid-template-columns: repeat(3, 1fr);
-                gap: 25px;
-                padding: 0 30px;
-            }
-        }
-
         @media (max-width: 750px) {
-            nav {
-                flex-direction: column;
-                gap: 15px;
-                padding: 12px 20px;
-            }
-            h1 {
-                font-size: 2.5rem;
-            }
-            header p {
-                font-size: 1rem;
-            }
-            .container {
-                grid-template-columns: 1fr;
-                padding: 20px;
-                gap: 20px;
-            }
-            .card h2 {
-                font-size: 1.4rem;
-            }
-            .modal-content {
-                padding: 15px;
-            }
-            .modal-table th, .modal-table td {
-                font-size: 0.7rem;
-                padding: 8px;
-            }
+            nav { flex-direction: column; gap: 12px; }
+            h1 { font-size: 2.5rem; }
+            header p { font-size: 1rem; }
+            .container { padding: 20px; }
+            .modal-content { padding: 15px; }
+            .modal-content td, .modal-content th { font-size: 0.75rem; padding: 6px; }
         }
     </style>
 </head>
 <body>
 
 <nav>
-    <div class="logo" id="logoInstitucional">
-        🧪 Rural STEAM Lab
-    </div>
+    <div class="logo" id="logoInstitucional">🧪 Rural STEAM Lab</div>
     <div class="menu">
         <a href="#">🏠 Home</a>
         <a href="physics/">⚙️ Physics</a>
@@ -418,38 +340,32 @@
 
 <section class="container">
     <div class="card">
-        <div class="card-icon">🎓</div>
-        <h2>Student Zone</h2>
+        <h2>🎓 Student Zone</h2>
         <p>Interactive simulations, virtual laboratories, quizzes and STEM learning activities.</p>
         <button onclick="window.location.href='student-zone/'">Open Student Zone</button>
     </div>
     <div class="card">
-        <div class="card-icon">🧑‍🏫</div>
-        <h2>Teacher Zone</h2>
+        <h2>🧑‍🏫 Teacher Zone</h2>
         <p>Educational tools for grading, analytics, pedagogical reports and classroom support.</p>
         <button onclick="window.location.href='teacher-zone/'">Open Teacher Zone</button>
     </div>
     <div class="card">
-        <div class="card-icon">🧮</div>
-        <h2>Elementary Math</h2>
-        <p>Interactive mathematical activities, basic arithmetic and educational games.</p>
+        <h2>🧮 Elementary Math</h2>
+        <p>Interactive mathematical activities, basic arithmetic and educational games for elementary school students.</p>
         <button onclick="window.location.href='elementary/'">Open Elementary Math</button>
     </div>
     <div class="card">
-        <div class="card-icon">⚙️</div>
-        <h2>Physics Lab</h2>
+        <h2>⚙️ Physics Lab</h2>
         <p>Dynamics, waves, Newton laws, pulleys, Doppler effect, sound and pendulums.</p>
         <button onclick="window.location.href='physics/'">Open Physics</button>
     </div>
     <div class="card">
-        <div class="card-icon">🧪</div>
-        <h2>Chemistry Lab</h2>
-        <p>Atomic models, chemical reactions, periodic table, molecular simulations.</p>
+        <h2>🧪 Chemistry Lab</h2>
+        <p>Atomic models, chemical reactions, periodic table, molecular simulations and lab experiments.</p>
         <button onclick="window.location.href='chemistry/'">Open Chemistry</button>
     </div>
     <div class="card">
-        <div class="card-icon">📐</div>
-        <h2>Math Lab</h2>
+        <h2>📐 Mathematics Lab</h2>
         <p>Algebra, geometry, statistics, limits and interactive mathematical models.</p>
         <button onclick="window.location.href='mathematics/'">Open Mathematics</button>
     </div>
@@ -461,39 +377,40 @@
     <p>Rural STEAM Lab © 2026</p>
 </footer>
 
-<!-- MODAL INSTITUCIONAL MEJORADO -->
+<!-- MODAL INSTITUCIONAL -->
 <div id="modalInstitucional" class="modal">
     <div class="modal-content">
         <h2>🧪 Rural STEM Lab - Ecosistema Educativo</h2>
-        <table class="modal-table">
-            <tr><th>Nombre del ecosistema</th><td><strong>Rural STEM Lab</strong></td></tr>
-            <tr><th>Tipo de proyecto</th><td>Ecosistema educativo STEM interactivo para contexto rural</td></tr>
-            <tr><th>Autor</th><td>Ingeniero Henson Alberto Medina</td></tr>
-            <tr><th>Formación profesional</th><td>Ingeniero Mecánico – Universidad Industrial de Santander</td></tr>
-            <tr><th>Formación de posgrado</th><td>Especialista en TIC para la Enseñanza – Universidad de Santander</td></tr>
-            <tr><th>Formación actual</th><td>Estudiante de Maestría en Tecnologías Emergentes aplicadas a la Educación – Universidad de Santander</td></tr>
-            <tr><th>Experiencia docente</th><td>Más de 18 años en enseñanza de Matemáticas y Física</td></tr>
-            <tr><th>Institución actual</th><td>Institución Educativa Tierra Negra</td></tr>
-            <tr><th>URL del proyecto</th><td><a href="https://ruralstemlab.github.io/rural-steam-platform/" target="_blank" style="color:#38bdf8;">Rural STEM Lab</a></td></tr>
-            <tr><th>Descripción general</th><td>Rural STEM Lab es un ecosistema educativo digital diseñado para fortalecer la enseñanza y el aprendizaje de Matemáticas, Física y áreas STEM en contextos rurales mediante simuladores interactivos, evaluaciones automatizadas, laboratorios virtuales y herramientas pedagógicas offline.</td></tr>
-            <tr><th>Objetivo principal</th><td>Mejorar el aprendizaje STEM en instituciones rurales mediante tecnologías educativas accesibles, interactivas y adaptadas a las necesidades reales del aula.</td></tr>
-            <tr><th>Problemática que aborda</th><td>Escasez de laboratorios físicos, baja conectividad, limitada disponibilidad de recursos didácticos STEM y alta carga operativa para docentes rurales.</td></tr>
-            <tr><th>Población beneficiada</th><td>Docentes y estudiantes de educación primaria, básica secundaria y media.</td></tr>
-            <tr><th>Apoyo a docentes de primaria</th><td>Facilita la enseñanza mediante actividades visuales, simuladores intuitivos, aprendizaje interactivo y recursos didácticos adaptados para fortalecer operaciones básicas, pensamiento lógico y razonamiento matemático.</td></tr>
-            <tr><th>Apoyo a docentes de ciencias y matemáticas</th><td>Proporciona simuladores físicos y matemáticos con desarrollo paso a paso, interpretación conceptual, visualización dinámica y herramientas de evaluación tipo ICFES.</td></tr>
-            <tr><th>Beneficios para los estudiantes</th><td>Incrementa la motivación, mejora la comprensión conceptual, fortalece el aprendizaje visual y permite experimentar fenómenos físicos y matemáticos de manera interactiva.</td></tr>
-            <tr><th>Reducción de carga docente</th><td>Automatiza procesos de evaluación y calificación mediante sistemas OMR y análisis automático de resultados, permitiendo que el docente dedique más tiempo a la retroalimentación pedagógica.</td></tr>
-            <tr><th>Retroalimentación pedagógica</th><td>El ecosistema genera interpretación de resultados, análisis por preguntas, identificación de debilidades y recomendaciones de mejora académica.</td></tr>
-            <tr><th>Fortalecimiento tipo ICFES</th><td>Incluye simulacros, microevaluaciones y análisis automático orientado al fortalecimiento del desempeño en pruebas estandarizadas tipo ICFES.</td></tr>
-            <tr><th>Componentes del ecosistema</th><td>Simuladores STEM, laboratorios virtuales, evaluaciones interactivas, sistema OMR, análisis de desempeño, retroalimentación automática y recursos offline.</td></tr>
-            <tr><th>Áreas trabajadas</th><td>Matemáticas, Física, Geometría, Estadística, Ondas, Cinemática, Dinámica y razonamiento lógico.</td></tr>
-            <tr><th>Tecnologías utilizadas</th><td>HTML, CSS, JavaScript, inteligencia artificial educativa, procesamiento OMR y simulación interactiva offline.</td></tr>
-            <tr><th>Funcionamiento offline</th><td>Diseñado para operar en contextos rurales con acceso limitado o inexistente a internet.</td></tr>
-            <tr><th>Innovación principal</th><td>Integración de simulación interactiva, evaluación automática y análisis pedagógico en una sola plataforma educativa rural.</td></tr>
-            <tr><th>Impacto esperado</th><td>Mejorar el rendimiento académico, fortalecer competencias STEM, reducir brechas tecnológicas y optimizar el tiempo pedagógico docente.</td></tr>
-            <tr><th>Potencial de mejora y expansión</th><td>El ecosistema puede seguir creciendo mediante incorporación de nuevas áreas STEM, módulos de inteligencia artificial, analítica educativa avanzada, seguimiento académico y expansión institucional.</td></tr>
-            <tr><th>Potencial investigativo</th><td>Desarrollo de artículos científicos, tesis de maestría y doctorado, innovación educativa rural y proyectos de investigación en TIC aplicadas a la educación.</td></tr>
-            <tr><th>Proyección futura</th><td>Consolidarse como laboratorio STEM rural digital de referencia para instituciones educativas rurales de Colombia y Latinoamérica.</td></tr>
+        <table>
+            <tr><th>Ítem</th><th>Descripción</th></tr>
+            <tr><td><strong>Nombre del ecosistema</strong></td><td><strong>Rural STEM Lab</strong></td></tr>
+            <tr><td>Tipo de proyecto</td><td>Ecosistema educativo STEM interactivo para contexto rural</td></tr>
+            <tr><td>Autor</td><td>Ingeniero Henson Alberto Medina</td></tr>
+            <tr><td>Formación profesional</td><td>Ingeniero Mecánico – Universidad Industrial de Santander</td></tr>
+            <tr><td>Formación de posgrado</td><td>Especialista en TIC para la Enseñanza – Universidad de Santander</td></tr>
+            <tr><td>Formación actual</td><td>Estudiante de Maestría en Tecnologías Emergentes aplicadas a la Educación – Universidad de Santander</td></tr>
+            <tr><td>Experiencia docente</td><td>Más de 18 años en enseñanza de Matemáticas y Física</td></tr>
+            <tr><td>Institución actual</td><td>Institución Educativa Tierra Negra</td></tr>
+            <tr><td>URL del proyecto</td><td><a href="https://ruralstemlab.github.io/rural-steam-platform/" target="_blank" style="color:#38bdf8;">Rural STEM Lab</a></td></tr>
+            <tr><td>Descripción general</td><td>Rural STEM Lab es un ecosistema educativo digital diseñado para fortalecer la enseñanza y el aprendizaje de Matemáticas, Física y áreas STEM en contextos rurales mediante simuladores interactivos, evaluaciones automatizadas, laboratorios virtuales y herramientas pedagógicas offline.</td></tr>
+            <tr><td>Objetivo principal</td><td>Mejorar el aprendizaje STEM en instituciones rurales mediante tecnologías educativas accesibles, interactivas y adaptadas a las necesidades reales del aula.</td></tr>
+            <tr><td>Problemática que aborda</td><td>Escasez de laboratorios físicos, baja conectividad, limitada disponibilidad de recursos didácticos STEM y alta carga operativa para docentes rurales.</td></tr>
+            <tr><td>Población beneficiada</td><td>Docentes y estudiantes de educación primaria, básica secundaria y media.</td></tr>
+            <tr><td>Apoyo a docentes de primaria</td><td>Facilita la enseñanza mediante actividades visuales, simuladores intuitivos, aprendizaje interactivo y recursos didácticos adaptados para fortalecer operaciones básicas, pensamiento lógico y razonamiento matemático.</td></tr>
+            <tr><td>Apoyo a docentes de ciencias y matemáticas</td><td>Proporciona simuladores físicos y matemáticos con desarrollo paso a paso, interpretación conceptual, visualización dinámica y herramientas de evaluación tipo ICFES.</td></tr>
+            <tr><td>Beneficios para los estudiantes</td><td>Incrementa la motivación, mejora la comprensión conceptual, fortalece el aprendizaje visual y permite experimentar fenómenos físicos y matemáticos de manera interactiva.</td></tr>
+            <tr><td>Reducción de carga docente</td><td>Automatiza procesos de evaluación y calificación mediante sistemas OMR y análisis automático de resultados, permitiendo que el docente dedique más tiempo a la retroalimentación pedagógica.</td></tr>
+            <tr><td>Retroalimentación pedagógica</td><td>El ecosistema genera interpretación de resultados, análisis por preguntas, identificación de debilidades y recomendaciones de mejora académica.</td></tr>
+            <tr><td>Fortalecimiento tipo ICFES</td><td>Incluye simulacros, microevaluaciones y análisis automático orientado al fortalecimiento del desempeño en pruebas estandarizadas tipo ICFES.</td></tr>
+            <tr><td>Componentes del ecosistema</td><td>Simuladores STEM, laboratorios virtuales, evaluaciones interactivas, sistema OMR, análisis de desempeño, retroalimentación automática y recursos offline.</td></tr>
+            <tr><td>Áreas trabajadas</td><td>Matemáticas, Física, Geometría, Estadística, Ondas, Cinemática, Dinámica y razonamiento lógico.</td></tr>
+            <tr><td>Tecnologías utilizadas</td><td>HTML, CSS, JavaScript, inteligencia artificial educativa, procesamiento OMR y simulación interactiva offline.</td></tr>
+            <tr><td>Funcionamiento offline</td><td>Diseñado para operar en contextos rurales con acceso limitado o inexistente a internet.</td></tr>
+            <tr><td>Innovación principal</td><td>Integración de simulación interactiva, evaluación automática y análisis pedagógico en una sola plataforma educativa rural.</td></tr>
+            <tr><td>Impacto esperado</td><td>Mejorar el rendimiento académico, fortalecer competencias STEM, reducir brechas tecnológicas y optimizar el tiempo pedagógico docente.</td></tr>
+            <tr><td>Potencial de mejora y expansión</td><td>El ecosistema puede seguir creciendo mediante incorporación de nuevas áreas STEM, módulos de inteligencia artificial, analítica educativa avanzada, seguimiento académico y expansión institucional.</td></tr>
+            <tr><td>Potencial investigativo</td><td>Desarrollo de artículos científicos, tesis de maestría y doctorado, innovación educativa rural y proyectos de investigación en TIC aplicadas a la educación.</td></tr>
+            <tr><td>Proyección futura</td><td>Consolidarse como laboratorio STEM rural digital de referencia para instituciones educativas rurales de Colombia y Latinoamérica.</td></tr>
         </table>
         <button class="close-modal" onclick="cerrarModal()">Cerrar</button>
     </div>
@@ -506,6 +423,5 @@
     function cerrarModal() { modal.style.display = 'none'; }
     window.onclick = function(event) { if (event.target == modal) modal.style.display = 'none'; }
 </script>
-
 </body>
 </html>
