@@ -3,115 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Física Lab | Rural STEAM Platform</title>
+    <title>Physics Lab | Rural STEAM Platform</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+            background: #0f172a;
             color: #f1f5f9;
             line-height: 1.5;
+            overflow-x: hidden;
         }
-
+        /* Animaciones */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 0 0 rgba(56,189,248,0.4); }
+            70% { box-shadow: 0 0 0 8px rgba(56,189,248,0); }
+            100% { box-shadow: 0 0 0 0 rgba(56,189,248,0); }
+        }
         /* Topbar */
         .topbar {
-            background: rgba(2, 6, 23, 0.8);
-            backdrop-filter: blur(12px);
+            background: #020617;
             padding: 1rem 2rem;
             display: flex;
             align-items: center;
             gap: 1.5rem;
             flex-wrap: wrap;
-            border-bottom: 1px solid rgba(56, 189, 248, 0.3);
+            border-bottom: 1px solid #1e293b;
             position: sticky;
             top: 0;
             z-index: 100;
         }
-
         .back-btn {
-            background: linear-gradient(95deg, #3b82f6, #2563eb);
+            background: #2563eb;
             color: white;
-            border: none;
             padding: 0.6rem 1.2rem;
             border-radius: 40px;
             font-weight: 600;
             font-size: 0.9rem;
-            cursor: pointer;
-            transition: all 0.2s ease;
             text-decoration: none;
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            transition: 0.2s;
         }
-
-        .back-btn:hover {
-            transform: scale(0.97);
-            box-shadow: 0 4px 12px rgba(59,130,246,0.4);
-        }
-
+        .back-btn:hover { background: #3b82f6; transform: scale(0.98); animation: pulseGlow 0.6s ease; }
         .title-area h1 {
             font-size: 1.7rem;
             font-weight: 700;
-            background: linear-gradient(135deg, #38bdf8, #a78bfa);
+            background: linear-gradient(135deg, #c084fc, #60a5fa);
             background-clip: text;
             -webkit-background-clip: text;
             color: transparent;
         }
-
-        .title-area p {
-            font-size: 0.9rem;
-            color: #94a3b8;
-        }
-
+        .title-area p { font-size: 0.9rem; color: #94a3b8; }
         /* Hero */
         .hero {
             text-align: center;
             padding: 3rem 2rem 2rem;
-            animation: fadeInUp 0.8s ease-out;
+            animation: fadeInUp 0.6s ease-out;
         }
-
-        .hero h2 {
-            font-size: 2.2rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-            background: linear-gradient(135deg, #fff, #94a3f8);
-            background-clip: text;
-            -webkit-background-clip: text;
-            color: transparent;
-        }
-
-        .hero p {
-            color: #cbd5e1;
-            max-width: 700px;
-            margin: 0 auto;
-        }
-
-        /* Animaciones */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-8px); }
-            100% { transform: translateY(0px); }
-        }
-
-        /* Grid de simuladores */
+        .hero h2 { font-size: 2.2rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .hero p { color: #cbd5e1; max-width: 700px; margin: 0 auto; }
+        /* Grid de tarjetas */
         .container {
             max-width: 1300px;
             margin: 0 auto;
@@ -120,19 +77,23 @@
             grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
             gap: 2rem;
         }
-
         .card {
-            background: rgba(30, 41, 59, 0.7);
-            backdrop-filter: blur(8px);
-            border-radius: 2rem;
-            padding: 1.5rem;
+            background: #1e293b;
+            border-radius: 1.8rem;
+            padding: 1.8rem;
             transition: all 0.3s ease;
-            border: 1px solid rgba(71, 85, 105, 0.5);
-            animation: fadeInUp 0.6s ease-out backwards;
+            border: 1px solid #334155;
+            display: flex;
+            flex-direction: column;
+            animation: fadeInUp 0.5s ease-out backwards;
             position: relative;
             overflow: hidden;
         }
-
+        .card:hover {
+            transform: translateY(-8px);
+            border-color: #38bdf8;
+            box-shadow: 0 20px 30px -12px rgba(0,0,0,0.5);
+        }
         .card::before {
             content: '';
             position: absolute;
@@ -140,24 +101,13 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(56, 189, 248, 0.1), transparent);
-            transition: left 0.6s;
+            background: linear-gradient(90deg, transparent, rgba(56,189,248,0.1), transparent);
+            transition: left 0.5s;
             pointer-events: none;
         }
-
-        .card:hover::before {
-            left: 100%;
-        }
-
-        .card:hover {
-            transform: translateY(-8px);
-            background: #334155;
-            border-color: #38bdf8;
-            box-shadow: 0 20px 35px rgba(0,0,0,0.3);
-        }
-
+        .card:hover::before { left: 100%; }
         .card-icon {
-            font-size: 3rem;
+            font-size: 2.8rem;
             background: #0f172a;
             width: 70px;
             height: 70px;
@@ -167,34 +117,16 @@
             border-radius: 1.5rem;
             margin-bottom: 1rem;
             border: 1px solid #334155;
-            transition: transform 0.3s;
         }
-
-        .card:hover .card-icon {
-            transform: scale(1.05);
-        }
-
-        .card h3 {
-            font-size: 1.4rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-
-        .card p {
-            color: #94a3b8;
-            font-size: 0.85rem;
-            margin-bottom: 1.2rem;
-            flex-grow: 1;
-        }
-
+        .card h3 { font-size: 1.5rem; font-weight: 600; margin-bottom: 0.5rem; }
+        .card p { color: #94a3b8; font-size: 0.85rem; margin-bottom: 1.2rem; flex-grow: 1; }
         .button-group {
             display: flex;
             flex-wrap: wrap;
             gap: 0.6rem;
             margin-top: 0.5rem;
         }
-
-        .btn {
+        .btn-sim {
             background: #2563eb;
             color: white;
             border: none;
@@ -209,20 +141,9 @@
             align-items: center;
             gap: 5px;
         }
-
-        .btn.download {
-            background: #16a34a;
-        }
-
-        .btn.guide {
-            background: #7c3aed;
-        }
-
-        .btn:hover {
-            filter: brightness(1.1);
-            transform: scale(0.97);
-        }
-
+        .btn-sim.download { background: #16a34a; }
+        .btn-sim.guide { background: #7c3aed; }
+        .btn-sim:hover { filter: brightness(1.1); transform: scale(0.97); }
         footer {
             text-align: center;
             padding: 2rem;
@@ -231,17 +152,10 @@
             font-size: 0.8rem;
             color: #64748b;
         }
-
         @media (max-width: 680px) {
-            .container {
-                padding: 1rem;
-            }
-            .hero h2 {
-                font-size: 1.6rem;
-            }
-            .card {
-                padding: 1.2rem;
-            }
+            .container { padding: 1rem; }
+            .hero h2 { font-size: 1.6rem; }
+            .btn-sim { font-size: 0.7rem; padding: 0.4rem 0.8rem; }
         }
     </style>
 </head>
@@ -250,119 +164,129 @@
 <div class="topbar">
     <a href="../index.html" class="back-btn">⬅ Inicio</a>
     <div class="title-area">
-        <h1>⚡ Physics Laboratory</h1>
-        <p>Simulaciones interactivas de mecánica, ondas y más</p>
+        <h1>⚛️ Physics Laboratory</h1>
+        <p>Interactive simulations for STEM education — Rural STEAM Platform</p>
     </div>
 </div>
 
 <section class="hero">
-    <h2>🔬 Explora la Física con simulaciones</h2>
-    <p>Movimiento, fuerzas, energía, oscilaciones y fenómenos ondulatorios. ¡Aprende interactuando!</p>
+    <h2>📐 Explore Physics Through Simulation</h2>
+    <p>Hands-on virtual labs for mechanics, waves, electricity, optics and more. Each simulator includes free-body diagrams, real-time analysis and downloadable resources.</p>
 </section>
 
 <div class="container">
-
-    <!-- PÉNDULO SIMPLE -->
+    <!-- ========== PÉNDULO SIMPLE ========== -->
     <div class="card">
         <div class="card-icon">🌀</div>
-        <h3>Péndulo Simple</h3>
-        <p>Oscilaciones, periodo, energía y evaluación ICFES.</p>
+        <h3>Simple Pendulum</h3>
+        <p>Oscillations, period, energy and ICFES assessment.</p>
         <div class="button-group">
-            <a href="../simulators/simple-pendulum/" class="btn">🎮 Abrir</a>
-            <a href="../simulators/simple-pendulum/simple-pendulum.html" class="btn download" download>📥 Descargar App</a>
-            <a href="../simulators/simple-pendulum/simple-pendulum-guide.pdf" class="btn guide" download>📘 Guía</a>
+            <a href="../simulators/simple-pendulum/" class="btn-sim">🎮 Abrir</a>
+            <a href="../simulators/simple-pendulum/simple-pendulum.html" class="btn-sim download" download>📥 Descargar App</a>
+            <a href="../simulators/simple-pendulum/simple-pendulum-guide.pdf" class="btn-sim guide" download>📘 Guía PDF</a>
         </div>
     </div>
 
-    <!-- FRICCIÓN -->
-    <div class="card">
-        <div class="card-icon">🧱</div>
-        <h3>Sistema de Fricción</h3>
-        <p>Segunda Ley de Newton con rozamiento y diagramas de cuerpo libre.</p>
-        <div class="button-group">
-            <a href="../simulators/friction/" class="btn">🎮 Abrir</a>
-            <a href="../simulators/friction/friction.html" class="btn download" download>📥 Descargar App</a>
-            <a href="../simulators/friction/friction-guide.pdf" class="btn guide" download>📘 Guía</a>
-        </div>
-    </div>
-
-    <!-- POLEAS -->
-    <div class="card">
-        <div class="card-icon">🧲</div>
-        <h3>Sistema de Poleas</h3>
-        <p>Dos masas conectadas por una cuerda ideal sobre una polea.</p>
-        <div class="button-group">
-            <a href="../simulators/pulley/" class="btn">🎮 Abrir</a>
-            <a href="../simulators/pulley/pulley.html" class="btn download" download>📥 Descargar App</a>
-            <a href="../simulators/pulley/pulley-guide.pdf" class="btn guide" download>📘 Guía</a>
-        </div>
-    </div>
-
-    <!-- PLANO INCLINADO -->
-    <div class="card">
-        <div class="card-icon">📐</div>
-        <h3>Plano Inclinado</h3>
-        <p>Dinámica de un objeto sobre un plano inclinado con rozamiento.</p>
-        <div class="button-group">
-            <a href="../simulators/inclined-plane/" class="btn">🎮 Abrir</a>
-            <a href="../simulators/inclined-plane/inclined-plane.html" class="btn download" download>📥 Descargar App</a>
-            <a href="../simulators/inclined-plane/inclined-plane-guide.pdf" class="btn guide" download>📘 Guía</a>
-        </div>
-    </div>
-
-    <!-- MOVIMIENTO DE PROYECTILES -->
-    <div class="card">
-        <div class="card-icon">🏀</div>
-        <h3>Movimiento de Proyectiles</h3>
-        <p>Simulador de tiro parabólico con vectores y trayectoria.</p>
-        <div class="button-group">
-            <a href="../simulators/projectile-motion/" class="btn">🎮 Abrir</a>
-            <a href="../simulators/projectile-motion/projectile-motion.html" class="btn download" download>📥 Descargar App</a>
-            <a href="../simulators/projectile-motion/projectile-guide.pdf" class="btn guide" download>📘 Guía</a>
-        </div>
-    </div>
-
-    <!-- TENSIONES EN PERNO -->
-    <div class="card">
-        <div class="card-icon">🔩</div>
-        <h3>Tensiones en Perno</h3>
-        <p>Equilibrio de fuerzas con múltiples tensiones angulares.</p>
-        <div class="button-group">
-            <a href="../simulators/eyebolt-tensions/" class="btn">🎮 Abrir</a>
-            <a href="../simulators/eyebolt-tensions/eyebolt-tensions.html" class="btn download" download>📥 Descargar App</a>
-            <a href="../simulators/eyebolt-tensions/eyebolt-tensions-guide.pdf" class="btn guide" download>📘 Guía</a>
-        </div>
-    </div>
-
-    <!-- NIVEL DE INTENSIDAD SONORA -->
+    <!-- ========== NIVEL DE INTENSIDAD SONORA ========== -->
     <div class="card">
         <div class="card-icon">🔊</div>
-        <h3>Intensidad Sonora</h3>
-        <p>Simulador de decibelios, mapa de intensidad y evaluación ICFES.</p>
+        <h3>Sound Intensity</h3>
+        <p>Sound level, decibels and distance simulation.</p>
         <div class="button-group">
-            <a href="../simulators/sound-intensity/" class="btn">🎮 Abrir</a>
-            <a href="../simulators/sound-intensity/sound-intensity.html" class="btn download" download>📥 Descargar App</a>
-            <a href="../simulators/sound-intensity/sound-intensity-guide.pdf" class="btn guide" download>📘 Guía</a>
+            <a href="../simulators/sound-intensity/" class="btn-sim">🎮 Abrir</a>
+            <a href="../simulators/sound-intensity/sound-intensity.html" class="btn-sim download" download>📥 Descargar App</a>
+            <a href="../simulators/sound-intensity/sound-intensity-guide.pdf" class="btn-sim guide" download>📘 Guía PDF</a>
         </div>
     </div>
 
-    <!-- EFECTO DOPPLER -->
+    <!-- ========== SISTEMA DE FRICCIÓN ========== -->
+    <div class="card">
+        <div class="card-icon">🧱</div>
+        <h3>Friction System</h3>
+        <p>Second Law with friction and free body diagrams.</p>
+        <div class="button-group">
+            <a href="../simulators/friction/" class="btn-sim">🎮 Abrir</a>
+            <a href="../simulators/friction/friction.html" class="btn-sim download" download>📥 Descargar App</a>
+            <a href="../simulators/friction/friction-guide.pdf" class="btn-sim guide" download>📘 Guía PDF</a>
+        </div>
+    </div>
+
+    <!-- ========== SISTEMA DE POLEAS ========== -->
+    <div class="card">
+        <div class="card-icon">🧲</div>
+        <h3>Pulley System</h3>
+        <p>Pulley simulator with tensions and Newton laws.</p>
+        <div class="button-group">
+            <a href="../simulators/pulley/" class="btn-sim">🎮 Abrir</a>
+            <a href="../simulators/pulley/pulley.html" class="btn-sim download" download>📥 Descargar App</a>
+            <a href="../simulators/pulley/pulley-guide.pdf" class="btn-sim guide" download>📘 Guía PDF</a>
+        </div>
+    </div>
+
+    <!-- ========== PLANO INCLINADO ========== -->
+    <div class="card">
+        <div class="card-icon">📐</div>
+        <h3>Inclined Plane</h3>
+        <p>Inclined plane simulator with dynamics and forces.</p>
+        <div class="button-group">
+            <a href="../simulators/inclined-plane/" class="btn-sim">🎮 Abrir</a>
+            <a href="../simulators/inclined-plane/inclined-plane.html" class="btn-sim download" download>📥 Descargar App</a>
+            <a href="../simulators/inclined-plane/inclined-plane-guide.pdf" class="btn-sim guide" download>📘 Guía PDF</a>
+        </div>
+    </div>
+
+    <!-- ========== TENSIONES EN PERNOS ========== -->
+    <div class="card">
+        <div class="card-icon">🔩</div>
+        <h3>Eyebolt Tensions</h3>
+        <p>Equilibrium of forces with multiple tensions.</p>
+        <div class="button-group">
+            <a href="../simulators/eyebolt-tensions/" class="btn-sim">🎮 Abrir</a>
+            <a href="../simulators/eyebolt-tensions/eyebolt-tensions.html" class="btn-sim download" download>📥 Descargar App</a>
+            <a href="../simulators/eyebolt-tensions/eyebolt-tensions-guide.pdf" class="btn-sim guide" download>📘 Guía PDF</a>
+        </div>
+    </div>
+
+    <!-- ========== EFECTO DOPPLER ========== -->
     <div class="card">
         <div class="card-icon">📡</div>
-        <h3>Efecto Doppler</h3>
-        <p>Simulación del cambio de frecuencia por movimiento relativo.</p>
+        <h3>Doppler Effect</h3>
+        <p>Frequency shift due to relative motion.</p>
         <div class="button-group">
-            <a href="../simulators/doppler/" class="btn">🎮 Abrir</a>
-            <a href="../simulators/doppler/doppler.html" class="btn download" download>📥 Descargar App</a>
-            <a href="../simulators/doppler/doppler-guide.pdf" class="btn guide" download>📘 Guía</a>
+            <a href="../simulators/doppler/" class="btn-sim">🎮 Abrir</a>
+            <a href="../simulators/doppler/doppler.html" class="btn-sim download" download>📥 Descargar App</a>
+            <a href="../simulators/doppler/doppler-guide.pdf" class="btn-sim guide" download>📘 Guía PDF</a>
         </div>
     </div>
 
+    <!-- ========== BATIDOS 2D ========== -->
+    <div class="card">
+        <div class="card-icon">〰️</div>
+        <h3>Beats 2D</h3>
+        <p>Interference and beat frequency in 2D.</p>
+        <div class="button-group">
+            <a href="../simulators/beats-2d/" class="btn-sim">🎮 Abrir</a>
+            <a href="../simulators/beats-2d/beats-2d.html" class="btn-sim download" download>📥 Descargar App</a>
+            <a href="../simulators/beats-2d/beats-2d-guide.pdf" class="btn-sim guide" download>📘 Guía PDF</a>
+        </div>
+    </div>
+
+    <!-- ========== BATIDOS 3D ========== -->
+    <div class="card">
+        <div class="card-icon">🌐</div>
+        <h3>Beats 3D</h3>
+        <p>Three-dimensional wave interference.</p>
+        <div class="button-group">
+            <a href="../simulators/beats-3d/" class="btn-sim">🎮 Abrir</a>
+            <a href="../simulators/beats-3d/beats-3d.html" class="btn-sim download" download>📥 Descargar App</a>
+            <a href="../simulators/beats-3d/beats-3d-guide.pdf" class="btn-sim guide" download>📘 Guía PDF</a>
+        </div>
+    </div>
 </div>
 
 <footer>
-    <p>Diseñado por Medina H. A. 🔬 Rural STEAM Platform — Laboratorio de Física</p>
-    <p style="margin-top: 0.5rem;">✨ Simulaciones interactivas con enfoque STEM y evaluación ICFES ✨</p>
+    <p>Rural STEAM Platform — Interactive Physics Laboratory | All simulators include pedagogical guides and downloadable resources.</p>
+    <p style="margin-top: 0.5rem;">✨ Designed by: ENG. MEDINA H. A. ✨</p>
 </footer>
 
 </body>
