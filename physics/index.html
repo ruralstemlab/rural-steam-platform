@@ -14,14 +14,21 @@
             line-height: 1.5;
             overflow-x: hidden;
         }
+        /* Animaciones */
         @keyframes fadeInUp {
             from { opacity: 0; transform: translateY(30px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        @keyframes pulseGlow {
-            0% { box-shadow: 0 0 0 0 rgba(56,189,248,0.4); }
-            70% { box-shadow: 0 0 0 8px rgba(56,189,248,0); }
-            100% { box-shadow: 0 0 0 0 rgba(56,189,248,0); }
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        /* Movimiento sutil para la imagen de fondo de física */
+        @keyframes physicsSubtleZoom {
+            0% { background-position: 50% 50%; background-size: 105%; }
+            50% { background-position: 49% 51%; background-size: 108%; }
+            100% { background-position: 50% 50%; background-size: 105%; }
         }
         .topbar {
             background: #020617;
@@ -48,7 +55,7 @@
             gap: 8px;
             transition: 0.2s;
         }
-        .back-btn:hover { background: #3b82f6; transform: scale(0.98); animation: pulseGlow 0.6s ease; }
+        .back-btn:hover { background: #3b82f6; transform: scale(0.98); }
         .title-area h1 {
             font-size: 1.7rem;
             font-weight: 700;
@@ -58,13 +65,37 @@
             color: transparent;
         }
         .title-area p { font-size: 0.9rem; color: #94a3b8; }
-        .hero {
+        /* Header con imagen específica para física */
+        .physics-header {
             text-align: center;
-            padding: 3rem 2rem 2rem;
-            animation: fadeInUp 0.6s ease-out;
+            padding: 130px 20px;
+            background: url('../assets/physics-banner.png');
+            background-size: 105%;
+            background-position: 50% 50%;
+            background-repeat: no-repeat;
+            animation: physicsSubtleZoom 25s ease-in-out infinite;
+            position: relative;
         }
-        .hero h2 { font-size: 2.2rem; font-weight: 700; margin-bottom: 0.5rem; }
-        .hero p { color: #cbd5e1; max-width: 700px; margin: 0 auto; }
+        .physics-header h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #ffffff, #facc15);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            text-shadow: 2px 2px 10px rgba(0,0,0,0.6);
+            animation: gradientShift 6s ease infinite;
+            background-size: 200% 200%;
+            display: inline-block;
+        }
+        .physics-header p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: auto;
+            color: #ffffff;
+            font-weight: 500;
+            text-shadow: 1px 1px 6px rgba(0,0,0,0.8);
+        }
         .container {
             max-width: 1300px;
             margin: 0 auto;
@@ -118,7 +149,7 @@
             font-size: 1.5rem;
             font-weight: 600;
             margin-bottom: 0.5rem;
-            color: #06b6d4;  /* cyan más vibrante para títulos */
+            color: #06b6d4;
         }
         .card p { color: #94a3b8; font-size: 0.85rem; margin-bottom: 1.2rem; flex-grow: 1; }
         .button-group {
@@ -155,7 +186,7 @@
         }
         @media (max-width: 680px) {
             .container { padding: 1rem; }
-            .hero h2 { font-size: 1.6rem; }
+            .physics-header h1 { font-size: 2.2rem; }
             .btn-sim { font-size: 0.7rem; padding: 0.4rem 0.8rem; }
         }
     </style>
@@ -170,17 +201,18 @@
     </div>
 </div>
 
-<section class="hero">
-    <h2>📐 Explore Physics Through Simulation</h2>
-    <p>Hands-on virtual labs for mechanics, waves, electricity, optics and more. Each simulator includes free-body diagrams, real-time analysis and downloadable resources.</p>
-</section>
+<!-- Header con imagen de fondo específica para física -->
+<div class="physics-header">
+    <h1>📐 Physics Laboratory</h1>
+    <p>Explore mechanics, waves, thermodynamics and more through interactive simulations.</p>
+</div>
 
 <div class="container">
-    <!-- ========== MOVIMIENTO PARABÓLICO (PROJECTILE MOTION) PRIMERO ========== -->
+    <!-- ========== MOVIMIENTO PARABÓLICO ========== -->
     <div class="card">
         <div class="card-icon">🏀</div>
         <h3>Projectile Motion</h3>
-        <p>Parabolic motion simulator with vectors, trajectory and STEM pedagogy. ¡El primero que empezó todo!</p>
+        <p>Parabolic motion simulator with vectors, trajectory and STEM pedagogy.</p>
         <div class="button-group">
             <a href="../simulators/projectile-motion/" class="btn-sim">🎮 Abrir</a>
             <a href="../simulators/projectile-motion/projectile-motion.html" class="btn-sim download" download>📥 Descargar App</a>
@@ -200,7 +232,7 @@
         </div>
     </div>
 
-    <!-- ========== NIVEL DE INTENSIDAD SONORA ========== -->
+    <!-- ========== INTENSIDAD SONORA ========== -->
     <div class="card">
         <div class="card-icon">🔊</div>
         <h3>Sound Intensity</h3>
