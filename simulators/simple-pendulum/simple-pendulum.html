@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>Péndulo Simple STEM | LaTeX puro + ICFES + PDF</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" id="MathJax-script" async></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { background: #eef2f5; font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, sans-serif; padding: 20px 16px 40px; }
+        .app-container { max-width: 560px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
+        .card { background: rgba(255, 255, 255, 0.96); border-radius: 2rem; box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.02); padding: 1.5rem 1.25rem; border: 1px solid rgba(166, 194, 220, 0.25); }
+        .card-header { font-size: 1.5rem; font-weight: 600; letter-spacing: -0.3px; color: #1a3e50; margin-bottom: 1rem; display: flex; align-items: center; gap: 10px; border-left: 4px solid #2c7a6e; padding-left: 14px; }
+        h1 { font-size: 1.85rem; font-weight: 700; background: linear-gradient(135deg, #1a4e5f, #2c7a6e); background-clip: text; -webkit-background-clip: text; color: transparent; text-align: center; margin-bottom: 0.25rem; }
+        .sub { text-align: center; color: #4b6a7c; font-size: 0.85rem; margin-bottom: 0.5rem; }
+        .canvas-pendulo { background: #0f1722; border-radius: 28px; width: 100%; aspect-ratio: 1 / 1; display: block; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.1), 0 8px 20px rgba(0,0,0,0.2); }
+        .canvas-fbd { background: #0f1722; border-radius: 24px; width: 100%; aspect-ratio: 1 / 0.7; display: block; margin-top: 10px; }
+        .control-group { margin-bottom: 1.2rem; }
+        .control-label { display: flex; justify-content: space-between; font-weight: 500; color: #1f4e5e; margin-bottom: 6px; }
+        input[type="range"] { width: 100%; height: 5px; -webkit-appearance: none; background: #cbdde6; border-radius: 10px; outline: none; }
+        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; background: #2c7a6e; border-radius: 50%; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.2); border: 2px solid white; }
+        .valor-actual { font-size: 0.85rem; color: #2c7a6e; font-weight: 600; background: #eaf4f0; padding: 2px 10px; border-radius: 30px; }
+        .botonera { display: flex; gap: 14px; margin-top: 20px; flex-wrap: wrap; }
+        .btn { flex: 1; background: #eef2f5; border: none; padding: 12px 0; border-radius: 60px; font-weight: 600; font-size: 1rem; color: #1f4e5e; transition: 0.2s; cursor: pointer; }
+        .btn-primary { background: #2c7a6e; color: white; box-shadow: 0 4px 8px rgba(44,122,110,0.2); }
+        .btn-outline { border: 1px solid #b9d0dc; background: white; }
+        .formula-box { background: #f8fafc; border-radius: 1.5rem; padding: 0.9rem; text-align: center; border: 1px solid #e0edf2; margin-top: 10px; overflow-x: auto; }
+        .resultado-periodo { background: #e0f2ef; border-radius: 1rem; padding: 8px; text-align: center; font-weight: 700; color: #1b5e4a; margin-top: 12px; }
+        .pedagogia-step { background: #ffffffcc; border-left: 3px solid #2c7a6e; margin: 12px 0; padding: 12px; border-radius: 20px; }
+        .quiz-item { background: #fefdf8; border-radius: 1.25rem; padding: 1rem; margin-bottom: 1rem; border: 1px solid #e9ecef; }
+        .quiz-pregunta { font-weight: 700; margin-bottom: 10px; color: #1f3b44; }
+        .quiz-opcion { display: flex; align-items: center; gap: 12px; padding: 6px 0; cursor: pointer; }
+        .quiz-opcion input { width: 18px; height: 18px; accent-color: #2c7a6e; }
+        .intentos-info { background: #eef2fa; border-radius: 2rem; padding: 10px 16px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; font-weight: 500; }
+        .score-area { margin-top: 16px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+        .btn-evaluar, .btn-pdf { background: #3b82b6; color: white; border: none; padding: 10px 18px; border-radius: 40px; font-weight: 600; cursor: pointer; }
+        .btn-pdf { background: #2c7a6e; }
+        .puntaje { background: #eef2ff; padding: 6px 15px; border-radius: 40px; font-weight: bold; color: #1e4a6b; }
+        .feedback-resp { margin-top: 12px; font-size: 0.85rem; background: #e9f5ef; padding: 10px; border-radius: 20px; }
+        .signature { text-align: center; font-size: 0.8rem; font-weight: 500; color: #2c7a6e; background: #ecf9f5; padding: 12px; border-radius: 60px; margin-top: 10px; border: 1px solid #cae3db; }
+        input[type="text"] { width: 100%; padding: 12px; border-radius: 60px; border: 1px solid #cbdde6; font-size: 1rem; margin-bottom: 16px; background: white; }
+        mjx-container { font-size: 1.05rem; margin: 4px 0; }
+        .latex-block { overflow-x: auto; padding: 4px 0; }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <div class="card" style="text-align: center;">
+        <h1>⚡ Péndulo Simple STEM</h1>
+        <div class="sub">Motor físico + Pedagogía con LaTeX puro + Evaluación ICFES (0 a 5)</div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">🌀 Simulación interactiva</div>
+        <canvas id="canvasPendulo" class="canvas-pendulo" width="500" height="500"></canvas>
+        <div class="botonera">
+            <button id="btnPausar" class="btn btn-outline">⏸️ Pausa</button>
+            <button id="btnReanudar" class="btn btn-outline">▶️ Reanudar</button>
+            <button id="btnReset" class="btn btn-primary">🔄 Reiniciar</button>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">🎮 Parámetros físicos</div>
+        <div class="control-group"><div class="control-label"><span>📏 Longitud \(L\) [m]</span><span id="longVal" class="valor-actual">2.00 m</span></div><input type="range" id="longSlider" min="0.8" max="4.5" step="0.02" value="2.0"></div>
+        <div class="control-group"><div class="control-label"><span>⚖️ Masa \(m\) [kg]</span><span id="masaVal" class="valor-actual">2.00 kg</span></div><input type="range" id="masaSlider" min="0.5" max="8" step="0.1" value="2.0"></div>
+        <div class="control-group"><div class="control-label"><span>📐 Ángulo inicial \(\theta_0\) [°]</span><span id="angVal" class="valor-actual">25.0°</span></div><input type="range" id="angSlider" min="3" max="40" step="1" value="25"></div>
+        <div class="control-group"><div class="control-label"><span>🌍 Gravedad \(g\) [m/s²]</span><span id="gravVal" class="valor-actual">9.81 m/s²</span></div><input type="range" id="gravSlider" min="3.0" max="15.0" step="0.05" value="9.81"></div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">📐 Diagrama de cuerpo libre</div>
+        <canvas id="canvasFBD" class="canvas-fbd" width="500" height="320"></canvas>
+        <div class="formula-box">\[ \alpha = -\frac{g}{L} \sin\theta \] <div style="font-size:0.8rem;">Integración numérica (Euler-Cromer)</div></div>
+        <div id="periodoCalculado" class="resultado-periodo">⏱️ Periodo teórico \(T\) = ? s</div>
+        <div id="energiaInfo" style="font-size:0.85rem; background:#f4f9fa; padding:8px; border-radius:20px; margin-top:8px;">Energía total</div>
+        <div id="anguloDinamico" style="font-size:0.8rem;">\(\theta\) actual: 0.0°</div>
+    </div>
+
+    <!-- SECCIÓN PEDAGÓGICA COMPLETAMENTE EN LATEX (sin spans internos) -->
+    <div class="card">
+        <div class="card-header">📚 Desarrollo Pedagógico STEM (LaTeX puro)</div>
+        <div style="font-size:0.95rem; line-height:1.5;">
+            <p><strong>🔍 Datos suministrados (valores actuales):</strong></p>
+            <div class="latex-block" id="datosSuministrados">\[ L = 2.00 \, \text{m}, \quad g = 9.81 \, \text{m/s}^2, \quad m = 2.00 \, \text{kg}, \quad \theta_0 = 25^\circ \]</div>
+            
+            <div class="pedagogia-step">
+                <strong>📐 Fórmula fundamental (periodo para pequeñas amplitudes):</strong>
+                <div class="latex-block">\[ T = 2\pi \sqrt{\frac{L}{g}} \]</div>
+            </div>
+
+            <div class="pedagogia-step">
+                <strong>🧮 Desarrollo matemático paso a paso:</strong>
+                <div id="desarrolloMatematico" class="latex-block">
+                    <!-- Se actualizará dinámicamente con LaTeX puro -->
+                </div>
+            </div>
+
+            <div class="pedagogia-step">
+                <strong>📖 Interpretación física del resultado:</strong>
+                <div id="interpretacionFisica" class="latex-block"></div>
+            </div>
+
+            <div class="pedagogia-step">
+                <strong>⚖️ Energía mecánica (conservación):</strong>
+                <div class="latex-block">\[ E = m g h_{\text{max}} = \frac{1}{2} m v^2 + m g h \quad \text{(se conserva)} \]</div>
+                <p style="margin-top:8px;">En el punto más bajo, toda la energía es cinética; en los extremos, toda es potencial gravitatoria.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Motor ICFES -->
+    <div class="card">
+        <div class="card-header">📝 Evaluación ICFES (10 preguntas)</div>
+        <div><label style="font-weight:600;">👤 Nombre del estudiante:</label><input type="text" id="nombreEstudiante" placeholder="Ej: Ana María García" autocomplete="off"></div>
+        <div id="intentosContainer" class="intentos-info"><span>🎯 Intentos restantes:</span><span id="intentosRestantes" style="font-weight:800; background:#1f4e5e; color:white; padding:4px 14px; border-radius:40px;">3</span></div>
+        <div id="quizContainer"></div>
+        <div class="score-area">
+            <button id="btnCalificar" class="btn-evaluar">✅ Calificar (consumir intento)</button>
+            <button id="btnDescargarPDF" class="btn-pdf" disabled>📄 Descargar PDF (nombre + nota 0-5)</button>
+            <div id="puntajeMostrado" class="puntaje">Puntaje: -- / 100</div>
+        </div>
+        <div id="feedbackGlobal" class="feedback-resp"></div>
+    </div>
+
+    <div class="signature">✨ Designed by: ENG. MEDINA H. A. ✨</div>
+    <footer>🧪 Laboratorio STEM | 3 intentos de evaluación | Nota escala 0 a 5</footer>
+</div>
+
+<script>
+    (function(){
+        // ---------- 1. MOTOR FÍSICO Y SIMULACIÓN ----------
+        const canvas = document.getElementById('canvasPendulo');
+        const ctx = canvas.getContext('2d');
+        const canvasFBD = document.getElementById('canvasFBD');
+        const ctxFBD = canvasFBD.getContext('2d');
+
+        const longSlider = document.getElementById('longSlider');
+        const masaSlider = document.getElementById('masaSlider');
+        const angSlider = document.getElementById('angSlider');
+        const gravSlider = document.getElementById('gravSlider');
+        const longVal = document.getElementById('longVal');
+        const masaVal = document.getElementById('masaVal');
+        const angVal = document.getElementById('angVal');
+        const gravVal = document.getElementById('gravVal');
+        const btnPausar = document.getElementById('btnPausar');
+        const btnReanudar = document.getElementById('btnReanudar');
+        const btnReset = document.getElementById('btnReset');
+        const periodoCalculadoSpan = document.getElementById('periodoCalculado');
+        const energiaInfoSpan = document.getElementById('energiaInfo');
+        const anguloDinamicoSpan = document.getElementById('anguloDinamico');
+
+        let L = 2.0, masa = 2.0, theta0_deg = 25, g = 9.81;
+        let theta = 0, omega = 0;
+        let animacionActiva = true;
+        let animationId = null;
+        let pivotX = 250, pivotY = 70;
+        let scalePxPorMetro = 75;
+
+        function resizeCanvasParams() {
+            const rect = canvas.getBoundingClientRect();
+            canvas.width = rect.width;
+            canvas.height = rect.height;
+            pivotX = canvas.width/2;
+            pivotY = Math.min(70, canvas.height * 0.18);
+            const maxLongPx = Math.min(canvas.height - pivotY - 50, canvas.width * 0.8);
+            scalePxPorMetro = maxLongPx / Math.max(L, 0.8);
+            const rectFBD = canvasFBD.getBoundingClientRect();
+            canvasFBD.width = rectFBD.width;
+            canvasFBD.height = rectFBD.height;
+        }
+
+        // Función para actualizar TODOS los textos LaTeX de la sección pedagógica
+        function actualizarPedagogiaLaTeX() {
+            const Tcalc = 2 * Math.PI * Math.sqrt(L/g);
+            const cociente = L/g;
+            const raiz = Math.sqrt(cociente);
+            
+            // Datos suministrados
+            document.getElementById('datosSuministrados').innerHTML = `\\[ L = ${L.toFixed(2)} \\, \\text{m}, \\quad g = ${g.toFixed(2)} \\, \\text{m/s}^2, \\quad m = ${masa.toFixed(2)} \\, \\text{kg}, \\quad \\theta_0 = ${theta0_deg.toFixed(0)}^\\circ \\]`;
+            
+            // Desarrollo matemático paso a paso (completo en LaTeX)
+            const desarrollo = `
+                \\begin{aligned}
+                &\\text{1. Identificamos variables: } L = ${L.toFixed(2)} \\, \\text{m}, \\quad g = ${g.toFixed(2)} \\, \\text{m/s}^2. \\\\
+                &\\text{2. Relación: } T = 2\\pi \\sqrt{\\frac{L}{g}}. \\\\
+                &\\text{3. Sustituimos: } T = 2\\pi \\sqrt{\\frac{${L.toFixed(2)}}{${g.toFixed(2)}}}. \\\\
+                &\\text{4. Calculamos el cociente: } \\frac{L}{g} = ${cociente.toFixed(4)}. \\\\
+                &\\text{5. Raíz cuadrada: } \\sqrt{${cociente.toFixed(4)}} \\approx ${raiz.toFixed(4)}. \\\\
+                &\\text{6. Multiplicamos por } 2\\pi: \\quad T \\approx ${Tcalc.toFixed(2)} \\, \\text{s}. \\\\
+                &\\boxed{T \\approx ${Tcalc.toFixed(2)} \\, \\text{s}}
+                \\end{aligned}
+            `;
+            document.getElementById('desarrolloMatematico').innerHTML = `\\[ ${desarrollo} \\]`;
+            
+            // Interpretación física
+            const interpretacion = `
+                \\text{El periodo representa el tiempo que tarda el péndulo en una oscilación completa.} \\\\
+                \\text{Depende exclusivamente de la longitud y la gravedad: } T = 2\\pi\\sqrt{L/g}. \\\\
+                \\text{Con } L = ${L.toFixed(2)} \\, \\text{m}, \\text{ el péndulo se balancea cada } T = ${Tcalc.toFixed(2)} \\, \\text{s}.
+            `;
+            document.getElementById('interpretacionFisica').innerHTML = `\\[ ${interpretacion} \\]`;
+            
+            // Forzar re-renderizado de MathJax
+            if (window.MathJax) {
+                MathJax.typesetPromise();
+            }
+        }
+
+        function actualizarParametros() {
+            L = parseFloat(longSlider.value);
+            masa = parseFloat(masaSlider.value);
+            theta0_deg = parseFloat(angSlider.value);
+            g = parseFloat(gravSlider.value);
+            longVal.innerText = L.toFixed(2)+" m";
+            masaVal.innerText = masa.toFixed(2)+" kg";
+            angVal.innerText = theta0_deg.toFixed(1)+"°";
+            gravVal.innerText = g.toFixed(2)+" m/s²";
+            const Tteorico = 2 * Math.PI * Math.sqrt(L/g);
+            periodoCalculadoSpan.innerHTML = `⏱️ Periodo teórico \\( T = ${Tteorico.toFixed(2)} \\, s \\) \\( f = ${(1/Tteorico).toFixed(2)} \\, Hz \\)`;
+            
+            actualizarPedagogiaLaTeX();
+            if (window.MathJax) MathJax.typesetPromise();
+        }
+
+        function reiniciarSimulacion() {
+            theta = theta0_deg * Math.PI / 180;
+            omega = 0;
+            if(!animacionActiva) animacionActiva = true;
+            actualizarParametros();
+        }
+
+        function actualizarFisica(dt) {
+            if(!animacionActiva) return;
+            if(dt>0.03) dt=0.03;
+            let alpha = -(g/L) * Math.sin(theta);
+            omega += alpha * dt;
+            theta += omega * dt;
+            const alturaY = L * (1 - Math.cos(theta));
+            const Ep = masa * g * alturaY;
+            const Ec = 0.5 * masa * Math.pow(L * omega, 2);
+            energiaInfoSpan.innerHTML = `🔋 Energía: Potencial ${Ep.toFixed(2)} J | Cinética ${Ec.toFixed(2)} J | Total ${(Ep+Ec).toFixed(2)} J`;
+            anguloDinamicoSpan.innerHTML = `\\(\\theta\\) actual: ${(theta*180/Math.PI).toFixed(1)}°  | \\(\\omega = ${omega.toFixed(2)} \\, rad/s\\)`;
+            if (window.MathJax) MathJax.typesetPromise();
+        }
+
+        function dibujarPendulo() {
+            if(!ctx) return;
+            resizeCanvasParams();
+            const w = canvas.width, h = canvas.height;
+            ctx.clearRect(0,0,w,h);
+            ctx.fillStyle = "#0b1018";
+            ctx.fillRect(0,0,w,h);
+            ctx.beginPath();
+            ctx.moveTo(pivotX-40, pivotY);
+            ctx.lineTo(pivotX+40, pivotY);
+            ctx.lineWidth=8;
+            ctx.strokeStyle="#bcccd9";
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.arc(pivotX, pivotY,10,0,2*Math.PI);
+            ctx.fillStyle="#cddde9";
+            ctx.fill();
+            let cuerdaLenPx = L * scalePxPorMetro;
+            let bobX = pivotX + cuerdaLenPx * Math.sin(theta);
+            let bobY = pivotY + cuerdaLenPx * Math.cos(theta);
+            ctx.beginPath();
+            ctx.moveTo(pivotX,pivotY);
+            ctx.lineTo(bobX,bobY);
+            ctx.lineWidth=3;
+            ctx.strokeStyle="#a3e4d4";
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.arc(bobX,bobY, Math.min(22, Math.max(14, 12+masa/2.5)),0,2*Math.PI);
+            ctx.fillStyle="#3bc9b0";
+            ctx.fill();
+            ctx.fillStyle="white";
+            ctx.font="bold 14px system-ui";
+            ctx.fillText(`${masa.toFixed(1)} kg`, bobX-18, bobY-12);
+            ctx.fillStyle="#f5e56b";
+            ctx.font="500 13px monospace";
+            ctx.fillText(`${(theta*180/Math.PI).toFixed(0)}°`, pivotX+25, pivotY-18);
+            ctx.beginPath();
+            ctx.moveTo(pivotX,pivotY);
+            ctx.lineTo(pivotX, pivotY+cuerdaLenPx*0.9);
+            ctx.strokeStyle="#4e6a7c";
+            ctx.setLineDash([6,8]);
+            ctx.stroke();
+            ctx.setLineDash([]);
+        }
+
+        function dibujarDiagramaFuerzas() {
+            if(!ctxFBD) return;
+            const w = canvasFBD.width, h = canvasFBD.height;
+            ctxFBD.clearRect(0,0,w,h);
+            ctxFBD.fillStyle = "#0b1018";
+            ctxFBD.fillRect(0,0,w,h);
+            const centerX = w/2, baseY = h*0.4;
+            const len = Math.min(w*0.28, 100);
+            const anguloActual = theta;
+            const xMasa = centerX + len * Math.sin(anguloActual);
+            const yMasa = baseY + len * Math.cos(anguloActual);
+            ctxFBD.beginPath();
+            ctxFBD.moveTo(centerX, baseY);
+            ctxFBD.lineTo(xMasa, yMasa);
+            ctxFBD.strokeStyle = "#7dc9b5";
+            ctxFBD.lineWidth = 3;
+            ctxFBD.stroke();
+            ctxFBD.beginPath();
+            ctxFBD.arc(xMasa, yMasa, 16, 0, 2*Math.PI);
+            ctxFBD.fillStyle = "#3bc9b0";
+            ctxFBD.fill();
+            const angCuerda = Math.atan2(xMasa - centerX, yMasa - baseY);
+            const Tx = -Math.sin(angCuerda)*50;
+            const Ty = -Math.cos(angCuerda)*50;
+            ctxFBD.beginPath();
+            ctxFBD.moveTo(xMasa, yMasa);
+            ctxFBD.lineTo(xMasa+Tx, yMasa+Ty);
+            ctxFBD.strokeStyle = "#6dd5ff";
+            ctxFBD.lineWidth = 3;
+            ctxFBD.stroke();
+            ctxFBD.fillStyle = "#6dd5ff";
+            ctxFBD.font = "bold 16px system-ui";
+            ctxFBD.fillText("T", xMasa+Tx-15, yMasa+Ty-8);
+            ctxFBD.beginPath();
+            ctxFBD.moveTo(xMasa, yMasa);
+            ctxFBD.lineTo(xMasa, yMasa+52);
+            ctxFBD.strokeStyle = "#ff9f6e";
+            ctxFBD.stroke();
+            ctxFBD.fillStyle = "#ffae70";
+            ctxFBD.fillText("mg", xMasa+5, yMasa+52-5);
+            ctxFBD.fillStyle = "#fff5cf";
+            ctxFBD.font = "italic 11px system-ui";
+            ctxFBD.fillText("Fuerzas: Tensión (T) y Peso (mg)", w-150, 25);
+        }
+
+        let lastTimestamp = null;
+        function animate(now) {
+            if(!lastTimestamp) { lastTimestamp = now; requestAnimationFrame(animate); return; }
+            let dt = Math.min(0.033, (now - lastTimestamp)/1000);
+            if(dt>0.001) actualizarFisica(dt);
+            dibujarPendulo();
+            dibujarDiagramaFuerzas();
+            lastTimestamp = now;
+            animationId = requestAnimationFrame(animate);
+        }
+
+        longSlider.addEventListener('input', () => { actualizarParametros(); reiniciarSimulacion(); });
+        masaSlider.addEventListener('input', () => actualizarParametros());
+        gravSlider.addEventListener('input', () => { actualizarParametros(); reiniciarSimulacion(); });
+        angSlider.addEventListener('input', () => { actualizarParametros(); reiniciarSimulacion(); });
+        btnReset.addEventListener('click', () => reiniciarSimulacion());
+        btnPausar.addEventListener('click', () => { animacionActiva = false; });
+        btnReanudar.addEventListener('click', () => { animacionActiva = true; });
+        window.addEventListener('resize', () => { dibujarPendulo(); dibujarDiagramaFuerzas(); });
+        actualizarParametros();
+        reiniciarSimulacion();
+        animate();
+
+        // ---------- 2. MOTOR ICFES (10 preguntas, 3 intentos, nombre, nota 0-5) ----------
+        const preguntas = [
+            { texto: "El periodo de oscilación de un péndulo simple ideal depende de:", opciones: ["a) Masa y amplitud", "b) Longitud y gravedad", "c) Masa y gravedad", "d) Solo la longitud"], correcta: "b" },
+            { texto: "Si la longitud de un péndulo se cuadruplica, el periodo:", opciones: ["a) Se duplica", "b) Se reduce a la mitad", "c) Aumenta 4 veces", "d) No cambia"], correcta: "a" },
+            { texto: "¿Qué ocurre con la energía mecánica total de un péndulo sin rozamiento?", opciones: ["a) Se disipa gradualmente", "b) Se conserva", "c) Depende de la masa", "d) Es máxima en el punto más alto"], correcta: "b" },
+            { texto: "La aceleración de la gravedad en la Tierra es aproximadamente 9.8 m/s². ¿Cómo afectaría un valor menor de g al periodo?", opciones: ["a) El periodo disminuye", "b) El periodo aumenta", "c) No afecta", "d) El periodo se vuelve cero"], correcta: "b" },
+            { texto: "En un péndulo, ¿en qué punto la velocidad lineal de la masa es máxima?", opciones: ["a) En el punto de máxima altura", "b) En el punto más bajo de la trayectoria", "c) En los extremos", "d) Depende del ángulo"], correcta: "b" },
+            { texto: "Para ángulos pequeños (θ < 15°), ¿qué aproximación se utiliza para simplificar la ecuación del péndulo?", opciones: ["a) sen θ ≈ θ", "b) cos θ ≈ θ", "c) tan θ ≈ 1", "d) sen θ ≈ 1"], correcta: "a" },
+            { texto: "Un péndulo de 1 m de longitud en la Luna (g_luna ≈ 1.6 m/s²) tiene un periodo aproximadamente:", opciones: ["a) 2.0 s", "b) 4.97 s", "c) 1.2 s", "d) 0.8 s"], correcta: "b" },
+            { texto: "Si la masa del péndulo se duplica, el periodo:", opciones: ["a) Se duplica", "b) Se reduce a la mitad", "c) Aumenta √2 veces", "d) No cambia"], correcta: "d" },
+            { texto: "¿Cuál gráfica representa mejor la energía cinética vs tiempo en un péndulo ideal sin amortiguamiento?", opciones: ["a) Constante", "b) Función seno al cuadrado", "c) Lineal creciente", "d) Exponencial decreciente"], correcta: "b" },
+            { texto: "¿Qué tipo de movimiento realiza un péndulo simple para amplitudes pequeñas?", opciones: ["a) Armónico simple", "b) Circular uniforme", "c) Parabólico", "d) Caída libre"], correcta: "a" }
+        ];
+
+        let intentosRestantes = 3;
+        let calificacionActual = null;
+        let respuestasUsuario = new Array(10).fill(null);
+        let yaCalificadoEsteIntento = false;
+
+        const quizContainer = document.getElementById('quizContainer');
+        const intentosSpan = document.getElementById('intentosRestantes');
+        const btnCalificar = document.getElementById('btnCalificar');
+        const btnDescargarPDF = document.getElementById('btnDescargarPDF');
+        const puntajeMostrado = document.getElementById('puntajeMostrado');
+        const feedbackGlobal = document.getElementById('feedbackGlobal');
+        const nombreInput = document.getElementById('nombreEstudiante');
+
+        function renderQuiz() {
+            let html = '';
+            preguntas.forEach((p, idx) => {
+                let selectedVal = respuestasUsuario[idx] || '';
+                html += `<div class="quiz-item">
+                            <div class="quiz-pregunta">${idx+1}. ${p.texto}</div>`;
+                p.opciones.forEach(op => {
+                    let checked = (selectedVal === op.charAt(0)) ? 'checked' : '';
+                    html += `<label class="quiz-opcion"><input type="radio" name="q${idx}" value="${op.charAt(0)}" ${checked} > ${op}</label>`;
+                });
+                html += `</div>`;
+            });
+            quizContainer.innerHTML = html;
+            for(let i=0; i<preguntas.length; i++) {
+                let radios = document.querySelectorAll(`input[name="q${i}"]`);
+                radios.forEach(radio => {
+                    radio.addEventListener('change', (e) => {
+                        if(yaCalificadoEsteIntento) {
+                            e.target.checked = false;
+                            feedbackGlobal.innerHTML = "⚠️ Ya usaste tu intento en esta ronda. Usa 'Reiniciar respuestas' para otro intento.";
+                            return;
+                        }
+                        respuestasUsuario[i] = e.target.value;
+                    });
+                });
+            }
+        }
+
+        function calcularPuntaje() {
+            let correctas = 0;
+            for(let i=0; i<preguntas.length; i++) {
+                if(respuestasUsuario[i] === preguntas[i].correcta) correctas++;
+            }
+            return (correctas / preguntas.length) * 100;
+        }
+
+        function notaCeroACinco(puntaje100) {
+            return (puntaje100 / 100) * 5;
+        }
+
+        function consumirIntento() {
+            if(intentosRestantes <= 0) {
+                feedbackGlobal.innerHTML = "❌ No te quedan intentos. Ya no puedes calificar más.";
+                return false;
+            }
+            let todasRespondidas = respuestasUsuario.every(r => r !== null);
+            if(!todasRespondidas) {
+                feedbackGlobal.innerHTML = "⚠️ Debes responder las 10 preguntas antes de calificar.";
+                return false;
+            }
+            if(yaCalificadoEsteIntento) {
+                feedbackGlobal.innerHTML = "⚠️ Ya calificaste en este intento. Usa 'Reiniciar respuestas' para un nuevo intento (consumirá otro).";
+                return false;
+            }
+            intentosRestantes--;
+            intentosSpan.innerText = intentosRestantes;
+            let puntaje = calcularPuntaje();
+            calificacionActual = puntaje;
+            let nota05 = notaCeroACinco(puntaje).toFixed(2);
+            puntajeMostrado.innerHTML = `🎯 Puntaje: ${puntaje.toFixed(0)}/100 (Nota: ${nota05}/5)`;
+            yaCalificadoEsteIntento = true;
+            feedbackGlobal.innerHTML = `✅ Has completado el intento #${3-intentosRestantes}. Obtuviste ${puntaje.toFixed(0)}/100 → ${nota05}/5. Te quedan ${intentosRestantes} intentos.`;
+            if(intentosRestantes === 0) {
+                btnCalificar.disabled = true;
+                feedbackGlobal.innerHTML += " Ya no puedes calificar más. Descarga tu reporte final.";
+            }
+            btnDescargarPDF.disabled = false;
+            return true;
+        }
+
+        const resetQuizBtn = document.createElement('button');
+        resetQuizBtn.innerText = "🔄 Reiniciar respuestas (nuevo intento)";
+        resetQuizBtn.classList.add('btn-outline');
+        resetQuizBtn.style.marginTop = "10px";
+        resetQuizBtn.style.width = "100%";
+        resetQuizBtn.addEventListener('click', () => {
+            if(intentosRestantes <= 0) {
+                feedbackGlobal.innerHTML = "Intentos agotados, no puedes generar nueva evaluación.";
+                return;
+            }
+            respuestasUsuario = new Array(10).fill(null);
+            yaCalificadoEsteIntento = false;
+            calificacionActual = null;
+            puntajeMostrado.innerHTML = "Puntaje: -- / 100";
+            renderQuiz();
+            feedbackGlobal.innerHTML = "Respuestas reiniciadas. Responde todas y califica (consumirás un intento).";
+        });
+        document.querySelector('.score-area').after(resetQuizBtn);
+
+        async function generarPDF() {
+            if(calificacionActual === null) {
+                feedbackGlobal.innerHTML = "Aún no has realizado ninguna calificación. Realiza al menos un intento para descargar PDF.";
+                return;
+            }
+            const nombre = nombreInput.value.trim();
+            if(nombre === "") {
+                feedbackGlobal.innerHTML = "Por favor, ingresa tu nombre antes de descargar el PDF.";
+                return;
+            }
+            const nota05 = notaCeroACinco(calificacionActual).toFixed(2);
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            doc.setFont("helvetica");
+            doc.setFontSize(18);
+            doc.text("Informe de Evaluación - Péndulo Simple ICFES", 15, 20);
+            doc.setFontSize(12);
+            doc.text(`Estudiante: ${nombre}`, 15, 32);
+            doc.text(`Fecha: ${new Date().toLocaleString()}`, 15, 40);
+            doc.text(`Intentos restantes: ${intentosRestantes}`, 15, 48);
+            doc.text(`Calificación final: ${calificacionActual.toFixed(0)}/100 → Nota: ${nota05}/5`, 15, 56);
+            doc.text("Detalle de respuestas:", 15, 66);
+            let y = 76;
+            for(let i=0; i<preguntas.length; i++) {
+                let userResp = respuestasUsuario[i] || "Sin responder";
+                let correcta = preguntas[i].correcta;
+                let estado = (userResp === correcta) ? "✓ Correcta" : (userResp !== "Sin responder" ? "✗ Incorrecta" : "? No respondida");
+                doc.text(`${i+1}. ${preguntas[i].texto.substring(0,60)}`, 15, y);
+                doc.text(`   Respuesta: ${userResp} | Correcta: ${correcta} | ${estado}`, 20, y+6);
+                y += 12;
+                if(y > 270) { doc.addPage(); y = 20; }
+            }
+            doc.save(`resultados_${nombre.replace(/\s/g, "_")}_pendulo.pdf`);
+            feedbackGlobal.innerHTML = "📄 PDF generado exitosamente. Revisa tu carpeta de descargas.";
+        }
+
+        btnCalificar.addEventListener('click', () => consumirIntento());
+        btnDescargarPDF.addEventListener('click', generarPDF);
+        renderQuiz();
+    })();
+</script>
+</body>
+</html>
