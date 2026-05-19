@@ -19,9 +19,14 @@
             to { opacity: 1; transform: translateY(0); }
         }
         @keyframes subtleZoom {
-            0% { background-position: 50% 50%; background-size: 105%; }
-            50% { background-position: 49% 51%; background-size: 108%; }
-            100% { background-position: 50% 50%; background-size: 105%; }
+            0% { background-size: 105%; background-position: 50% 50%; }
+            50% { background-size: 108%; background-position: 49% 51%; }
+            100% { background-size: 105%; background-position: 50% 50%; }
+        }
+        @keyframes glow {
+            0% { box-shadow: 0 0 0 0 rgba(56,189,248,0.3); }
+            70% { box-shadow: 0 0 0 10px rgba(56,189,248,0); }
+            100% { box-shadow: 0 0 0 0 rgba(56,189,248,0); }
         }
         .topbar {
             background: #020617;
@@ -67,7 +72,6 @@
             background-position: 50% 50%;
             background-repeat: no-repeat;
             animation: subtleZoom 25s ease-in-out infinite;
-            position: relative;
         }
         .hero h2 {
             font-size: 2.5rem;
@@ -95,24 +99,39 @@
         }
         .cards-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
             gap: 2rem;
             margin-bottom: 3rem;
         }
         .card {
             background: linear-gradient(145deg, #1e293b, #172132);
-            border-radius: 1.8rem;
-            padding: 1.8rem;
+            border-radius: 2rem;
+            padding: 2rem;
             transition: all 0.3s ease;
             border: 1px solid #334155;
             display: flex;
             flex-direction: column;
             animation: fadeInUp 0.5s ease-out backwards;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(4px);
         }
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(56,189,248,0.15), transparent);
+            transition: left 0.6s;
+            z-index: 0;
+        }
+        .card:hover::before { left: 100%; }
         .card:hover {
             transform: translateY(-8px);
             border-color: #38bdf8;
-            box-shadow: 0 20px 30px -12px rgba(0,0,0,0.5);
+            box-shadow: 0 25px 35px -12px rgba(0,0,0,0.5), 0 0 15px rgba(56,189,248,0.2);
         }
         .card-icon {
             font-size: 3rem;
@@ -123,13 +142,18 @@
             align-items: center;
             justify-content: center;
             border-radius: 1.5rem;
-            margin-bottom: 1rem;
+            margin-bottom: 1.2rem;
             border: 1px solid #334155;
+            transition: 0.2s;
+        }
+        .card:hover .card-icon {
+            border-color: #38bdf8;
+            box-shadow: 0 0 12px rgba(56,189,248,0.4);
         }
         .card h3 {
             font-size: 1.8rem;
             font-weight: 600;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.75rem;
             color: #38bdf8;
         }
         .card p {
@@ -137,42 +161,82 @@
             font-size: 0.9rem;
             margin-bottom: 1.5rem;
             flex-grow: 1;
+            line-height: 1.5;
+        }
+        .btn-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 5px;
+            z-index: 2;
         }
         .btn-card {
             background: #2563eb;
             color: white;
             border: none;
-            padding: 0.7rem 1.2rem;
+            padding: 0.6rem 1.2rem;
             border-radius: 40px;
             font-weight: 600;
+            font-size: 0.8rem;
+            cursor: pointer;
             text-decoration: none;
             display: inline-flex;
             align-items: center;
             gap: 8px;
             transition: 0.2s;
-            width: fit-content;
-            margin-right: 10px;
-            margin-bottom: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
-        .btn-card:hover { background: #3b82f6; transform: scale(0.98); }
-        .btn-descarga {
-            background: #10b981;
+        .btn-card:hover {
+            transform: scale(0.98);
+            filter: brightness(1.05);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
-        .btn-descarga:hover { background: #059669; }
+        .btn-primary {
+            background: #3b82f6;
+        }
+        .btn-download {
+            background: #0f5c3f;
+        }
+        .btn-download:hover {
+            background: #0b4a33;
+        }
         .btn-manual {
-            background: #f59e0b;
+            background: #0e4b6e;
         }
-        .btn-manual:hover { background: #d97706; }
         .btn-disabled {
             background: #475569;
             pointer-events: none;
             opacity: 0.6;
         }
-        .botones-group {
+        .recursos-section {
+            background: rgba(30,41,59,0.7);
+            backdrop-filter: blur(8px);
+            border-radius: 2rem;
+            padding: 1.8rem;
+            margin-top: 1rem;
+            border: 1px solid #334155;
+        }
+        .recursos-section h3 {
+            color: #facc15;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+        .recursos-links {
             display: flex;
             flex-wrap: wrap;
-            margin-top: 0.5rem;
+            gap: 1rem;
         }
+        .btn-rec {
+            background: #0f172a;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 40px;
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: 0.2s;
+            border: 1px solid #334155;
+        }
+        .btn-rec:hover { background: #2563eb; border-color: #38bdf8; transform: translateY(-2px); }
         footer {
             text-align: center;
             padding: 2rem;
@@ -181,11 +245,14 @@
             font-size: 0.8rem;
             color: #64748b;
         }
-        @media (max-width: 700px) {
+        @media (max-width: 750px) {
+            .container { padding: 1rem; }
             .hero h2 { font-size: 1.6rem; }
             .hero p { font-size: 1rem; }
             .hero { padding: 80px 20px; }
             .card h3 { font-size: 1.4rem; }
+            .btn-group { flex-direction: column; align-items: stretch; }
+            .btn-card { justify-content: center; }
         }
     </style>
 </head>
@@ -206,59 +273,49 @@
 
 <div class="container">
     <div class="cards-grid">
-
-        <!-- TARJETA 1: CAPACITACIÓN DOCENTE -->
+        <!-- Tarjeta Capacitación -->
         <div class="card">
             <div class="card-icon">📖</div>
             <h3>Capacitación Docente</h3>
-            <p>Módulo de formación para el uso de simuladores, evaluaciones automáticas y metodologías STEM en el aula rural.</p>
-            <div class="botones-group">
-                <a href="./capacitacion/" class="btn-card">📚 Acceder a capacitación</a>
-                <!-- Descarga de la herramienta (HTML) -->
-                <a href="./capacitacion/capacitacion.html" download class="btn-card btn-descarga">⬇️ Descargar herramienta</a>
-                <!-- Descarga del manual (PDF) -->
-                <a href="./capacitacion/manual_capacitacion.pdf" download class="btn-card btn-manual">📘 Descargar manual</a>
+            <p>Módulo de formación para el uso de simuladores, evaluaciones automáticas y metodologías STEM.</p>
+            <div class="btn-group">
+                <a href="#" class="btn-card btn-disabled">🚧 Próximamente</a>
+                <a href="./capacitacion/manual_capacitacion.pdf" class="btn-card btn-manual" download>📘 Descargar manual</a>
             </div>
         </div>
 
-        <!-- TARJETA 2: SISTEMA OMR -->
+        <!-- Tarjeta Sistema OMR -->
         <div class="card">
             <div class="card-icon">📄</div>
             <h3>Sistema OMR</h3>
-            <p>Lectura automática de hojas de respuesta con cámara o escáner. Calificación instantánea y exportación de resultados.</p>
-            <div class="botones-group">
-                <a href="./OMR/" class="btn-card">📸 Ir al Lector OMR</a>
-                <a href="./OMR/index.html" download class="btn-card btn-descarga">⬇️ Descargar herramienta</a>
-                <a href="./OMR/manual_OMR.pdf" download class="btn-card btn-manual">📘 Descargar manual</a>
+            <p>Lectura automática de hojas de respuesta (hasta 135 preguntas). Calibración por bloques y exportación a Excel.</p>
+            <div class="btn-group">
+                <a href="./OMR/" class="btn-card btn-primary">📸 Abrir herramienta</a>
+                <a href="./OMR/index.html" class="btn-card btn-download" download="lector_omr.html">⬇️ Descargar HTML</a>
+                <a href="./OMR/manual_omr.pdf" class="btn-card btn-manual" download>📘 Manual PDF</a>
             </div>
         </div>
 
-        <!-- TARJETA 3: ANALÍTICA EDUCATIVA (CALIFICADOR) -->
+        <!-- Tarjeta Analítica Educativa -->
         <div class="card">
             <div class="card-icon">📊</div>
             <h3>Analítica Educativa</h3>
-            <p>Visualización de datos de aprendizaje, reportes por competencias, seguimiento de grupo y recomendaciones pedagógicas.</p>
-            <div class="botones-group">
-                <a href="./analytics/" class="btn-card">📈 Ingresar a Analítica</a>
-                <a href="./analytics/index.html" download class="btn-card btn-descarga">⬇️ Descargar herramienta</a>
-                <a href="./analytics/manual_analytics.pdf" download class="btn-card btn-manual">📘 Descargar manual</a>
+            <p>Calificador automático con carga de clave desde Excel, análisis por ítems, gráficos y recomendaciones pedagógicas.</p>
+            <div class="btn-group">
+                <a href="./analytics/" class="btn-card btn-primary">📈 Abrir herramienta</a>
+                <a href="./analytics/index.html" class="btn-card btn-download" download="calificador_rsl.html">⬇️ Descargar HTML</a>
+                <a href="./analytics/manual_calificador.pdf" class="btn-card btn-manual" download>📘 Manual PDF</a>
             </div>
         </div>
-
     </div>
 
-    <!-- RECURSOS ADICIONALES (opcional, se mantiene) -->
-    <div class="cards-grid" style="margin-top: 1rem;">
-        <div class="card" style="grid-column: span 3;">
-            <h3 style="color:#facc15;">📥 Recursos generales para docentes</h3>
-            <div class="botones-group" style="justify-content: center;">
-                <a href="../simulators/tablas-selva/tablas-guide.pdf" class="btn-card btn-manual" download>📘 Guía Tablas de la Selva</a>
-                <a href="../simulators/sumas-magicas/sumas-guide.pdf" class="btn-card btn-manual" download>📘 Guía Sumas Mágicas</a>
-                <a href="../simulators/restas-marinas/restas-guide.pdf" class="btn-card btn-manual" download>📘 Guía Restas Marinas</a>
-                <a href="../simulators/tablas-selva/tablas-selva.html" class="btn-card">🎮 Tablas de la Selva (App)</a>
-                <a href="../simulators/sumas-magicas/sumas-magicas.html" class="btn-card">🧮 Sumas Mágicas (App)</a>
-                <a href="../simulators/restas-marinas/restas-marinas.html" class="btn-card">🐠 Restas Marinas (App)</a>
-            </div>
+    <!-- Recursos adicionales -->
+    <div class="recursos-section">
+        <h3>📥 Recursos para docentes</h3>
+        <div class="recursos-links">
+            <a href="../simulators/tablas-selva/tablas-guide.pdf" class="btn-rec" download>📘 Guía Tablas de la Selva</a>
+            <a href="../simulators/sumas-magicas/sumas-guide.pdf" class="btn-rec" download>📘 Guía Sumas Mágicas</a>
+            <a href="../simulators/restas-marinas/restas-guide.pdf" class="btn-rec" download>📘 Guía Restas Marinas</a>
         </div>
     </div>
 </div>
