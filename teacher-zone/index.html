@@ -24,9 +24,9 @@
             100% { background-position: 0% 50%; }
         }
         @keyframes subtleZoom {
-            0% { background-position: 50% 50%; background-size: 110%; }
-            50% { background-position: 49% 51%; background-size: 115%; }
-            100% { background-position: 50% 50%; background-size: 110%; }
+            0% { background-position: 50% 50%; background-size: 105%; }
+            50% { background-position: 49% 51%; background-size: 108%; }
+            100% { background-position: 50% 50%; background-size: 105%; }
         }
         .topbar {
             background: #020617;
@@ -64,13 +64,15 @@
         }
         .title-area p { font-size: 0.9rem; color: #94a3b8; }
 
-        /* Banner mejorado con gradiente animado (sin dependencia de imágenes) */
+        /* Banner con imagen y animación (mismo estilo que Chemistry Lab) */
         .hero {
             text-align: center;
-            padding: 120px 20px;
-            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 40%, #312e81 100%);
-            background-size: 200% 200%;
-            animation: gradientShift 10s ease infinite;
+            padding: 100px 20px;
+            background: url('../assets/profe-banner.png');
+            background-size: 105%;
+            background-position: 50% 50%;
+            background-repeat: no-repeat;
+            animation: subtleZoom 25s ease-in-out infinite;
             position: relative;
         }
         .hero h2 {
@@ -81,7 +83,6 @@
             -webkit-background-clip: text;
             color: transparent;
             text-shadow: 2px 2px 10px rgba(0,0,0,0.6);
-            display: inline-block;
             margin-bottom: 0.5rem;
         }
         .hero p {
@@ -242,6 +243,7 @@
 
 <div class="container">
     <div class="cards-grid">
+        <!-- Tarjeta Capacitación (en desarrollo) -->
         <div class="card">
             <div class="card-icon">📖</div>
             <h3>Capacitación Docente</h3>
@@ -249,6 +251,7 @@
             <a href="#" class="btn-card disabled">🚧 Próximamente</a>
         </div>
 
+        <!-- Tarjeta Sistema OMR -->
         <div class="card">
             <div class="card-icon">📄</div>
             <h3>Sistema OMR</h3>
@@ -256,6 +259,7 @@
             <a href="./OMR/" class="btn-card">📸 Ir al Lector OMR</a>
         </div>
 
+        <!-- Tarjeta Analítica Educativa -->
         <div class="card">
             <div class="card-icon">📊</div>
             <h3>Analítica Educativa</h3>
@@ -264,6 +268,7 @@
         </div>
     </div>
 
+    <!-- Recursos para docentes (descargas) -->
     <div class="recursos-section">
         <h3>📥 Recursos para docentes</h3>
         <div class="recursos-links">
