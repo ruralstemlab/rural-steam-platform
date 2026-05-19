@@ -7,6 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
+
         body {
             font-family: 'Inter', sans-serif;
             background: #0f172a;
@@ -14,17 +15,20 @@
             line-height: 1.5;
             overflow-x: hidden;
         }
-        /* Animaciones */
+
+        /* ========== ANIMACIONES ========== */
         @keyframes fadeInUp {
             from { opacity: 0; transform: translateY(30px); }
             to { opacity: 1; transform: translateY(0); }
         }
+
         @keyframes pulseGlow {
             0% { box-shadow: 0 0 0 0 rgba(56,189,248,0.4); }
             70% { box-shadow: 0 0 0 8px rgba(56,189,248,0); }
             100% { box-shadow: 0 0 0 0 rgba(56,189,248,0); }
         }
-        /* Topbar */
+
+        /* ========== TOPBAR ========== */
         .topbar {
             background: #020617;
             padding: 1rem 2rem;
@@ -37,6 +41,7 @@
             top: 0;
             z-index: 100;
         }
+
         .back-btn {
             background: #2563eb;
             color: white;
@@ -50,7 +55,9 @@
             gap: 8px;
             transition: 0.2s;
         }
+
         .back-btn:hover { background: #3b82f6; transform: scale(0.98); animation: pulseGlow 0.6s ease; }
+
         .title-area h1 {
             font-size: 1.7rem;
             font-weight: 700;
@@ -59,16 +66,59 @@
             -webkit-background-clip: text;
             color: transparent;
         }
+
         .title-area p { font-size: 0.9rem; color: #94a3b8; }
-        /* Hero */
+
+        /* ========== HERO ========== */
         .hero {
             text-align: center;
             padding: 3rem 2rem 2rem;
             animation: fadeInUp 0.6s ease-out;
         }
+
         .hero h2 { font-size: 2.2rem; font-weight: 700; margin-bottom: 0.5rem; }
         .hero p { color: #cbd5e1; max-width: 700px; margin: 0 auto; }
-        /* Grid de tarjetas */
+
+        /* ========== SECCIÓN DESTACADOS ========== */
+        .featured-section {
+            max-width: 1300px;
+            margin: 0 auto 2rem;
+            padding: 0 2rem;
+        }
+
+        .featured-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            border-left: 4px solid #f59e0b;
+            padding-left: 1rem;
+        }
+
+        .featured-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .featured-card {
+            background: linear-gradient(145deg, #1e293b, #172132);
+            border-radius: 1.8rem;
+            padding: 1.5rem;
+            border: 1px solid #334155;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .featured-card:hover {
+            transform: translateY(-5px);
+            border-color: #f59e0b;
+            box-shadow: 0 20px 30px -12px rgba(0,0,0,0.5);
+        }
+
+        .featured-card h3 { font-size: 1.4rem; margin-bottom: 0.5rem; }
+        .featured-card p { color: #94a3b8; font-size: 0.85rem; }
+
+        /* ========== GRID PRINCIPAL ========== */
         .container {
             max-width: 1300px;
             margin: 0 auto;
@@ -77,8 +127,9 @@
             grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
             gap: 2rem;
         }
+
         .card {
-            background: #1e293b;
+            background: linear-gradient(145deg, #1e293b, #172132);
             border-radius: 1.8rem;
             padding: 1.8rem;
             transition: all 0.3s ease;
@@ -89,11 +140,13 @@
             position: relative;
             overflow: hidden;
         }
+
         .card:hover {
             transform: translateY(-8px);
             border-color: #38bdf8;
             box-shadow: 0 20px 30px -12px rgba(0,0,0,0.5);
         }
+
         .card::before {
             content: '';
             position: absolute;
@@ -105,7 +158,9 @@
             transition: left 0.5s;
             pointer-events: none;
         }
+
         .card:hover::before { left: 100%; }
+
         .card-icon {
             font-size: 2.8rem;
             background: #0f172a;
@@ -118,14 +173,34 @@
             margin-bottom: 1rem;
             border: 1px solid #334155;
         }
-        .card h3 { font-size: 1.5rem; font-weight: 600; margin-bottom: 0.5rem; }
+
+        .card h3 { 
+            font-size: 1.5rem; 
+            font-weight: 600; 
+            margin-bottom: 0.5rem;
+            color: #38bdf8;
+        }
+
         .card p { color: #94a3b8; font-size: 0.85rem; margin-bottom: 1.2rem; flex-grow: 1; }
+
+        .tag {
+            display: inline-block;
+            background: #2563eb20;
+            color: #60a5fa;
+            font-size: 0.7rem;
+            padding: 0.2rem 0.6rem;
+            border-radius: 30px;
+            margin-bottom: 0.8rem;
+            align-self: flex-start;
+        }
+
         .button-group {
             display: flex;
             flex-wrap: wrap;
             gap: 0.6rem;
             margin-top: 0.5rem;
         }
+
         .btn-sim {
             background: #2563eb;
             color: white;
@@ -141,9 +216,11 @@
             align-items: center;
             gap: 5px;
         }
+
         .btn-sim.download { background: #16a34a; }
         .btn-sim.guide { background: #7c3aed; }
         .btn-sim:hover { filter: brightness(1.1); transform: scale(0.97); }
+
         footer {
             text-align: center;
             padding: 2rem;
@@ -152,8 +229,9 @@
             font-size: 0.8rem;
             color: #64748b;
         }
+
         @media (max-width: 680px) {
-            .container { padding: 1rem; }
+            .container, .featured-section { padding: 1rem; }
             .hero h2 { font-size: 1.6rem; }
             .btn-sim { font-size: 0.7rem; padding: 0.4rem 0.8rem; }
         }
@@ -170,14 +248,44 @@
 </div>
 
 <section class="hero">
-    <h2>📐 Explore Physics Through Simulation</h2>
-    <p>Hands-on virtual labs for mechanics, waves, electricity, optics and more. Each simulator includes free-body diagrams, real-time analysis and downloadable resources.</p>
+    <h2>📐 Domina la Física a tu Ritmo</h2>
+    <p>Explora, juega y aprende con nuestros simuladores interactivos. Mecánica, ondas, termodinámica y más.</p>
 </section>
 
+<!-- ========== SECCIÓN DESTACADOS ========== -->
+<div class="featured-section">
+    <div class="featured-title">🌟 Destacados de la semana</div>
+    <div class="featured-grid">
+        <div class="featured-card" onclick="location.href='../simulators/projectile-motion/'">
+            <h3>🏀 Movimiento de Proyectiles</h3>
+            <p>El simulador con el que empezó todo. Parábolas, vectores y mucho más.</p>
+        </div>
+        <div class="featured-card" onclick="location.href='../simulators/simple-pendulum/'">
+            <h3>🌀 Péndulo Simple</h3>
+            <p>Oscilaciones, energía y evaluación ICFES integrada.</p>
+        </div>
+    </div>
+</div>
+
+<!-- ========== TODOS LOS SIMULADORES ========== -->
 <div class="container">
-    <!-- ========== PÉNDULO SIMPLE ========== -->
+    <!-- 1. MOVIMIENTO DE PROYECTILES (el pionero) -->
+    <div class="card">
+        <div class="card-icon">🏀</div>
+        <div class="tag">Mecánica</div>
+        <h3>Projectile Motion</h3>
+        <p>Parabolic motion simulator with vectors, trajectory and STEM pedagogy.</p>
+        <div class="button-group">
+            <a href="../simulators/projectile-motion/" class="btn-sim">🎮 Abrir</a>
+            <a href="../simulators/projectile-motion/projectile-motion.html" class="btn-sim download" download>📥 Descargar App</a>
+            <a href="../simulators/projectile-motion/projectile-guide.pdf" class="btn-sim guide" download>📘 Guía PDF</a>
+        </div>
+    </div>
+
+    <!-- 2. PÉNDULO SIMPLE -->
     <div class="card">
         <div class="card-icon">🌀</div>
+        <div class="tag">Mecánica</div>
         <h3>Simple Pendulum</h3>
         <p>Oscillations, period, energy and ICFES assessment.</p>
         <div class="button-group">
@@ -187,9 +295,10 @@
         </div>
     </div>
 
-    <!-- ========== NIVEL DE INTENSIDAD SONORA ========== -->
+    <!-- 3. NIVEL DE INTENSIDAD SONORA -->
     <div class="card">
         <div class="card-icon">🔊</div>
+        <div class="tag">Ondas</div>
         <h3>Sound Intensity</h3>
         <p>Sound level, decibels and distance simulation.</p>
         <div class="button-group">
@@ -199,9 +308,10 @@
         </div>
     </div>
 
-    <!-- ========== SISTEMA DE FRICCIÓN ========== -->
+    <!-- 4. SISTEMA DE FRICCIÓN -->
     <div class="card">
         <div class="card-icon">🧱</div>
+        <div class="tag">Mecánica</div>
         <h3>Friction System</h3>
         <p>Second Law with friction and free body diagrams.</p>
         <div class="button-group">
@@ -211,9 +321,10 @@
         </div>
     </div>
 
-    <!-- ========== SISTEMA DE POLEAS ========== -->
+    <!-- 5. SISTEMA DE POLEAS -->
     <div class="card">
         <div class="card-icon">🧲</div>
+        <div class="tag">Mecánica</div>
         <h3>Pulley System</h3>
         <p>Pulley simulator with tensions and Newton laws.</p>
         <div class="button-group">
@@ -223,9 +334,10 @@
         </div>
     </div>
 
-    <!-- ========== PLANO INCLINADO ========== -->
+    <!-- 6. PLANO INCLINADO -->
     <div class="card">
         <div class="card-icon">📐</div>
+        <div class="tag">Mecánica</div>
         <h3>Inclined Plane</h3>
         <p>Inclined plane simulator with dynamics and forces.</p>
         <div class="button-group">
@@ -235,9 +347,10 @@
         </div>
     </div>
 
-    <!-- ========== TENSIONES EN PERNOS ========== -->
+    <!-- 7. TENSIONES EN PERNOS -->
     <div class="card">
         <div class="card-icon">🔩</div>
+        <div class="tag">Mecánica</div>
         <h3>Eyebolt Tensions</h3>
         <p>Equilibrium of forces with multiple tensions.</p>
         <div class="button-group">
@@ -247,9 +360,10 @@
         </div>
     </div>
 
-    <!-- ========== EFECTO DOPPLER ========== -->
+    <!-- 8. EFECTO DOPPLER -->
     <div class="card">
         <div class="card-icon">📡</div>
+        <div class="tag">Ondas</div>
         <h3>Doppler Effect</h3>
         <p>Frequency shift due to relative motion.</p>
         <div class="button-group">
@@ -259,9 +373,10 @@
         </div>
     </div>
 
-    <!-- ========== BATIDOS 2D ========== -->
+    <!-- 9. BATIDOS 2D -->
     <div class="card">
         <div class="card-icon">〰️</div>
+        <div class="tag">Ondas</div>
         <h3>Beats 2D</h3>
         <p>Interference and beat frequency in 2D.</p>
         <div class="button-group">
@@ -271,9 +386,10 @@
         </div>
     </div>
 
-    <!-- ========== BATIDOS 3D ========== -->
+    <!-- 10. BATIDOS 3D -->
     <div class="card">
         <div class="card-icon">🌐</div>
+        <div class="tag">Ondas</div>
         <h3>Beats 3D</h3>
         <p>Three-dimensional wave interference.</p>
         <div class="button-group">
