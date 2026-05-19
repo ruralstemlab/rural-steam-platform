@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>Rural STEAM Lab</title>
+    <!-- MathJax para fórmulas -->
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" id="MathJax-script" async></script>
     <style>
         * {
             margin: 0;
@@ -31,7 +33,7 @@
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
         }
-        /* Animación sutil de zoom y desplazamiento para la imagen de fondo */
+        /* Animación de zoom y desplazamiento para la imagen de fondo */
         @keyframes slowZoom {
             0% { background-position: 50% 50%; background-size: 110%; }
             50% { background-position: 48% 52%; background-size: 115%; }
@@ -89,10 +91,10 @@
             transform: translateY(-2px);
         }
 
-        /* Header con imagen animada (sin romperla) */
+        /* Header con imagen animada */
         header {
             padding: 130px 20px;
-            background: linear-gradient(135deg, rgba(15,23,42,0.75), rgba(30,27,75,0.85)), url('assets/stem-bg.png');
+            background: linear-gradient(135deg, rgba(15,23,42,0.75), rgba(30,27,75,0.85)), url('assets/stem-banner.png');
             background-size: 110%;
             background-position: 50% 50%;
             background-repeat: no-repeat;
@@ -129,7 +131,7 @@
             max-width: 1600px;
             margin: auto;
         }
-        /* En pantallas grandes pero no enormes */
+        /* Responsive */
         @media (max-width: 1400px) {
             .container {
                 grid-template-columns: repeat(3, 1fr);
