@@ -1,173 +1,413 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Teacher Zone | Rural STEAM Lab</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0f172a;
+            color: #f1f5f9;
+            line-height: 1.5;
+            overflow-x: hidden;
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        @keyframes subtleZoom {
+            0% { background-position: 50% 50%; background-size: 105%; }
+            50% { background-position: 49% 51%; background-size: 108%; }
+            100% { background-position: 50% 50%; background-size: 105%; }
+        }
+        .topbar {
+            background: #020617;
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            border-bottom: 1px solid #1e293b;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .back-btn {
+            background: #2563eb;
+            color: white;
+            padding: 0.6rem 1.2rem;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.2s;
+        }
+        .back-btn:hover { background: #3b82f6; transform: scale(0.98); }
+        .title-area h1 {
+            font-size: 1.7rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #c084fc, #60a5fa);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+        .title-area p { font-size: 0.9rem; color: #94a3b8; }
 
-<title>Teacher Zone</title>
+        /* Header con imagen animada */
+        .hero {
+            text-align: center;
+            padding: 100px 20px;
+            background: url('../assets/profe-banner.png');
+            background-size: 105%;
+            background-position: 50% 50%;
+            background-repeat: no-repeat;
+            animation: subtleZoom 25s ease-in-out infinite;
+            position: relative;
+        }
+        .hero h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ffffff, #facc15);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            text-shadow: 2px 2px 10px rgba(0,0,0,0.6);
+            animation: gradientShift 6s ease infinite;
+            background-size: 200% 200%;
+            display: inline-block;
+            margin-bottom: 0.5rem;
+        }
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto;
+            color: #ffffff;
+            font-weight: 500;
+            text-shadow: 1px 1px 6px rgba(0,0,0,0.8);
+        }
 
-<style>
-
-body{
-    margin:0;
-    font-family:Arial,sans-serif;
-    background:#0f172a;
-    color:white;
-    text-align:center;
-}
-
-.topbar{
-    background:#020617;
-    padding:15px;
-    display:flex;
-    gap:10px;
-    flex-wrap:wrap;
-    position:sticky;
-    top:0;
-    z-index:100;
-    box-shadow:0 2px 10px rgba(0,0,0,0.4);
-}
-
-.topbar button{
-    background:#2563eb;
-    color:white;
-    border:none;
-    padding:12px 18px;
-    border-radius:10px;
-    cursor:pointer;
-    font-weight:bold;
-}
-
-header{
-    padding:50px 20px;
-}
-
-h1{
-    color:#38bdf8;
-    font-size:2.5rem;
-}
-
-.container{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-    gap:25px;
-    padding:40px;
-}
-
-.card{
-    background:#1e293b;
-    border-radius:20px;
-    padding:30px;
-    transition:0.3s;
-}
-
-.card:hover{
-    transform:translateY(-5px);
-    background:#334155;
-}
-
-.card h2{
-    margin-bottom:15px;
-}
-
-.card p{
-    color:#cbd5e1;
-    line-height:1.7;
-}
-
-.card button{
-    margin-top:20px;
-    padding:12px 20px;
-    border:none;
-    border-radius:10px;
-    background:#22c55e;
-    color:white;
-    font-size:1rem;
-    font-weight:bold;
-    cursor:pointer;
-}
-
-footer{
-    margin-top:40px;
-    padding:30px;
-    background:#020617;
-    color:#94a3b8;
-}
-
-</style>
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        /* Pestañas */
+        .tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            border-bottom: 1px solid #334155;
+            margin-bottom: 1.5rem;
+        }
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            font-weight: 600;
+            color: #94a3b8;
+            cursor: pointer;
+            transition: 0.2s;
+            border-radius: 40px 40px 0 0;
+        }
+        .tab-btn.active {
+            background: #2563eb;
+            color: white;
+        }
+        .tab-btn:hover:not(.active) { background: #1e293b; color: white; }
+        .tab-pane {
+            display: none;
+            animation: fadeInUp 0.3s ease;
+        }
+        .tab-pane.active { display: block; }
+        .card {
+            background: #1e293b;
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid #334155;
+            transition: 0.2s;
+        }
+        .card:hover { border-color: #38bdf8; }
+        .card h3 { color: #38bdf8; margin-bottom: 1rem; }
+        .btn {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.2s;
+        }
+        .btn:hover { background: #3b82f6; transform: scale(0.98); }
+        .btn-secondary { background: #16a34a; }
+        .quiz-item {
+            background: #0f172a;
+            border-radius: 1rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        .quiz-pregunta { font-weight: bold; margin-bottom: 0.5rem; }
+        .quiz-opcion {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 6px 0;
+            cursor: pointer;
+        }
+        .resultado-analisis {
+            background: #0f172a;
+            border-radius: 1rem;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+        footer {
+            text-align: center;
+            padding: 2rem;
+            border-top: 1px solid #1e293b;
+            margin-top: 2rem;
+            font-size: 0.8rem;
+            color: #64748b;
+        }
+        @media (max-width: 700px) {
+            .container { padding: 1rem; }
+            .tab-btn { padding: 0.5rem 1rem; font-size: 0.8rem; }
+            .hero h2 { font-size: 1.6rem; }
+            .hero p { font-size: 1rem; }
+        }
+    </style>
 </head>
-
 <body>
 
 <div class="topbar">
-
-<button onclick="window.location.href='../'">
-⬅ Back to Platform
-</button>
-
+    <a href="../index.html" class="back-btn">⬅ Inicio</a>
+    <div class="title-area">
+        <h1>🧑‍🏫 Teacher Zone</h1>
+        <p>Capacitación, talleres y análisis automático de evaluaciones</p>
+    </div>
 </div>
 
-<header>
-
-<h1>
-🧑‍🏫 Teacher Zone
-</h1>
-
-<p>
-Assessment systems, grading analytics and AI-assisted educational tools.
-</p>
-
-</header>
-
-<section class="container">
-
-<div class="card">
-
-<h2>
-📷 OMR Reader AI
-</h2>
-
-<p>
-Experimental AI-assisted OMR reader for future automatic answer sheet detection and processing.
-</p>
-
-<button>
-Coming Soon
-</button>
-
-</div>
-
-<div class="card">
-
-<h2>
-📊 Teacher Evaluation Tools
-</h2>
-
-<p>
-Automatic grading, pedagogical analytics, PDF reports and Excel export for ICFES-style assessments.
-</p>
-
-<button onclick="window.location.href='analytics/'">
-
-Open System
-
-</button>
-
-</div>
-
+<section class="hero">
+    <h2>📚 Rural STEM Lab - Capacitación Docente</h2>
+    <p>Uso de simuladores, evaluaciones automáticas y módulo Elementary</p>
 </section>
 
+<div class="container">
+    <div class="tabs">
+        <button class="tab-btn active" data-tab="capacitacion">📖 Capacitación</button>
+        <button class="tab-btn" data-tab="taller">✍️ Taller práctico</button>
+        <button class="tab-btn" data-tab="recursos">📥 Recursos y guías</button>
+        <button class="tab-btn" data-tab="resultados">📊 Análisis de resultados</button>
+    </div>
+
+    <!-- Pestaña 1: Capacitación -->
+    <div id="capacitacion" class="tab-pane active">
+        <div class="card">
+            <h3>🎯 Objetivo de la capacitación</h3>
+            <p>Capacitar a los docentes en el uso práctico de Rural STEM Lab para: utilizar simuladores interactivos, crear experiencias dinámicas, aplicar evaluaciones automáticas, reducir tiempos de calificación, obtener retroalimentación inmediata, fortalecer procesos tipo ICFES y motivar a estudiantes.</p>
+        </div>
+        <div class="card">
+            <h3>🔍 ¿Qué es Rural STEM Lab?</h3>
+            <p>Ecosistema educativo STEM interactivo para contexto rural. Integra simuladores, matemáticas visuales, física interactiva, evaluaciones automáticas, retroalimentación pedagógica, herramientas offline y sistema de análisis académico.</p>
+            <p><strong>Beneficios:</strong> ✅ Reduce carga docente. ✅ Clases más dinámicas. ✅ Motiva estudiantes. ✅ Facilita evaluación. ✅ Mejora procesos ICFES. ✅ Funciona sin internet.</p>
+        </div>
+        <div class="card">
+            <h3>🧒 Módulo Elementary (Primaria)</h3>
+            <p>Incluye sumas interactivas, restas visuales, multiplicaciones animadas, juegos matemáticos, actividades con personajes y colores. Aprendizaje gamificado para que los niños aprendan matemáticas de forma divertida.</p>
+            <a href="../elementary/" class="btn" target="_blank">🎮 Explorar Elementary</a>
+        </div>
+        <div class="card">
+            <h3>📊 Evaluaciones automáticas y retroalimentación</h3>
+            <p>El docente puede subir evaluaciones, generar preguntas, calificar automáticamente, obtener estadísticas, analizar fortalezas y debilidades, detectar temas críticos. Ventaja principal: reducción significativa del tiempo de revisión.</p>
+        </div>
+        <div class="card">
+            <h3>🌱 Visión futura</h3>
+            <p>Rural STEM Lab busca convertirse en laboratorio STEM rural digital, ecosistema educativo offline, plataforma institucional de innovación y modelo replicable para otras instituciones rurales.</p>
+        </div>
+        <div class="card">
+            <h3>🔗 Enlaces oficiales</h3>
+            <p>📌 <a href="../index.html" target="_blank" style="color:#38bdf8;">Plataforma principal</a><br>
+            📌 <a href="../student-zone/" target="_blank" style="color:#38bdf8;">Zona de estudiantes</a><br>
+            📌 <a href="https://calendar.google.com/calendar/embed?src=c_af9250d00f6eef129c22cbfb2e29bea0ae0323b5702356e7e75df80ae4b4444d%40group.calendar.google.com&ctz=America%2FBogota" target="_blank" style="color:#38bdf8;">Calendario académico</a></p>
+        </div>
+    </div>
+
+    <!-- Pestaña 2: Taller práctico -->
+    <div id="taller" class="tab-pane">
+        <div class="card">
+            <h3>✍️ Taller práctico: Tablas de Multiplicar</h3>
+            <p>Resuelve las siguientes 5 preguntas. Al finalizar, el sistema corregirá automáticamente y mostrará el análisis.</p>
+            <div id="quizTaller"></div>
+            <button id="btnCorregirTaller" class="btn btn-secondary" style="margin-top: 1rem;">✅ Corregir y analizar</button>
+            <div id="resultadoTaller" class="resultado-analisis" style="margin-top: 1rem; display: none;"></div>
+        </div>
+        <div class="card">
+            <h3>📌 Instrucción adicional</h3>
+            <p>Simula la experiencia de subir una hoja de respuestas: aquí estás respondiendo digitalmente. En un futuro, el sistema podrá leer hojas físicas mediante OMR (lectura óptica de marcas).</p>
+        </div>
+    </div>
+
+    <!-- Pestaña 3: Recursos y guías PDF descargables -->
+    <div id="recursos" class="tab-pane">
+        <div class="card">
+            <h3>📥 Guías PDF de los simuladores</h3>
+            <p>Haz clic para descargar las guías pedagógicas de cada simulador (disponibles en sus respectivas carpetas).</p>
+            <ul style="list-style: none; padding-left: 0;">
+                <li><a href="../simulators/tablas-selva/tablas-guide.pdf" class="btn" style="margin: 5px 0; display: inline-block;" download>📘 Guía - Tablas de la Selva</a></li>
+                <li><a href="../simulators/sumas-magicas/sumas-guide.pdf" class="btn" style="margin: 5px 0; display: inline-block;" download>📘 Guía - Sumas Mágicas</a></li>
+                <li><a href="../simulators/restas-marinas/restas-guide.pdf" class="btn" style="margin: 5px 0; display: inline-block;" download>📘 Guía - Restas Marinas</a></li>
+                <li><a href="../simulators/simple-pendulum/simple-pendulum-guide.pdf" class="btn" style="margin: 5px 0; display: inline-block;" download>📘 Guía - Péndulo Simple</a></li>
+                <li><a href="../simulators/sound-intensity/sound-intensity-guide.pdf" class="btn" style="margin: 5px 0; display: inline-block;" download>📘 Guía - Intensidad Sonora</a></li>
+            </ul>
+        </div>
+        <div class="card">
+            <h3>📂 Simuladores descargables (Apps HTML)</h3>
+            <p>Puedes descargar cada simulador como archivo HTML para usarlo offline.</p>
+            <ul style="list-style: none; padding-left: 0;">
+                <li><a href="../simulators/tablas-selva/tablas-selva.html" class="btn" download>📥 Tablas de la Selva (HTML)</a></li>
+                <li><a href="../simulators/sumas-magicas/sumas-magicas.html" class="btn" download>📥 Sumas Mágicas (HTML)</a></li>
+                <li><a href="../simulators/restas-marinas/restas-marinas.html" class="btn" download>📥 Restas Marinas (HTML)</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Pestaña 4: Análisis de resultados -->
+    <div id="resultados" class="tab-pane">
+        <div class="card">
+            <h3>📊 Análisis de resultados del taller</h3>
+            <p>Aquí se mostrarán las estadísticas después de que realices el taller práctico.</p>
+            <div id="analisisDetallado" class="resultado-analisis">
+                <p>🔍 Aún no has realizado el taller. Ve a la pestaña "Taller práctico" y responde las preguntas.</p>
+            </div>
+        </div>
+        <div class="card">
+            <h3>📈 ¿Qué puedes hacer con estos datos?</h3>
+            <p>Identificar preguntas con mayor dificultad, detectar temas críticos, planear refuerzos académicos y compartir retroalimentación personalizada a los estudiantes.</p>
+        </div>
+    </div>
+</div>
+
 <footer>
-
-<h3>
-Eng. Medina H. A.
-</h3>
-
-<p>
-Rural STEAM Lab © 2026
-</p>
-
+    <p>Rural STEAM Lab — Teacher Zone | Capacitación y herramientas para docentes</p>
+    <p>✨ Diseñado por: ENG. MEDINA H. A. ✨</p>
 </footer>
 
+<script>
+    // Taller práctico (5 preguntas multiplicación)
+    const preguntasTaller = [
+        { texto: "🦁 3 × 4 = ?", opciones: ["10", "11", "12", "13"], correcta: "c" },
+        { texto: "🐒 5 × 2 = ?", opciones: ["7", "8", "9", "10"], correcta: "d" },
+        { texto: "🦜 6 × 3 = ?", opciones: ["15", "16", "17", "18"], correcta: "d" },
+        { texto: "🦓 7 × 1 = ?", opciones: ["6", "7", "8", "9"], correcta: "b" },
+        { texto: "🐘 4 × 4 = ?", opciones: ["14", "15", "16", "17"], correcta: "c" }
+    ];
+
+    let respuestasTaller = new Array(5).fill(null);
+
+    function renderizarTaller() {
+        let html = '';
+        preguntasTaller.forEach((p, idx) => {
+            html += `<div class="quiz-item">
+                        <div class="quiz-pregunta">${idx+1}. ${p.texto}</div>`;
+            p.opciones.forEach((op, optIdx) => {
+                const letra = String.fromCharCode(97 + optIdx);
+                const checked = (respuestasTaller[idx] === letra) ? 'checked' : '';
+                html += `<label class="quiz-opcion">
+                            <input type="radio" name="q${idx}" value="${letra}" ${checked}>
+                            ${letra.toUpperCase()}) ${op}
+                         </label>`;
+            });
+            html += `</div>`;
+        });
+        document.getElementById('quizTaller').innerHTML = html;
+        for (let i=0; i<5; i++) {
+            const radios = document.querySelectorAll(`input[name="q${i}"]`);
+            radios.forEach(radio => {
+                radio.addEventListener('change', (e) => {
+                    respuestasTaller[i] = e.target.value;
+                });
+            });
+        }
+    }
+
+    function corregirTaller() {
+        let todas = respuestasTaller.every(r => r !== null);
+        if (!todas) {
+            document.getElementById('resultadoTaller').style.display = 'block';
+            document.getElementById('resultadoTaller').innerHTML = `<p style="color:#facc15;">⚠️ Debes responder todas las preguntas del taller.</p>`;
+            document.getElementById('analisisDetallado').innerHTML = `<p>⚠️ Completa el taller primero.</p>`;
+            return;
+        }
+        let correctas = 0;
+        let detalles = [];
+        for (let i=0; i<5; i++) {
+            const esCorrecta = (respuestasTaller[i] === preguntasTaller[i].correcta);
+            if (esCorrecta) correctas++;
+            detalles.push({
+                numero: i+1,
+                texto: preguntasTaller[i].texto,
+                respuestaUsuario: respuestasTaller[i],
+                correcta: preguntasTaller[i].correcta,
+                esCorrecta: esCorrecta
+            });
+        }
+        const puntaje = (correctas / 5) * 100;
+        const nota = (puntaje / 100) * 5;
+        let resultadoHtml = `<h4>📋 Resultados del taller</h4>
+        <p><strong>Calificación:</strong> ${puntaje.toFixed(0)}/100 (Nota: ${nota.toFixed(1)}/5)</p>
+        <p><strong>Respuestas correctas:</strong> ${correctas} de 5</p>`;
+        detalles.forEach(d => {
+            resultadoHtml += `<p><strong>Pregunta ${d.numero}:</strong> ${d.texto}<br>
+            Tu respuesta: ${d.respuestaUsuario.toUpperCase()} | Correcta: ${d.correcta.toUpperCase()} | ${d.esCorrecta ? '✅ Correcta' : '❌ Incorrecta'}</p>`;
+        });
+        document.getElementById('resultadoTaller').style.display = 'block';
+        document.getElementById('resultadoTaller').innerHTML = resultadoHtml;
+
+        let analisisHtml = `<h4>📊 Análisis automático</h4>
+        <p>✅ <strong>Desempeño general:</strong> ${puntaje.toFixed(0)}% de aciertos.</p>
+        <p>📌 <strong>Preguntas con mayor dificultad:</strong> `;
+        const dificiles = detalles.filter(d => !d.esCorrecta);
+        if (dificiles.length > 0) {
+            analisisHtml += dificiles.map(d => `Pregunta ${d.numero}`).join(', ');
+        } else {
+            analisisHtml += "Ninguna, excelente dominio.";
+        }
+        analisisHtml += `</p><p>💡 <strong>Recomendación pedagógica:</strong> Reforzar las tablas de multiplicar con el simulador "Tablas de la Selva" y las guías descargables.</p>
+        <p>🎯 <strong>Próximo paso:</strong> Los estudiantes pueden realizar este mismo taller y el sistema generará reportes automáticos.</p>`;
+        document.getElementById('analisisDetallado').innerHTML = analisisHtml;
+    }
+
+    function initTabs() {
+        const tabs = document.querySelectorAll('.tab-btn');
+        tabs.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const tabId = btn.dataset.tab;
+                document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('active'));
+                tabs.forEach(b => b.classList.remove('active'));
+                document.getElementById(tabId).classList.add('active');
+                btn.classList.add('active');
+            });
+        });
+    }
+
+    renderizarTaller();
+    document.getElementById('btnCorregirTaller').addEventListener('click', corregirTaller);
+    initTabs();
+</script>
 </body>
 </html>
