@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Tablas de la Selva | Multiplicación con Animales</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Comic Neue', cursive;
+            background: #e8f5e9;
+            color: #2e7d32;
+            padding: 20px 16px 40px;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .card {
+            background: #fffef7;
+            border-radius: 50px;
+            padding: 1.5rem;
+            border: 3px solid #ffb347;
+            box-shadow: 0 12px 20px rgba(0,0,0,0.1);
+        }
+
+        .card-header {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #d45a00;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-left: 6px solid #ffb347;
+            padding-left: 16px;
+            margin-bottom: 1rem;
+        }
+
+        .selector-animal {
+            background: #fff0d4;
+            border-radius: 60px;
+            padding: 12px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .animal-option {
+            cursor: pointer;
+            background: #ffe0b5;
+            padding: 8px 12px;
+            border-radius: 40px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.2s;
+            border: 2px solid transparent;
+        }
+
+        .animal-option.selected {
+            background: #ffb347;
+            border-color: #d45a00;
+            transform: scale(1.02);
+        }
+
+        /* Visualización de grupos */
+        .visual-multiplicacion {
+            background: #fef9e6;
+            border-radius: 40px;
+            padding: 1rem;
+            margin: 15px 0;
+            overflow-x: auto;
+        }
+
+        .grupo {
+            background: #e8dcc0;
+            border-radius: 30px;
+            padding: 12px;
+            margin-bottom: 12px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .grupo-label {
+            font-weight: bold;
+            background: #ffd966;
+            border-radius: 30px;
+            padding: 4px 12px;
+            margin-right: 10px;
+            display: inline-block;
+        }
+
+        .resultado-grupo {
+            background: #b8e4a0;
+            border-radius: 30px;
+            padding: 15px;
+            text-align: center;
+            border: 2px solid #6b8c42;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            background-image: repeating-linear-gradient(45deg, rgba(100,130,50,0.15) 0px, rgba(100,130,50,0.15) 2px, transparent 2px, transparent 8px);
+            margin-top: 10px;
+        }
+
+        .resultado-grupo span {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #2d5a2b;
+        }
+
+        .operacion-texto {
+            font-size: 1.8rem;
+            text-align: center;
+            background: #fff0d4;
+            border-radius: 60px;
+            padding: 8px;
+            margin: 15px 0;
+        }
+
+        .slider-group {
+            margin: 15px 0;
+            text-align: left;
+        }
+
+        .slider-group label {
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            margin: 8px 0;
+            accent-color: #ffb347;
+        }
+
+        button {
+            background: #ffb347;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 60px;
+            font-weight: bold;
+            font-size: 1rem;
+            font-family: 'Comic Neue', cursive;
+            cursor: pointer;
+            transition: 0.2s;
+            margin: 5px;
+        }
+
+        button:hover {
+            background: #ff9f1a;
+            transform: scale(0.98);
+        }
+
+        .btn-primary {
+            background: #4caf50;
+            color: white;
+        }
+
+        /* Quiz */
+        .quiz-item {
+            background: #fff7e6;
+            border-radius: 30px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border: 2px solid #ffb347;
+        }
+
+        .quiz-pregunta {
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .quiz-opcion {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 6px 0;
+            cursor: pointer;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border-radius: 60px;
+            border: 2px solid #ffb347;
+            font-family: 'Comic Neue', cursive;
+            font-size: 1rem;
+            margin-bottom: 16px;
+            background: white;
+        }
+
+        .score-area {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .feedback {
+            background: #e8f5e9;
+            border-radius: 30px;
+            padding: 12px;
+            margin-top: 12px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .motivacion {
+            background: #ffecb3;
+            border-radius: 60px;
+            padding: 15px;
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+
+        footer {
+            text-align: center;
+            font-size: 0.8rem;
+            color: #8b5a2b;
+        }
+
+        @media (max-width: 550px) {
+            .animal-option span:first-child { font-size: 1.5rem; }
+            .animal-option span:last-child { font-size: 0.7rem; display: none; }
+            .grupo { flex-direction: column; align-items: center; }
+            .grupo-label { margin-bottom: 8px; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="card" style="text-align: center;">
+        <h1 style="color:#d45a00;">🦁 Tablas de la Selva ✖️</h1>
+        <p>¡Aprende a multiplicar con grupos de animales!</p>
+    </div>
+
+    <div class="card">
+        <div class="card-header"><span>🐒</span> Multiplicación en la Selva</div>
+        <div class="selector-animal" id="selectorAnimal">
+            <div class="animal-option" data-animal="mono"><span>🐒</span> <span>Mono</span></div>
+            <div class="animal-option" data-animal="leon"><span>🦁</span> <span>León</span></div>
+            <div class="animal-option" data-animal="loro"><span>🦜</span> <span>Loro</span></div>
+            <div class="animal-option" data-animal="cebra"><span>🦓</span> <span>Cebra</span></div>
+            <div class="animal-option" data-animal="elefante"><span>🐘</span> <span>Elefante</span></div>
+        </div>
+
+        <div id="visualGrupos" class="visual-multiplicacion"></div>
+
+        <div class="slider-group">
+            <label>🌿 ¿Cuántos grupos? <span id="gruposVal">3</span></label>
+            <input type="range" id="gruposSlider" min="1" max="6" step="1" value="3">
+        </div>
+        <div class="slider-group">
+            <label>🐘 Animales por grupo <span id="animalesPorGrupoVal">2</span></label>
+            <input type="range" id="animalesSlider" min="1" max="5" step="1" value="2">
+        </div>
+
+        <div class="operacion-texto" id="operacionTexto">3 grupos × 2 animales = 6 animales</div>
+        <div id="explicacionTexto" class="explicacion" style="background:#fff0d4; border-radius:30px; padding:10px; text-align:center;">💡 3 grupos con 2 monos cada uno = 6 monos en total. ¡La multiplicación es sumar varias veces el mismo número!</div>
+    </div>
+
+    <div class="card">
+        <div class="card-header"><span>📖</span> Aprendamos a multiplicar</div>
+        <div>
+            <p>⭐ <strong>Paso a paso:</strong> Multiplicar es sumar varias veces el mismo número.</p>
+            <p>🐒 Ejemplo: <strong>3 grupos de 2 monos</strong> = 2 + 2 + 2 = <strong>6 monos</strong>. ¡Eso es 3 × 2 = 6!</p>
+            <p>🎯 Mueve los deslizadores y mira cómo se forman los grupos. El <strong>resultado total</strong> aparece en el pasto verde.</p>
+            <p>📐 <strong>Fórmula:</strong> <span style="background:#ffe0b5; padding:4px 12px; border-radius:30px;">grupos × animales por grupo = total</span></p>
+        </div>
+    </div>
+
+    <!-- QUIZ -->
+    <div class="card">
+        <div class="card-header"><span>🏆</span> Desafío de Campeones de la Selva</div>
+        <div>
+            <label>👤 <strong>Tu nombre (Jaguar o Pantera):</strong></label>
+            <input type="text" id="nombreEstudiante" placeholder="Ej: Valentina">
+        </div>
+        <div id="quizContainer"></div>
+        <div class="score-area">
+            <button id="btnCalificar" class="btn-primary">✅ Calificar (5 preguntas)</button>
+            <button id="btnDescargarPDF" disabled class="btn-primary">📄 Descargar PDF</button>
+            <div id="puntajeMostrado" style="background:#ffe0b5; padding:8px 16px; border-radius:40px;">Puntaje: -- / 100</div>
+        </div>
+        <div id="feedbackQuiz" class="feedback"></div>
+        <div id="motivacion" class="motivacion">✨ ¡Demuestra que eres un Jaguar Campeón! ✨</div>
+    </div>
+
+    <footer>
+        <p>🌴 Tablas de la Selva — Multiplicación con animales 🌴</p>
+        <p>✨ Diseñado por Medina H. A, con 💛 para aprender multiplicando ✨</p>
+    </footer>
+</div>
+
+<script>
+    // ========================
+    // SELVA: TRES EMOJIS POR ANIMAL
+    // ========================
+    const emojisSelva = {
+        mono: { grupo: "🐒", animal: "🐒", total: "🐒", nombre: "mono" },
+        leon: { grupo: "🦁", animal: "🦁", total: "🦁", nombre: "león" },
+        loro: { grupo: "🦜", animal: "🦜", total: "🦜", nombre: "loro" },
+        cebra: { grupo: "🦓", animal: "🦓", total: "🦓", nombre: "cebra" },
+        elefante: { grupo: "🐘", animal: "🐘", total: "🐘", nombre: "elefante" }
+    };
+
+    let animalSeleccionado = "mono";
+    const opciones = document.querySelectorAll('.animal-option');
+    opciones.forEach(opt => {
+        opt.addEventListener('click', () => {
+            opciones.forEach(o => o.classList.remove('selected'));
+            opt.classList.add('selected');
+            animalSeleccionado = opt.dataset.animal;
+            actualizarMultiplicacion();
+        });
+    });
+    document.querySelector('.animal-option[data-animal="mono"]').classList.add('selected');
+
+    // Elementos DOM
+    const gruposSlider = document.getElementById('gruposSlider');
+    const animalesSlider = document.getElementById('animalesSlider');
+    const gruposVal = document.getElementById('gruposVal');
+    const animalesPorGrupoVal = document.getElementById('animalesPorGrupoVal');
+    const operacionTexto = document.getElementById('operacionTexto');
+    const explicacionTexto = document.getElementById('explicacionTexto');
+    const visualGrupos = document.getElementById('visualGrupos');
+
+    function generarAnimales(emoji, cantidad) {
+        let resultado = '';
+        for(let i=0; i<cantidad; i++) {
+            resultado += emoji + ' ';
+        }
+        return resultado;
+    }
+
+    function actualizarMultiplicacion() {
+        let grupos = parseInt(gruposSlider.value);
+        let animalesPorGrupo = parseInt(animalesSlider.value);
+        let total = grupos * animalesPorGrupo;
+
+        gruposVal.innerText = grupos;
+        animalesPorGrupoVal.innerText = animalesPorGrupo;
+        operacionTexto.innerHTML = `${grupos} grupos × ${animalesPorGrupo} animales = ${total} animales`;
+
+        const animalData = emojisSelva[animalSeleccionado];
+        const emojiGrupo = animalData.grupo;
+        const emojiAnimal = animalData.animal;
+        const emojiTotal = animalData.total;
+        const nombre = animalData.nombre;
+
+        // Construir visualización de grupos
+        let html = '';
+        for(let g = 1; g <= grupos; g++) {
+            let animalesHtml = '';
+            for(let a = 1; a <= animalesPorGrupo; a++) {
+                animalesHtml += emojiAnimal + ' ';
+            }
+            html += `
+                <div class="grupo">
+                    <span class="grupo-label">Grupo ${g}</span>
+                    <span>${animalesHtml}</span>
+                </div>
+            `;
+        }
+
+        // Añadir el resultado en pasto verde
+        html += `
+            <div class="resultado-grupo">
+                <span>🌟 TOTAL: ${total} ${nombre}${total!==1?'s':''} 🌟</span>
+                <div style="margin-top:8px;">${generarAnimales(emojiTotal, total)}</div>
+            </div>
+        `;
+
+        visualGrupos.innerHTML = html;
+
+        explicacionTexto.innerHTML = `💡 ${grupos} grupos de ${animalesPorGrupo} ${nombre}${animalesPorGrupo!==1?'s':''} = ${total} ${nombre}${total!==1?'s':''}. ¡La multiplicación es sumar el mismo número varias veces: ${animalesPorGrupo} + ${animalesPorGrupo} + ... (${grupos} veces) = ${total}! 🌴`;
+    }
+
+    gruposSlider.addEventListener('input', actualizarMultiplicacion);
+    animalesSlider.addEventListener('input', actualizarMultiplicacion);
+    actualizarMultiplicacion();
+
+    // ========================
+    // QUIZ DE MULTIPLICACIÓN (preguntas visuales)
+    // ========================
+    const preguntas = [
+        { texto: "🦁 2 grupos de 3 leones = ?", opciones: ["4", "5", "6", "7"], correcta: "c" },
+        { texto: "🐒 3 grupos de 2 monos = ?", opciones: ["5", "6", "7", "8"], correcta: "b" },
+        { texto: "🦜 4 grupos de 2 loros = ?", opciones: ["6", "7", "8", "9"], correcta: "c" },
+        { texto: "🦓 1 grupo de 5 cebras = ?", opciones: ["4", "5", "6", "7"], correcta: "b" },
+        { texto: "🐘 3 grupos de 3 elefantes = ?", opciones: ["6", "7", "8", "9"], correcta: "d" }
+    ];
+
+    let respuestasUsuario = new Array(5).fill(null);
+    let calificacionActual = null;
+    let nombreActual = "";
+
+    const quizContainer = document.getElementById('quizContainer');
+    const btnCalificar = document.getElementById('btnCalificar');
+    const btnDescargarPDF = document.getElementById('btnDescargarPDF');
+    const puntajeMostrado = document.getElementById('puntajeMostrado');
+    const feedbackQuiz = document.getElementById('feedbackQuiz');
+    const motivacionDiv = document.getElementById('motivacion');
+    const nombreInput = document.getElementById('nombreEstudiante');
+
+    function renderQuiz() {
+        let html = '';
+        preguntas.forEach((p, idx) => {
+            let selectedVal = respuestasUsuario[idx] || '';
+            html += `<div class="quiz-item">
+                        <div class="quiz-pregunta">${idx+1}. ${p.texto}</div>`;
+            p.opciones.forEach((op, optIdx) => {
+                let letra = String.fromCharCode(97 + optIdx);
+                let checked = (selectedVal === letra) ? 'checked' : '';
+                html += `<label class="quiz-opcion">
+                            <input type="radio" name="q${idx}" value="${letra}" ${checked}>
+                            ${letra}) ${op}
+                         </label>`;
+            });
+            html += `</div>`;
+        });
+        quizContainer.innerHTML = html;
+        for(let i=0; i<preguntas.length; i++) {
+            let radios = document.querySelectorAll(`input[name="q${i}"]`);
+            radios.forEach(radio => {
+                radio.addEventListener('change', (e) => {
+                    respuestasUsuario[i] = e.target.value;
+                });
+            });
+        }
+    }
+
+    function calcularPuntaje() {
+        let correctas = 0;
+        for(let i=0; i<preguntas.length; i++) {
+            if(respuestasUsuario[i] === preguntas[i].correcta) correctas++;
+        }
+        return (correctas / preguntas.length) * 100;
+    }
+
+    function obtenerMensajeMotivacion(puntaje) {
+        if(puntaje >= 90) return "🐆 ¡Jaguar Campeón de la Selva! 🐆 Eres un genio de la multiplicación.";
+        if(puntaje >= 70) return "🐒 ¡Mono Aventurero! Muy bien, sigue así.";
+        if(puntaje >= 50) return "🦜 ¡Loro Esforzado! Puedes mejorar practicando más.";
+        return "🐢 ¡Tortuguita Valiente! No te rindas, sigue multiplicando con los animales.";
+    }
+
+    function calificar() {
+        const nombre = nombreInput.value.trim();
+        if(nombre === "") {
+            feedbackQuiz.innerHTML = "⚠️ Escribe tu nombre (Jaguar o Pantera) para calificar.";
+            return;
+        }
+        let todasRespondidas = respuestasUsuario.every(r => r !== null);
+        if(!todasRespondidas) {
+            feedbackQuiz.innerHTML = "⚠️ Responde todas las preguntas del desafío.";
+            return;
+        }
+        let puntaje = calcularPuntaje();
+        calificacionActual = puntaje;
+        let nota05 = (puntaje / 100) * 5;
+        puntajeMostrado.innerHTML = `🎯 Puntaje: ${puntaje.toFixed(0)}/100 (Nota: ${nota05.toFixed(1)}/5)`;
+        let mensaje = obtenerMensajeMotivacion(puntaje);
+        motivacionDiv.innerHTML = `✨ ${mensaje} ✨`;
+        feedbackQuiz.innerHTML = `✅ ¡Completaste el desafío! Calificación: ${puntaje.toFixed(0)}/100. ${mensaje}`;
+        btnDescargarPDF.disabled = false;
+        nombreActual = nombre;
+    }
+
+    async function generarPDF() {
+        if(calificacionActual === null) {
+            feedbackQuiz.innerHTML = "Primero califica para descargar el PDF.";
+            return;
+        }
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        doc.setFont("helvetica");
+        doc.setFontSize(18);
+        doc.text("Certificado de Tablas de la Selva - Multiplicación", 15, 20);
+        doc.setFontSize(12);
+        doc.text(`Estudiante: ${nombreActual}`, 15, 32);
+        doc.text(`Fecha: ${new Date().toLocaleString()}`, 15, 40);
+        doc.text(`Calificación: ${calificacionActual.toFixed(0)}/100 → Nota: ${(calificacionActual/20).toFixed(1)}/5`, 15, 48);
+        doc.text(obtenerMensajeMotivacion(calificacionActual), 15, 56);
+        doc.text("Detalle de respuestas:", 15, 68);
+        let y = 78;
+        for(let i=0; i<preguntas.length; i++) {
+            let userResp = respuestasUsuario[i] || "Sin responder";
+            let correcta = preguntas[i].correcta;
+            let estado = (userResp === correcta) ? "✓ Correcta" : (userResp !== "Sin responder" ? "✗ Incorrecta" : "? No respondida");
+            doc.text(`${i+1}. ${preguntas[i].texto.substring(0,50)}`, 15, y);
+            doc.text(`   Respuesta: ${userResp} | Correcta: ${correcta} | ${estado}`, 20, y+6);
+            y += 12;
+            if(y > 270) { doc.addPage(); y = 20; }
+        }
+        doc.save(`tablas_selva_${nombreActual.replace(/\s/g, "_")}.pdf`);
+        feedbackQuiz.innerHTML = "📄 PDF generado. ¡Eres un Campeón de la Selva!";
+    }
+
+    btnCalificar.addEventListener('click', calificar);
+    btnDescargarPDF.addEventListener('click', generarPDF);
+    renderQuiz();
+</script>
+</body>
+</html>
