@@ -59,7 +59,6 @@
         }
         .title-area p { font-size: 0.9rem; color: #94a3b8; }
 
-        /* Banner con imagen (mismo estilo que Chemistry Lab) */
         .hero {
             text-align: center;
             padding: 100px 20px;
@@ -96,39 +95,25 @@
         }
         .cards-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
             gap: 2rem;
             margin-bottom: 3rem;
         }
         .card {
             background: linear-gradient(145deg, #1e293b, #172132);
             border-radius: 1.8rem;
-            padding: 2rem;
+            padding: 1.8rem;
             transition: all 0.3s ease;
             border: 1px solid #334155;
             display: flex;
             flex-direction: column;
             animation: fadeInUp 0.5s ease-out backwards;
-            position: relative;
-            overflow: hidden;
         }
         .card:hover {
             transform: translateY(-8px);
             border-color: #38bdf8;
             box-shadow: 0 20px 30px -12px rgba(0,0,0,0.5);
         }
-        .card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(56,189,248,0.1), transparent);
-            transition: left 0.5s;
-            pointer-events: none;
-        }
-        .card:hover::before { left: 100%; }
         .card-icon {
             font-size: 3rem;
             background: #0f172a;
@@ -160,50 +145,34 @@
             padding: 0.7rem 1.2rem;
             border-radius: 40px;
             font-weight: 600;
-            cursor: pointer;
             text-decoration: none;
             display: inline-flex;
             align-items: center;
             gap: 8px;
             transition: 0.2s;
             width: fit-content;
+            margin-right: 10px;
+            margin-bottom: 10px;
         }
         .btn-card:hover { background: #3b82f6; transform: scale(0.98); }
-        .btn-card.disabled {
+        .btn-descarga {
+            background: #10b981;
+        }
+        .btn-descarga:hover { background: #059669; }
+        .btn-manual {
+            background: #f59e0b;
+        }
+        .btn-manual:hover { background: #d97706; }
+        .btn-disabled {
             background: #475569;
-            cursor: not-allowed;
-            opacity: 0.6;
             pointer-events: none;
+            opacity: 0.6;
         }
-
-        .recursos-section {
-            background: #1e293b;
-            border-radius: 1.8rem;
-            padding: 1.8rem;
-            margin-top: 1rem;
-            border: 1px solid #334155;
-        }
-        .recursos-section h3 {
-            color: #facc15;
-            margin-bottom: 1rem;
-            font-size: 1.5rem;
-        }
-        .recursos-links {
+        .botones-group {
             display: flex;
             flex-wrap: wrap;
-            gap: 1rem;
+            margin-top: 0.5rem;
         }
-        .btn-rec {
-            background: #0f172a;
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 40px;
-            text-decoration: none;
-            font-size: 0.8rem;
-            transition: 0.2s;
-            border: 1px solid #334155;
-        }
-        .btn-rec:hover { background: #2563eb; border-color: #38bdf8; }
         footer {
             text-align: center;
             padding: 2rem;
@@ -213,7 +182,6 @@
             color: #64748b;
         }
         @media (max-width: 700px) {
-            .container { padding: 1rem; }
             .hero h2 { font-size: 1.6rem; }
             .hero p { font-size: 1rem; }
             .hero { padding: 80px 20px; }
@@ -238,45 +206,59 @@
 
 <div class="container">
     <div class="cards-grid">
-        <!-- Capacitación (próximamente) -->
+
+        <!-- TARJETA 1: CAPACITACIÓN DOCENTE -->
         <div class="card">
             <div class="card-icon">📖</div>
             <h3>Capacitación Docente</h3>
             <p>Módulo de formación para el uso de simuladores, evaluaciones automáticas y metodologías STEM en el aula rural.</p>
-            <a href="#" class="btn-card disabled">🚧 Próximamente</a>
+            <div class="botones-group">
+                <a href="./capacitacion/" class="btn-card">📚 Acceder a capacitación</a>
+                <!-- Descarga de la herramienta (HTML) -->
+                <a href="./capacitacion/capacitacion.html" download class="btn-card btn-descarga">⬇️ Descargar herramienta</a>
+                <!-- Descarga del manual (PDF) -->
+                <a href="./capacitacion/manual_capacitacion.pdf" download class="btn-card btn-manual">📘 Descargar manual</a>
+            </div>
         </div>
 
-        <!-- Sistema OMR – ruta relativa correcta a la carpeta OMR -->
+        <!-- TARJETA 2: SISTEMA OMR -->
         <div class="card">
             <div class="card-icon">📄</div>
             <h3>Sistema OMR</h3>
             <p>Lectura automática de hojas de respuesta con cámara o escáner. Calificación instantánea y exportación de resultados.</p>
-            <a href="./OMR/" class="btn-card">📸 Ir al Lector OMR</a>
+            <div class="botones-group">
+                <a href="./OMR/" class="btn-card">📸 Ir al Lector OMR</a>
+                <a href="./OMR/index.html" download class="btn-card btn-descarga">⬇️ Descargar herramienta</a>
+                <a href="./OMR/manual_OMR.pdf" download class="btn-card btn-manual">📘 Descargar manual</a>
+            </div>
         </div>
 
-        <!-- Analítica Educativa – ruta relativa correcta a la carpeta analytics -->
+        <!-- TARJETA 3: ANALÍTICA EDUCATIVA (CALIFICADOR) -->
         <div class="card">
             <div class="card-icon">📊</div>
             <h3>Analítica Educativa</h3>
             <p>Visualización de datos de aprendizaje, reportes por competencias, seguimiento de grupo y recomendaciones pedagógicas.</p>
-            <a href="./analytics/" class="btn-card">📈 Ingresar a Analítica</a>
+            <div class="botones-group">
+                <a href="./analytics/" class="btn-card">📈 Ingresar a Analítica</a>
+                <a href="./analytics/index.html" download class="btn-card btn-descarga">⬇️ Descargar herramienta</a>
+                <a href="./analytics/manual_analytics.pdf" download class="btn-card btn-manual">📘 Descargar manual</a>
+            </div>
         </div>
+
     </div>
 
-    <!-- Recursos para docentes (descargas) -->
-    <div class="recursos-section">
-        <h3>📥 Recursos para docentes</h3>
-        <div class="recursos-links">
-            <a href="../simulators/tablas-selva/tablas-guide.pdf" class="btn-rec" download>📘 Guía - Tablas de la Selva</a>
-            <a href="../simulators/sumas-magicas/sumas-guide.pdf" class="btn-rec" download>📘 Guía - Sumas Mágicas</a>
-            <a href="../simulators/restas-marinas/restas-guide.pdf" class="btn-rec" download>📘 Guía - Restas Marinas</a>
-            <a href="../simulators/simple-pendulum/simple-pendulum-guide.pdf" class="btn-rec" download>📘 Guía - Péndulo Simple</a>
-            <a href="../simulators/sound-intensity/sound-intensity-guide.pdf" class="btn-rec" download>📘 Guía - Intensidad Sonora</a>
-        </div>
-        <div class="recursos-links" style="margin-top: 1rem;">
-            <a href="../simulators/tablas-selva/tablas-selva.html" class="btn-rec">🎮 Tablas de la Selva (App)</a>
-            <a href="../simulators/sumas-magicas/sumas-magicas.html" class="btn-rec">🧮 Sumas Mágicas (App)</a>
-            <a href="../simulators/restas-marinas/restas-marinas.html" class="btn-rec">🐠 Restas Marinas (App)</a>
+    <!-- RECURSOS ADICIONALES (opcional, se mantiene) -->
+    <div class="cards-grid" style="margin-top: 1rem;">
+        <div class="card" style="grid-column: span 3;">
+            <h3 style="color:#facc15;">📥 Recursos generales para docentes</h3>
+            <div class="botones-group" style="justify-content: center;">
+                <a href="../simulators/tablas-selva/tablas-guide.pdf" class="btn-card btn-manual" download>📘 Guía Tablas de la Selva</a>
+                <a href="../simulators/sumas-magicas/sumas-guide.pdf" class="btn-card btn-manual" download>📘 Guía Sumas Mágicas</a>
+                <a href="../simulators/restas-marinas/restas-guide.pdf" class="btn-card btn-manual" download>📘 Guía Restas Marinas</a>
+                <a href="../simulators/tablas-selva/tablas-selva.html" class="btn-card">🎮 Tablas de la Selva (App)</a>
+                <a href="../simulators/sumas-magicas/sumas-magicas.html" class="btn-card">🧮 Sumas Mágicas (App)</a>
+                <a href="../simulators/restas-marinas/restas-marinas.html" class="btn-card">🐠 Restas Marinas (App)</a>
+            </div>
         </div>
     </div>
 </div>
