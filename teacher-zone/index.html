@@ -64,10 +64,10 @@
         }
         .title-area p { font-size: 0.9rem; color: #94a3b8; }
 
-        /* Header con imagen animada */
+        /* Header más alto */
         .hero {
             text-align: center;
-            padding: 100px 20px;
+            padding: 140px 20px;
             background: url('../assets/profe-banner.png');
             background-size: 105%;
             background-position: 50% 50%;
@@ -102,35 +102,39 @@
             margin: 0 auto;
             padding: 2rem;
         }
-        /* Pestañas */
-        .tabs {
+        /* Grid para las tres tarjetas principales */
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.8rem;
+            margin-bottom: 2rem;
+        }
+        .card-principal {
+            background: linear-gradient(145deg, #1e293b, #172132);
+            border-radius: 1.8rem;
+            padding: 1.8rem;
+            border: 1px solid #334155;
+            transition: all 0.3s ease;
+            animation: fadeInUp 0.5s ease-out;
+        }
+        .card-principal:hover {
+            transform: translateY(-5px);
+            border-color: #38bdf8;
+            box-shadow: 0 15px 30px -10px rgba(0,0,0,0.5);
+        }
+        .card-principal h3 {
+            font-size: 1.8rem;
+            color: #facc15;
+            margin-bottom: 1rem;
             display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            border-bottom: 1px solid #334155;
-            margin-bottom: 1.5rem;
+            align-items: center;
+            gap: 12px;
         }
-        .tab-btn {
-            background: none;
-            border: none;
-            padding: 0.8rem 1.5rem;
-            font-weight: 600;
-            color: #94a3b8;
-            cursor: pointer;
-            transition: 0.2s;
-            border-radius: 40px 40px 0 0;
+        .card-principal p {
+            color: #cbd5e1;
+            margin-bottom: 1rem;
         }
-        .tab-btn.active {
-            background: #2563eb;
-            color: white;
-        }
-        .tab-btn:hover:not(.active) { background: #1e293b; color: white; }
-        .tab-pane {
-            display: none;
-            animation: fadeInUp 0.3s ease;
-        }
-        .tab-pane.active { display: block; }
-        .card {
+        .card-secundaria {
             background: #1e293b;
             border-radius: 1.5rem;
             padding: 1.5rem;
@@ -138,8 +142,8 @@
             border: 1px solid #334155;
             transition: 0.2s;
         }
-        .card:hover { border-color: #38bdf8; }
-        .card h3 { color: #38bdf8; margin-bottom: 1rem; }
+        .card-secundaria:hover { border-color: #38bdf8; }
+        .card-secundaria h3 { color: #38bdf8; margin-bottom: 1rem; }
         .btn {
             background: #2563eb;
             color: white;
@@ -186,9 +190,9 @@
         }
         @media (max-width: 700px) {
             .container { padding: 1rem; }
-            .tab-btn { padding: 0.5rem 1rem; font-size: 0.8rem; }
             .hero h2 { font-size: 1.6rem; }
             .hero p { font-size: 1rem; }
+            .hero { padding: 100px 20px; }
         }
     </style>
 </head>
@@ -198,112 +202,79 @@
     <a href="../index.html" class="back-btn">⬅ Inicio</a>
     <div class="title-area">
         <h1>🧑‍🏫 Teacher Zone</h1>
-        <p>Capacitación, talleres y análisis automático de evaluaciones</p>
+        <p>Capacitación, OMR y analítica educativa</p>
     </div>
 </div>
 
 <section class="hero">
-    <h2>📚 Rural STEM Lab - Capacitación Docente</h2>
-    <p>Uso de simuladores, evaluaciones automáticas y módulo Elementary</p>
+    <h2>📚 Rural STEM Lab - Zona del Profesor</h2>
+    <p>Herramientas para capacitación, calificación automática y análisis pedagógico</p>
 </section>
 
 <div class="container">
-    <div class="tabs">
-        <button class="tab-btn active" data-tab="capacitacion">📖 Capacitación</button>
-        <button class="tab-btn" data-tab="taller">✍️ Taller práctico</button>
-        <button class="tab-btn" data-tab="recursos">📥 Recursos y guías</button>
-        <button class="tab-btn" data-tab="resultados">📊 Análisis de resultados</button>
-    </div>
-
-    <!-- Pestaña 1: Capacitación -->
-    <div id="capacitacion" class="tab-pane active">
-        <div class="card">
-            <h3>🎯 Objetivo de la capacitación</h3>
-            <p>Capacitar a los docentes en el uso práctico de Rural STEM Lab para: utilizar simuladores interactivos, crear experiencias dinámicas, aplicar evaluaciones automáticas, reducir tiempos de calificación, obtener retroalimentación inmediata, fortalecer procesos tipo ICFES y motivar a estudiantes.</p>
+    <!-- TRES TARJETAS PRINCIPALES -->
+    <div class="grid-3">
+        <div class="card-principal">
+            <h3>📖 Capacitación Docente</h3>
+            <p>Guía completa sobre el uso de simuladores, módulo Elementary, evaluaciones automáticas y estrategias para motivar a estudiantes.</p>
+            <p><strong>Contenido:</strong> Objetivos, beneficios, demostración en vivo, taller práctico y recomendaciones para el aula.</p>
+            <a href="#" class="btn" style="margin-top: 1rem;">Ver materiales de capacitación</a>
         </div>
-        <div class="card">
-            <h3>🔍 ¿Qué es Rural STEM Lab?</h3>
-            <p>Ecosistema educativo STEM interactivo para contexto rural. Integra simuladores, matemáticas visuales, física interactiva, evaluaciones automáticas, retroalimentación pedagógica, herramientas offline y sistema de análisis académico.</p>
-            <p><strong>Beneficios:</strong> ✅ Reduce carga docente. ✅ Clases más dinámicas. ✅ Motiva estudiantes. ✅ Facilita evaluación. ✅ Mejora procesos ICFES. ✅ Funciona sin internet.</p>
+        <div class="card-principal">
+            <h3>🧪 Modelo OMR</h3>
+            <p>Sistema de lectura óptica de hojas de respuesta (Optical Mark Recognition).</p>
+            <p><strong>¿Cómo funciona?</strong> Sube una foto o escaneo de la hoja, el sistema detecta las marcas, califica automáticamente y genera reportes.</p>
+            <p><strong>Ventajas:</strong> Ahorro de tiempo, cero errores de calificación, retroalimentación inmediata.</p>
+            <a href="#" class="btn" style="margin-top: 1rem;">Próximamente: subir hoja</a>
         </div>
-        <div class="card">
-            <h3>🧒 Módulo Elementary (Primaria)</h3>
-            <p>Incluye sumas interactivas, restas visuales, multiplicaciones animadas, juegos matemáticos, actividades con personajes y colores. Aprendizaje gamificado para que los niños aprendan matemáticas de forma divertida.</p>
-            <a href="../elementary/" class="btn" target="_blank">🎮 Explorar Elementary</a>
-        </div>
-        <div class="card">
-            <h3>📊 Evaluaciones automáticas y retroalimentación</h3>
-            <p>El docente puede subir evaluaciones, generar preguntas, calificar automáticamente, obtener estadísticas, analizar fortalezas y debilidades, detectar temas críticos. Ventaja principal: reducción significativa del tiempo de revisión.</p>
-        </div>
-        <div class="card">
-            <h3>🌱 Visión futura</h3>
-            <p>Rural STEM Lab busca convertirse en laboratorio STEM rural digital, ecosistema educativo offline, plataforma institucional de innovación y modelo replicable para otras instituciones rurales.</p>
-        </div>
-        <div class="card">
-            <h3>🔗 Enlaces oficiales</h3>
-            <p>📌 <a href="../index.html" target="_blank" style="color:#38bdf8;">Plataforma principal</a><br>
-            📌 <a href="../student-zone/" target="_blank" style="color:#38bdf8;">Zona de estudiantes</a><br>
-            📌 <a href="https://calendar.google.com/calendar/embed?src=c_af9250d00f6eef129c22cbfb2e29bea0ae0323b5702356e7e75df80ae4b4444d%40group.calendar.google.com&ctz=America%2FBogota" target="_blank" style="color:#38bdf8;">Calendario académico</a></p>
+        <div class="card-principal">
+            <h3>📊 Analítica Educativa</h3>
+            <p>Análisis automático del desempeño grupal e individual.</p>
+            <p><strong>Qué puedes ver:</strong> preguntas con mayor dificultad, distribución de calificaciones, tendencias de aprendizaje, recomendaciones pedagógicas.</p>
+            <p><strong>Uso:</strong> Identifica temas críticos y ajusta tu plan de clases con datos reales.</p>
+            <a href="#" class="btn" style="margin-top: 1rem;">Ver reportes de ejemplo</a>
         </div>
     </div>
 
-    <!-- Pestaña 2: Taller práctico -->
-    <div id="taller" class="tab-pane">
-        <div class="card">
-            <h3>✍️ Taller práctico: Tablas de Multiplicar</h3>
-            <p>Resuelve las siguientes 5 preguntas. Al finalizar, el sistema corregirá automáticamente y mostrará el análisis.</p>
-            <div id="quizTaller"></div>
-            <button id="btnCorregirTaller" class="btn btn-secondary" style="margin-top: 1rem;">✅ Corregir y analizar</button>
-            <div id="resultadoTaller" class="resultado-analisis" style="margin-top: 1rem; display: none;"></div>
-        </div>
-        <div class="card">
-            <h3>📌 Instrucción adicional</h3>
-            <p>Simula la experiencia de subir una hoja de respuestas: aquí estás respondiendo digitalmente. En un futuro, el sistema podrá leer hojas físicas mediante OMR (lectura óptica de marcas).</p>
-        </div>
+    <!-- TALLER PRÁCTICO (multiplicación) -->
+    <div class="card-secundaria">
+        <h3>✍️ Taller práctico: Tablas de Multiplicar</h3>
+        <p>Resuelve las siguientes 5 preguntas. Al finalizar, el sistema corregirá automáticamente y mostrará el análisis (simulación OMR).</p>
+        <div id="quizTaller"></div>
+        <button id="btnCorregirTaller" class="btn btn-secondary" style="margin-top: 1rem;">✅ Corregir y analizar</button>
+        <div id="resultadoTaller" class="resultado-analisis" style="margin-top: 1rem; display: none;"></div>
     </div>
 
-    <!-- Pestaña 3: Recursos y guías PDF descargables -->
-    <div id="recursos" class="tab-pane">
-        <div class="card">
-            <h3>📥 Guías PDF de los simuladores</h3>
-            <p>Haz clic para descargar las guías pedagógicas de cada simulador (disponibles en sus respectivas carpetas).</p>
-            <ul style="list-style: none; padding-left: 0;">
-                <li><a href="../simulators/tablas-selva/tablas-guide.pdf" class="btn" style="margin: 5px 0; display: inline-block;" download>📘 Guía - Tablas de la Selva</a></li>
-                <li><a href="../simulators/sumas-magicas/sumas-guide.pdf" class="btn" style="margin: 5px 0; display: inline-block;" download>📘 Guía - Sumas Mágicas</a></li>
-                <li><a href="../simulators/restas-marinas/restas-guide.pdf" class="btn" style="margin: 5px 0; display: inline-block;" download>📘 Guía - Restas Marinas</a></li>
-                <li><a href="../simulators/simple-pendulum/simple-pendulum-guide.pdf" class="btn" style="margin: 5px 0; display: inline-block;" download>📘 Guía - Péndulo Simple</a></li>
-                <li><a href="../simulators/sound-intensity/sound-intensity-guide.pdf" class="btn" style="margin: 5px 0; display: inline-block;" download>📘 Guía - Intensidad Sonora</a></li>
-            </ul>
-        </div>
-        <div class="card">
-            <h3>📂 Simuladores descargables (Apps HTML)</h3>
-            <p>Puedes descargar cada simulador como archivo HTML para usarlo offline.</p>
-            <ul style="list-style: none; padding-left: 0;">
-                <li><a href="../simulators/tablas-selva/tablas-selva.html" class="btn" download>📥 Tablas de la Selva (HTML)</a></li>
-                <li><a href="../simulators/sumas-magicas/sumas-magicas.html" class="btn" download>📥 Sumas Mágicas (HTML)</a></li>
-                <li><a href="../simulators/restas-marinas/restas-marinas.html" class="btn" download>📥 Restas Marinas (HTML)</a></li>
-            </ul>
-        </div>
+    <!-- RECURSOS Y GUÍAS -->
+    <div class="card-secundaria">
+        <h3>📥 Recursos y guías PDF descargables</h3>
+        <p>Haz clic para descargar las guías pedagógicas de los simuladores (ubicadas en sus respectivas carpetas).</p>
+        <ul style="list-style: none; padding-left: 0; display: flex; flex-wrap: wrap; gap: 0.5rem;">
+            <li><a href="../simulators/tablas-selva/tablas-guide.pdf" class="btn" style="margin: 0;" download>📘 Tablas Selva</a></li>
+            <li><a href="../simulators/sumas-magicas/sumas-guide.pdf" class="btn" style="margin: 0;" download>📘 Sumas Mágicas</a></li>
+            <li><a href="../simulators/restas-marinas/restas-guide.pdf" class="btn" style="margin: 0;" download>📘 Restas Marinas</a></li>
+            <li><a href="../simulators/simple-pendulum/simple-pendulum-guide.pdf" class="btn" style="margin: 0;" download>📘 Péndulo</a></li>
+            <li><a href="../simulators/sound-intensity/sound-intensity-guide.pdf" class="btn" style="margin: 0;" download>📘 Sonido</a></li>
+        </ul>
+        <p style="margin-top: 1rem;">📂 <strong>Simuladores descargables (HTML):</strong></p>
+        <ul style="list-style: none; padding-left: 0; display: flex; flex-wrap: wrap; gap: 0.5rem;">
+            <li><a href="../simulators/tablas-selva/tablas-selva.html" class="btn" download>📥 Tablas Selva</a></li>
+            <li><a href="../simulators/sumas-magicas/sumas-magicas.html" class="btn" download>📥 Sumas Mágicas</a></li>
+            <li><a href="../simulators/restas-marinas/restas-marinas.html" class="btn" download>📥 Restas Marinas</a></li>
+        </ul>
     </div>
 
-    <!-- Pestaña 4: Análisis de resultados -->
-    <div id="resultados" class="tab-pane">
-        <div class="card">
-            <h3>📊 Análisis de resultados del taller</h3>
-            <p>Aquí se mostrarán las estadísticas después de que realices el taller práctico.</p>
-            <div id="analisisDetallado" class="resultado-analisis">
-                <p>🔍 Aún no has realizado el taller. Ve a la pestaña "Taller práctico" y responde las preguntas.</p>
-            </div>
-        </div>
-        <div class="card">
-            <h3>📈 ¿Qué puedes hacer con estos datos?</h3>
-            <p>Identificar preguntas con mayor dificultad, detectar temas críticos, planear refuerzos académicos y compartir retroalimentación personalizada a los estudiantes.</p>
+    <!-- ANÁLISIS DE RESULTADOS (después del taller) -->
+    <div class="card-secundaria">
+        <h3>📊 Análisis automático de resultados</h3>
+        <div id="analisisDetallado" class="resultado-analisis">
+            <p>🔍 Completa el taller práctico para ver el análisis detallado (simulación de lo que OMR haría con una hoja física).</p>
         </div>
     </div>
 </div>
 
 <footer>
-    <p>Rural STEAM Lab — Teacher Zone | Capacitación y herramientas para docentes</p>
+    <p>Rural STEAM Lab — Teacher Zone | Capacitación, OMR y analítica</p>
     <p>✨ Diseñado por: ENG. MEDINA H. A. ✨</p>
 </footer>
 
@@ -378,7 +349,7 @@
         document.getElementById('resultadoTaller').style.display = 'block';
         document.getElementById('resultadoTaller').innerHTML = resultadoHtml;
 
-        let analisisHtml = `<h4>📊 Análisis automático</h4>
+        let analisisHtml = `<h4>📊 Análisis automático (simulación OMR)</h4>
         <p>✅ <strong>Desempeño general:</strong> ${puntaje.toFixed(0)}% de aciertos.</p>
         <p>📌 <strong>Preguntas con mayor dificultad:</strong> `;
         const dificiles = detalles.filter(d => !d.esCorrecta);
@@ -388,26 +359,12 @@
             analisisHtml += "Ninguna, excelente dominio.";
         }
         analisisHtml += `</p><p>💡 <strong>Recomendación pedagógica:</strong> Reforzar las tablas de multiplicar con el simulador "Tablas de la Selva" y las guías descargables.</p>
-        <p>🎯 <strong>Próximo paso:</strong> Los estudiantes pueden realizar este mismo taller y el sistema generará reportes automáticos.</p>`;
+        <p>🎯 <strong>Próximo paso:</strong> Subir hojas físicas para calificación masiva mediante OMR.</p>`;
         document.getElementById('analisisDetallado').innerHTML = analisisHtml;
-    }
-
-    function initTabs() {
-        const tabs = document.querySelectorAll('.tab-btn');
-        tabs.forEach(btn => {
-            btn.addEventListener('click', () => {
-                const tabId = btn.dataset.tab;
-                document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('active'));
-                tabs.forEach(b => b.classList.remove('active'));
-                document.getElementById(tabId).classList.add('active');
-                btn.classList.add('active');
-            });
-        });
     }
 
     renderizarTaller();
     document.getElementById('btnCorregirTaller').addEventListener('click', corregirTaller);
-    initTabs();
 </script>
 </body>
 </html>
