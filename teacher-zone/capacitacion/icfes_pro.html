@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>ICFES PRO | Evaluador por áreas</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #0f172a; color: #f1f5f9; }
+        .sidebar { position: fixed; left: 0; top: 0; width: 280px; height: 100vh; background: #111827; padding: 30px 20px; border-right: 1px solid #1e293b; z-index: 100; overflow-y: auto; }
+        .logo { font-size: 28px; font-weight: 700; color: #60a5fa; margin-bottom: 40px; text-align: center; }
+        .menu button { width: 100%; padding: 14px; margin-bottom: 12px; border: none; border-radius: 16px; background: #1e293b; color: white; cursor: pointer; transition: 0.2s; font-size: 15px; text-align: left; display: flex; align-items: center; gap: 12px; }
+        .menu button:hover { background: #2563eb; transform: translateX(4px); }
+        .main { margin-left: 280px; padding: 30px 40px; }
+        .section { background: #1e293b; border-radius: 28px; padding: 28px; margin-bottom: 30px; border: 1px solid #334155; }
+        .section h2 { color: #60a5fa; margin-bottom: 20px; font-size: 1.5rem; border-left: 4px solid #3b82f6; padding-left: 16px; }
+        .grid-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .stat-card { background: #0f172a; padding: 20px; border-radius: 20px; text-align: center; border: 1px solid #334155; }
+        .stat-card h3 { font-size: 14px; color: #94a3b8; margin-bottom: 8px; }
+        .stat-card p { font-size: 32px; font-weight: 700; color: #60a5fa; }
+        .btn { background: #3b82f6; border: none; color: white; padding: 10px 20px; border-radius: 40px; font-weight: 500; cursor: pointer; transition: 0.2s; margin-right: 12px; margin-top: 16px; display: inline-flex; align-items: center; gap: 8px; }
+        .btn:hover { background: #2563eb; transform: translateY(-2px); }
+        .btn-outline { background: transparent; border: 1px solid #3b82f6; }
+        .btn-outline:hover { background: #3b82f6; }
+        .btn-danger { background: #ef4444; }
+        .btn-danger:hover { background: #dc2626; }
+        input, select, textarea { width: 100%; padding: 12px; border-radius: 16px; border: none; background: #0f172a; color: white; margin-top: 8px; margin-bottom: 16px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 0.85rem; }
+        th, td { padding: 10px 6px; text-align: center; border-bottom: 1px solid #334155; }
+        th { background: #0f172a; color: #facc15; }
+        .rank1 { background: #ca8a04; }
+        .rank2 { background: #64748b; }
+        .rank3 { background: #92400e; }
+        .hidden { display: none; }
+        .config-item { background: #0f172a; border-radius: 20px; padding: 16px; margin-bottom: 16px; border: 1px solid #334155; }
+        .config-item-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px; }
+        .config-badge { background: #2563eb; padding: 4px 12px; border-radius: 20px; font-size: 12px; }
+        canvas { max-height: 300px; margin-top: 20px; background: #0f172a; border-radius: 20px; padding: 10px; }
+        .analisis-text { white-space: pre-line; line-height: 1.6; }
+        .table-responsive { overflow-x: auto; }
+        .fortaleza { background: #14532d; color: #bbf7d0; }
+        .debilidad { background: #7f1a1a; color: #fecaca; }
+        @media (max-width: 800px) { .sidebar { width: 240px; } .main { margin-left: 240px; padding: 20px; } }
+        footer { text-align: center; margin-top: 40px; font-size: 0.75rem; color: #64748b; border-top: 1px solid #1e293b; padding-top: 20px; }
+    </style>
+</head>
+<body>
+<div class="sidebar">
+    <div class="logo">🎓 ICFES PRO</div>
+    <div class="menu">
+        <button onclick="mostrar('dashboard')">📊 Dashboard</button>
+        <button onclick="mostrar('config')">⚙️ Configuración</button>
+        <button onclick="mostrar('captura')">📝 Captura</button>
+        <button onclick="mostrar('resultados')">🏆 Resultados</button>
+        <button onclick="mostrar('analitica')">📈 Analítica</button>
+        <button onclick="mostrar('manual')">📘 Manual</button>
+        <button onclick="resetearConfiguraciones()" style="background:#dc2626;">🗑️ Resetear configuración</button>
+        <button onclick="publicarResultados()" style="background:#10b981;">📢 Publicar resultados</button>
+    </div>
+</div>
+<div class="main">
+    <div id="dashboard" class="section"><h2>📊 Dashboard General</h2><div class="grid-stats" id="statsContainer"></div><canvas id="graficoDashboard"></canvas></div>
+    <div id="config" class="section hidden"><h2>⚙️ Configuración del Examen</h2><div id="configList"></div><button class="btn" onclick="agregarConfiguracion()">+ Agregar área / sesión</button><button class="btn btn-outline" onclick="guardarConfiguraciones()">💾 Guardar todas</button></div>
+    <div id="captura" class="section hidden"><h2>📝 Captura de Respuestas</h2><textarea id="respuestasTexto" rows="6" placeholder="Ejemplo:&#10;LEANDRO A B C D A B C&#10;MARIA B C D A B C D"></textarea><input type="file" id="archivoRespuestas" accept=".xlsx, .xls, .csv" style="display:none"><button class="btn" onclick="cargarRespuestasExcel()">📂 Cargar desde Excel</button><button class="btn btn-outline" onclick="calcularResultados()">✅ Calcular resultados</button></div>
+    <div id="resultados" class="section hidden"><h2>🏆 Ranking de estudiantes</h2><div class="table-responsive"><table id="tablaRanking"><thead id="tablaHead"></thead><tbody id="rankingBody"></tbody></table></div><button class="btn btn-outline" onclick="exportarExcelResultados()">📊 Exportar a Excel</button></div>
+    <div id="analitica" class="section hidden"><h2>📈 Analítica Pedagógica</h2><div id="analisisEstudiantes"></div><div id="matrizRiesgo" style="margin-top: 30px;"></div><div id="interpretacionExtra" class="analisis-text" style="margin-top: 20px;"></div></div>
+    <div id="manual" class="section hidden"><h2>📘 Manual de usuario</h2><div><p><strong>ICFES PRO – Evaluador por áreas</strong></p><p>Configura áreas y sesiones, carga las respuestas y obtén ranking, puntajes por materia (0-100) y una analítica con fortalezas/debilidades por estudiante y matriz de riesgo.</p><p>💡 Usa el botón "Publicar resultados" para que los estudiantes vean sus resultados en la Zona de Estudiantes.</p></div></div>
+    <footer>🔷 Rural STEAM Lab — ICFES PRO | Diseñado por Eng. Medina H. A.</footer>
+</div>
+
+<script>
+    let configuraciones = [];
+    let estudiantes = [];
+    let chartDashboard = null;
+
+    // ================= CONFIGURACIÓN POR DEFECTO (basada en la captura del usuario) =================
+    function cargarConfiguracionesPorDefecto() {
+        configuraciones = [
+            // MATEMÁTICAS Sesión 1
+            { sesion: 1, area: "MATEMÁTICA", competencia: "General", inicio: 1, fin: 25, claveArray: "B B C C D A B D C A A D B C D A A B D B A A C B C".split(/\s+/) },
+            // LECTURA Sesión 1
+            { sesion: 1, area: "LECTURA", competencia: "General", inicio: 26, fin: 66, claveArray: "B A D C D A B C B A B B C D A D B A B B D A B D A C C B A D B C A D B A C D D A C".split(/\s+/) },
+            // SOCIALES Sesión 1
+            { sesion: 1, area: "SOCIALES", competencia: "General", inicio: 67, fin: 91, claveArray: "C B C B A C D B B C A D B C D C B B B A D C B D A".split(/\s+/) },
+            // NATURALES Sesión 1
+            { sesion: 1, area: "NATURALES", competencia: "General", inicio: 92, fin: 120, claveArray: "C A B C B B A A C D D A D C A B B C A D D D D A C C B B B".split(/\s+/) },
+            // MATEMÁTICAS Sesión 2
+            { sesion: 2, area: "MATEMÁTICA", competencia: "General", inicio: 121, fin: 145, claveArray: "B C D B A D C B C B D A C C A D B C C C A B A D B".split(/\s+/) },
+            // SOCIALES Sesión 2
+            { sesion: 2, area: "SOCIALES", competencia: "General", inicio: 146, fin: 170, claveArray: "D A B D B A B C D A C D A B C A C A C B A D B C A".split(/\s+/) },
+            // INGLÉS Sesión 2
+            { sesion: 2, area: "INGLES", competencia: "General", inicio: 171, fin: 224, claveArray: "B A C B A D B A C B A D B A C B A D B A C B A D B A C B A D B A C B A D B A C B A D B A C B A D B A C B A D".split(/\s+/) }
+        ];
+    }
+
+    function resetearConfiguraciones() {
+        if (confirm("¿Borrar todas las configuraciones y restaurar valores de fábrica?")) {
+            localStorage.removeItem('icfes_configs');
+            cargarConfiguracionesPorDefecto();
+            renderizarConfiguraciones();
+            alert("Configuración restablecida a los valores de fábrica.");
+        }
+    }
+
+    function cargarConfiguraciones() {
+        const guardado = localStorage.getItem('icfes_configs');
+        if (guardado) {
+            configuraciones = JSON.parse(guardado);
+        } else {
+            cargarConfiguracionesPorDefecto();
+        }
+        renderizarConfiguraciones();
+    }
+
+    function renderizarConfiguraciones() {
+        const container = document.getElementById('configList');
+        if (!container) return;
+        container.innerHTML = '';
+        configuraciones.forEach((conf, idx) => {
+            const div = document.createElement('div');
+            div.className = 'config-item';
+            div.innerHTML = `
+                <div class="config-item-header">
+                    <strong>${conf.area} (Sesión ${conf.sesion})</strong>
+                    <span class="config-badge">${conf.competencia}</span>
+                </div>
+                <label>Rango: Pregunta ${conf.inicio} a ${conf.fin}</label>
+                <input type="number" placeholder="Inicio" value="${conf.inicio}" data-idx="${idx}" data-field="inicio" class="config-input">
+                <input type="number" placeholder="Fin" value="${conf.fin}" data-idx="${idx}" data-field="fin" class="config-input">
+                <textarea placeholder="Clave (ej: A B C D ...)" rows="2" data-idx="${idx}" data-field="clave" class="config-clave">${conf.claveArray.join(' ')}</textarea>
+                <div style="display:flex; gap:8px; margin-top:12px;">
+                    <button class="btn" onclick="actualizarConfiguracion(${idx})">Actualizar</button>
+                    <button class="btn btn-danger" onclick="eliminarConfiguracion(${idx})">Eliminar</button>
+                </div>
+            `;
+            container.appendChild(div);
+        });
+        document.querySelectorAll('.config-input').forEach(input => {
+            input.addEventListener('change', (e) => {
+                const idx = parseInt(input.dataset.idx);
+                const field = input.dataset.field;
+                configuraciones[idx][field] = parseInt(input.value);
+            });
+        });
+        document.querySelectorAll('.config-clave').forEach(textarea => {
+            textarea.addEventListener('change', (e) => {
+                const idx = parseInt(textarea.dataset.idx);
+                const txt = textarea.value.trim();
+                configuraciones[idx].claveArray = txt ? txt.split(/\s+/) : [];
+            });
+        });
+    }
+
+    function actualizarConfiguracion(idx) { guardarConfiguraciones(); alert(`Configuración actualizada.`); }
+    function eliminarConfiguracion(idx) { if (confirm(`¿Eliminar?`)) { configuraciones.splice(idx, 1); renderizarConfiguraciones(); guardarConfiguraciones(); } }
+    function agregarConfiguracion() {
+        const sesion = parseInt(prompt("Sesión (1 o 2):", "1"));
+        if (sesion !== 1 && sesion !== 2) return;
+        const area = prompt("Área:", "Nueva área");
+        if (!area) return;
+        const competencia = prompt("Competencia:", "General");
+        const inicio = parseInt(prompt("Pregunta inicial:", "1"));
+        const fin = parseInt(prompt("Pregunta final:", "10"));
+        configuraciones.push({ sesion, area, competencia, inicio, fin, claveArray: [] });
+        renderizarConfiguraciones();
+        guardarConfiguraciones();
+    }
+    function guardarConfiguraciones() { localStorage.setItem('icfes_configs', JSON.stringify(configuraciones)); alert('Configuraciones guardadas.'); }
+
+    function cargarRespuestasExcel() {
+        const input = document.getElementById('archivoRespuestas');
+        input.click();
+        input.onchange = (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (evt) => {
+                const data = new Uint8Array(evt.target.result);
+                const workbook = XLSX.read(data, { type: 'array' });
+                const sheet = workbook.Sheets[workbook.SheetNames[0]];
+                const rows = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: "" });
+                let lineas = [];
+                for (let i = 0; i < rows.length; i++) {
+                    const row = rows[i];
+                    if (!row || row.length === 0) continue;
+                    const nombre = row[0] ? row[0].toString().trim() : "Estudiante";
+                    const respuestas = row.slice(1).map(c => c ? c.toString().trim().toUpperCase() : "").filter(c => c !== "");
+                    if (respuestas.length) lineas.push(nombre + " " + respuestas.join(" "));
+                }
+                if (lineas.length === 0) { alert("No se encontraron datos."); return; }
+                document.getElementById('respuestasTexto').value = lineas.join("\n");
+                alert(`Cargadas ${lineas.length} líneas.`);
+            };
+            reader.readAsArrayBuffer(file);
+        };
+    }
+
+    function calcularResultados() {
+        if (configuraciones.length === 0) { alert("Agrega configuraciones."); mostrar('config'); return; }
+        for (let conf of configuraciones) {
+            if (!conf.claveArray || conf.claveArray.length === 0) { alert(`Falta clave para ${conf.area} (S${conf.sesion}).`); mostrar('config'); return; }
+            const expectedLen = conf.fin - conf.inicio + 1;
+            if (conf.claveArray.length !== expectedLen) { alert(`La clave de ${conf.area} debe tener ${expectedLen} respuestas.`); mostrar('config'); return; }
+        }
+        const lineas = document.getElementById('respuestasTexto').value.trim().split('\n');
+        estudiantes = [];
+        const areasUnicas = [...new Map(configuraciones.map(c => [c.area, c.area])).values()];
+        for (let linea of lineas) {
+            const partes = linea.trim().split(/\s+/);
+            if (partes.length < 2) continue;
+            const nombre = partes[0];
+            const respuestas = partes.slice(1);
+            const aciertosPorArea = {};
+            const totalPreguntasPorArea = {};
+            for (let conf of configuraciones) {
+                const area = conf.area;
+                let aciertosArea = 0, preguntasArea = 0;
+                for (let i = conf.inicio; i <= conf.fin; i++) {
+                    const idx = i-1;
+                    preguntasArea++;
+                    if (idx < respuestas.length && respuestas[idx] && respuestas[idx].toUpperCase() === (conf.claveArray[i - conf.inicio] || '').toUpperCase()) {
+                        aciertosArea++;
+                    }
+                }
+                aciertosPorArea[area] = (aciertosPorArea[area] || 0) + aciertosArea;
+                totalPreguntasPorArea[area] = (totalPreguntasPorArea[area] || 0) + preguntasArea;
+            }
+            let totalAciertos = 0, totalPreguntas = 0;
+            for (let area in aciertosPorArea) { totalAciertos += aciertosPorArea[area]; totalPreguntas += totalPreguntasPorArea[area]; }
+            const notaGlobalSobre100 = (totalAciertos / totalPreguntas) * 100;
+            const puntajesAreas = {};
+            for (let area in aciertosPorArea) {
+                puntajesAreas[area] = Math.round( (aciertosPorArea[area] / totalPreguntasPorArea[area]) * 100 );
+            }
+            let sumaPuntajes = 0;
+            for (let area in puntajesAreas) sumaPuntajes += puntajesAreas[area];
+            let areaFuerte = '', areaDebil = '';
+            if (areasUnicas.length) {
+                let maxP = -1, minP = 101;
+                for (let area of areasUnicas) {
+                    const p = puntajesAreas[area] || 0;
+                    if (p > maxP) { maxP = p; areaFuerte = area; }
+                    if (p < minP) { minP = p; areaDebil = area; }
+                }
+            }
+            estudiantes.push({
+                nombre, aciertos: totalAciertos, totalPreguntas, notaGlobalSobre100, puntajesAreas,
+                sumaPuntajes, areaFuerte, areaDebil
+            });
+        }
+        if (estudiantes.length === 0) { alert("No hay datos válidos."); return; }
+        estudiantes.sort((a,b) => b.notaGlobalSobre100 - a.notaGlobalSobre100);
+        mostrarRanking();
+        actualizarDashboard();
+        mostrarAnalitica();
+        mostrar('resultados');
+    }
+
+    function mostrarRanking() {
+        const areas = [...new Map(configuraciones.map(c => [c.area, c.area])).values()];
+        const thead = document.getElementById('tablaHead');
+        thead.innerHTML = '<table><th>#</th><th>Estudiante</th><th>Aciertos</th><th>Nota /100</th>' + areas.map(a => `<th>${a}</th>`).join('') + '<th>Suma áreas<br>(0-500)</th><th>Área fuerte</th><th>Área débil</th></tr>';
+        const tbody = document.getElementById('rankingBody');
+        tbody.innerHTML = '';
+        estudiantes.forEach((e, i) => {
+            let clase = i===0 ? 'rank1' : (i===1 ? 'rank2' : (i===2 ? 'rank3' : ''));
+            const medalla = i===0 ? '🥇 ' : (i===1 ? '🥈 ' : (i===2 ? '🥉 ' : ''));
+            let row = `<tr class="${clase}"><td>${medalla}${i+1}</td><td>${e.nombre}</td><td>${e.aciertos}/${e.totalPreguntas}</td><td>${e.notaGlobalSobre100.toFixed(2)}%</td>`;
+            for (let area of areas) row += `<td>${e.puntajesAreas[area] || 0}</td>`;
+            row += `<td>${e.sumaPuntajes}</td><td>${e.areaFuerte}</td><td>${e.areaDebil}</td></tr>`;
+            tbody.innerHTML += row;
+        });
+    }
+
+    function actualizarDashboard() {
+        if (estudiantes.length === 0) return;
+        const total = estudiantes.length;
+        const notas = estudiantes.map(e => e.notaGlobalSobre100);
+        const prom = notas.reduce((a,b)=>a+b,0)/total;
+        const mejor = Math.max(...notas), peor = Math.min(...notas);
+        document.getElementById('statsContainer').innerHTML = `<div class="stat-card"><h3>Total estudiantes</h3><p>${total}</p></div><div class="stat-card"><h3>Promedio (%)</h3><p>${prom.toFixed(2)}%</p></div><div class="stat-card"><h3>Mejor (%)</h3><p>${mejor.toFixed(2)}%</p></div><div class="stat-card"><h3>Peor (%)</h3><p>${peor.toFixed(2)}%</p></div>`;
+        if (chartDashboard) chartDashboard.destroy();
+        const ctx = document.getElementById('graficoDashboard').getContext('2d');
+        const colores = estudiantes.map(e => {
+            const pct = e.notaGlobalSobre100;
+            let r, g;
+            if (pct < 50) { r = 255; g = Math.floor(255 * (pct / 50)); }
+            else { r = Math.floor(255 * (1 - (pct - 50) / 50)); g = 255; }
+            return `rgb(${r}, ${g}, 0)`;
+        });
+        chartDashboard = new Chart(ctx, {
+            type: 'bar',
+            data: { labels: estudiantes.map(e=>e.nombre), datasets: [{ label: '% Aciertos', data: notas, backgroundColor: colores, borderRadius: 8 }] },
+            options: { responsive: true, scales: { y: { max: 100, title: { display: true, text: '%' } } } }
+        });
+    }
+
+    function mostrarAnalitica() {
+        if (estudiantes.length === 0) return;
+        const areas = [...new Map(configuraciones.map(c => [c.area, c.area])).values()];
+        // Tabla de fortalezas y debilidades por estudiante (con nombre)
+        let html = '<h3>📌 Fortalezas y Debilidades por Estudiante</h3><div class="table-responsive"><table style="width:100%"><thead><tr><th>Estudiante</th><th>Fortaleza (Área con mayor puntaje)</th><th>Debilidad (Área con menor puntaje)</th><th>Recomendación</th></tr></thead><tbody>';
+        for (let e of estudiantes) {
+            let recomendacion = '';
+            if (e.puntajesAreas[e.areaDebil] < 60) recomendacion = `Reforzar urgentemente ${e.areaDebil} (puntaje bajo). Trabajar competencias básicas.`;
+            else if (e.puntajesAreas[e.areaDebil] < 70) recomendacion = `Mejorar en ${e.areaDebil} con práctica específica.`;
+            else recomendacion = `Mantener nivel en ${e.areaDebil} y seguir profundizando en ${e.areaFuerte}.`;
+            html += `<tr>
+                        <td>${e.nombre}</td>
+                        <td class="fortaleza">${e.areaFuerte} (${e.puntajesAreas[e.areaFuerte]})</td>
+                        <td class="debilidad">${e.areaDebil} (${e.puntajesAreas[e.areaDebil]})</td>
+                        <td>${recomendacion}</td>
+                     </tr>`;
+        }
+        html += '</tbody></table></div>';
+        document.getElementById('analisisEstudiantes').innerHTML = html;
+
+        // Matriz de riesgo (áreas críticas a nivel grupal)
+        let areasCriticas = [];
+        for (let area of areas) {
+            let suma = 0, count = 0;
+            for (let e of estudiantes) {
+                suma += e.puntajesAreas[area] || 0;
+                count++;
+            }
+            const promedioArea = suma / count;
+            if (promedioArea < 60) areasCriticas.push({ area, promedio: promedioArea.toFixed(1) });
+        }
+        let riesgoHtml = '<h3>⚠️ Matriz de Riesgo (Áreas con promedio inferior a 60)</h3>';
+        if (areasCriticas.length === 0) riesgoHtml += '<p>✅ No hay áreas críticas. El grupo tiene buen desempeño general.</p>';
+        else {
+            riesgoHtml += '<div class="table-responsive"><table style="width:100%"><thead><tr><th>Área</th><th>Promedio grupal</th><th>Recomendación pedagógica</th></tr></thead><tbody>';
+            for (let crit of areasCriticas) {
+                riesgoHtml += `<tr><td>${crit.area}</td><td>${crit.promedio}%</td><td>Priorizar nivelación en ${crit.area}. Diseñar talleres específicos y seguimiento personalizado.</td></tr>`;
+            }
+            riesgoHtml += '</tbody></table></div>';
+        }
+        document.getElementById('matrizRiesgo').innerHTML = riesgoHtml;
+
+        // Interpretación adicional
+        const promedioGlobal = estudiantes.reduce((a,b)=>a+b.notaGlobalSobre100,0)/estudiantes.length;
+        let interpretacion = `<h3>📊 Interpretación Pedagógica General</h3><p>Promedio global del grupo: ${promedioGlobal.toFixed(2)}%.</p>`;
+        if (promedioGlobal >= 80) interpretacion += '<p>🌟 El grupo tiene un desempeño sobresaliente. Se recomienda mantener las estrategias y fomentar la profundización.</p>';
+        else if (promedioGlobal >= 60) interpretacion += '<p>📈 El grupo tiene un desempeño aceptable. Reforzar las áreas con menor puntaje identificadas en la matriz de riesgo.</p>';
+        else interpretacion += '<p>⚠️ El grupo presenta dificultades significativas. Intervención pedagógica urgente, especialmente en las áreas críticas.</p>';
+        document.getElementById('interpretacionExtra').innerHTML = interpretacion;
+    }
+
+    function exportarExcelResultados() {
+        if (estudiantes.length === 0) return alert("No hay resultados.");
+        const areas = [...new Map(configuraciones.map(c => [c.area, c.area])).values()];
+        const data = estudiantes.map((e, i) => {
+            let row = { Puesto: i+1, Estudiante: e.nombre, Aciertos: `${e.aciertos}/${e.totalPreguntas}`, Nota_Sobre_100: `${e.notaGlobalSobre100.toFixed(2)}%` };
+            for (let area of areas) row[area] = e.puntajesAreas[area] || 0;
+            row.Suma_Areas_0_500 = e.sumaPuntajes;
+            row.AreaFuerte = e.areaFuerte;
+            row.AreaDebil = e.areaDebil;
+            return row;
+        });
+        const ws = XLSX.utils.json_to_sheet(data);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Resultados_ICFES");
+        XLSX.writeFile(wb, `ICFES_${new Date().toISOString().slice(0,19)}.xlsx`);
+    }
+
+    function publicarResultados() {
+        if (estudiantes.length === 0) { alert("No hay resultados para publicar. Calcula primero."); return; }
+        const areas = [...new Map(configuraciones.map(c => [c.area, c.area])).values()];
+        const datosPublicos = {
+            estudiantes: estudiantes.map(e => ({
+                nombre: e.nombre,
+                aciertos: e.aciertos,
+                totalPreguntas: e.totalPreguntas,
+                notaGlobalSobre100: e.notaGlobalSobre100,
+                puntajesAreas: e.puntajesAreas,
+                sumaPuntajes: e.sumaPuntajes,
+                areaFuerte: e.areaFuerte,
+                areaDebil: e.areaDebil
+            })),
+            areas: areas
+        };
+        localStorage.setItem('icfes_resultados_publicos', JSON.stringify(datosPublicos));
+        alert("✅ Resultados publicados. Los estudiantes pueden verlos en la Zona de Estudiantes.");
+    }
+
+    function mostrar(sectionId) {
+        const sections = ['dashboard', 'config', 'captura', 'resultados', 'analitica', 'manual'];
+        sections.forEach(id => document.getElementById(id).classList.add('hidden'));
+        document.getElementById(sectionId).classList.remove('hidden');
+        if (sectionId === 'dashboard') actualizarDashboard();
+        if (sectionId === 'analitica') mostrarAnalitica();
+    }
+
+    cargarConfiguraciones();
+    mostrar('dashboard');
+</script>
+</body>
+</html>
