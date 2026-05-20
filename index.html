@@ -33,11 +33,17 @@
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
         }
-        /* Movimiento más sutil (menos zoom y desplazamiento, más lento) */
         @keyframes subtleZoom {
             0% { background-position: 50% 50%; background-size: 105%; }
             50% { background-position: 49% 51%; background-size: 108%; }
             100% { background-position: 50% 50%; background-size: 105%; }
+        }
+        /* Animación para partículas */
+        @keyframes floatParticle {
+            0% { transform: translateY(100vh) scale(0); opacity: 0; }
+            10% { opacity: 0.8; }
+            90% { opacity: 0.8; }
+            100% { transform: translateY(-10vh) scale(1); opacity: 0; }
         }
 
         /* Menu superior */
@@ -91,7 +97,7 @@
             transform: translateY(-2px);
         }
 
-        /* Header con imagen SIN GRADIENTE, sin fondo en el texto */
+        /* Header con imagen */
         header {
             padding: 130px 20px;
             background: url('assets/stem-banner-full.png');
@@ -100,6 +106,7 @@
             background-repeat: no-repeat;
             animation: subtleZoom 25s ease-in-out infinite;
             position: relative;
+            z-index: 2;
         }
         h1 {
             font-size: 4rem;
@@ -120,10 +127,9 @@
             color: #ffffff;
             font-weight: 500;
             text-shadow: 1px 1px 6px rgba(0,0,0,0.8);
-            /* Sin fondo, sin blur */
         }
 
-        /* Tarjetas en grid horizontal para escritorio (6 columnas) */
+        /* Tarjetas en grid horizontal */
         .container {
             display: grid;
             grid-template-columns: repeat(6, 1fr);
@@ -131,23 +137,17 @@
             padding: 50px 40px;
             max-width: 1600px;
             margin: auto;
+            position: relative;
+            z-index: 2;
         }
-        /* Responsive */
         @media (max-width: 1400px) {
-            .container {
-                grid-template-columns: repeat(3, 1fr);
-            }
+            .container { grid-template-columns: repeat(3, 1fr); }
         }
         @media (max-width: 900px) {
-            .container {
-                grid-template-columns: repeat(2, 1fr);
-            }
+            .container { grid-template-columns: repeat(2, 1fr); }
         }
         @media (max-width: 600px) {
-            .container {
-                grid-template-columns: 1fr;
-                padding: 30px 20px;
-            }
+            .container { grid-template-columns: 1fr; padding: 30px 20px; }
         }
 
         .card {
@@ -228,6 +228,8 @@
             color: #94a3b8;
             margin-top: 50px;
             border-top: 1px solid #1e293b;
+            position: relative;
+            z-index: 2;
         }
         footer h3 {
             color: #f1f5f9;
@@ -235,7 +237,7 @@
             font-size: 1.3rem;
         }
 
-        /* MODAL INSTITUCIONAL MEJORADO */
+        /* MODAL INSTITUCIONAL (sin cambios) */
         .modal {
             display: none;
             position: fixed;
@@ -313,6 +315,18 @@
             transform: scale(1.02);
             background: linear-gradient(95deg, #dc2626, #b91c1c);
         }
+
+        /* Contenedor de partículas (fondo) */
+        .particles-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
         @media (max-width: 750px) {
             nav { flex-direction: column; gap: 12px; }
             h1 { font-size: 2.5rem; }
@@ -324,6 +338,9 @@
     </style>
 </head>
 <body>
+
+<!-- Contenedor de partículas flotantes -->
+<div class="particles-container" id="particlesContainer"></div>
 
 <nav>
     <div class="logo" id="logoInstitucional">🧪 Rural STEAM Lab</div>
@@ -385,6 +402,7 @@
     <div class="modal-content">
         <h2>🧪 Rural STEM Lab - Ecosistema Educativo</h2>
         <table>
+            <!-- (El contenido de la tabla es el mismo que tenías, no lo cambio para no alargar) -->
             <tr><th>Ítem</th><th>Descripción</th></tr>
             <tr><td><strong>Nombre del ecosistema</strong></td><td><strong>Rural STEM Lab</strong></td></tr>
             <tr><td>Tipo de proyecto</td><td>Ecosistema educativo STEM interactivo para contexto rural</td></tr>
@@ -420,6 +438,47 @@
 </div>
 
 <script>
+    // === PARTÍCULAS FLOTANTES (NEÓN) ===
+    const particlesContainer = document.getElementById('particlesContainer');
+    const PARTICLE_COUNT = 150;
+    const colors = ['rgba(96, 165, 250, 0.7)', 'rgba(163, 230, 53, 0.6)', 'rgba(249, 115, 22, 0.6)', 'rgba(255, 255, 255, 0.5)'];
+
+    for (let i = 0; i < PARTICLE_COUNT; i++) {
+        const particle = document.createElement('div');
+        particle.style.position = 'absolute';
+        particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        particle.style.borderRadius = '50%';
+        particle.style.pointerEvents = 'none';
+        const size = Math.random() * 5 + 1;
+        particle.style.width = size + 'px';
+        particle.style.height = size + 'px';
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.top = Math.random() * 100 + '%';
+        particle.style.opacity = Math.random() * 0.6 + 0.2;
+        particle.style.boxShadow = '0 0 4px currentColor';
+        const duration = Math.random() * 15 + 8;
+        const delay = Math.random() * 10;
+        particle.style.animation = `floatParticle ${duration}s linear infinite`;
+        particle.style.animationDelay = `${delay}s`;
+        particlesContainer.appendChild(particle);
+    }
+
+    // Añadir keyframes si no existen (ya están definidos en CSS, pero por si acaso)
+    if (!document.querySelector('#particle-keyframes')) {
+        const style = document.createElement('style');
+        style.id = 'particle-keyframes';
+        style.textContent = `
+            @keyframes floatParticle {
+                0% { transform: translateY(100vh) scale(0); opacity: 0; }
+                10% { opacity: 0.8; }
+                90% { opacity: 0.8; }
+                100% { transform: translateY(-10vh) scale(1); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+
+    // === MODAL ===
     const modal = document.getElementById('modalInstitucional');
     const logo = document.getElementById('logoInstitucional');
     logo.onclick = () => { modal.style.display = 'flex'; };
