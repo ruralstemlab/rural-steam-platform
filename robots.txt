@@ -1,3 +1,4 @@
+txt
 User-agent: *
 Allow: /
 Sitemap: https://ruralstemlab.github.io/rural-steam-platform/sitemap.xml
