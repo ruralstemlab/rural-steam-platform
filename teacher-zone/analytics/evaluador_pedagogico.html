@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STEM Evaluator Pro | Evaluación Pedagógica</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Librerías -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script src="https://unpkg.com/tesseract.js@5/dist/tesseract.min.js"></script>
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f4f7fc;
+            color: #1e293b;
+        }
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 280px;
+            height: 100vh;
+            background: #ffffff;
+            box-shadow: 4px 0 20px rgba(0,0,0,0.05);
+            padding: 30px 20px;
+            z-index: 100;
+            border-right: 1px solid #e2e8f0;
+        }
+        .logo {
+            font-size: 28px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+        .menu button {
+            width: 100%;
+            margin-bottom: 12px;
+            border: none;
+            background: #f8fafc;
+            color: #1e293b;
+            padding: 14px 20px;
+            border-radius: 16px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.2s;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .menu button:hover { background: #eef2ff; transform: translateX(4px); }
+        .menu button.active { background: #1e3a8a; color: white; }
+        .main {
+            margin-left: 280px;
+            padding: 30px 40px;
+        }
+        .topbar { margin-bottom: 30px; }
+        .title {
+            font-size: 32px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .card-stat {
+            background: white;
+            border-radius: 24px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border: 1px solid #e2e8f0;
+        }
+        .card-stat h3 { font-size: 14px; color: #64748b; margin-bottom: 8px; }
+        .card-stat p { font-size: 32px; font-weight: 700; color: #1e3a8a; }
+        .section {
+            background: white;
+            border-radius: 28px;
+            padding: 28px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.03);
+            border: 1px solid #e2e8f0;
+        }
+        .section h2 {
+            font-size: 24px;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 20px;
+            border-left: 4px solid #3b82f6;
+            padding-left: 16px;
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 20px;
+            border: 1px solid #cbd5e1;
+            background: #f8fafc;
+            font-family: 'Inter', sans-serif;
+            margin-top: 8px;
+        }
+        .btn {
+            background: #3b82f6;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: 0.2s;
+            margin-right: 10px;
+            margin-top: 15px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn:hover { background: #2563eb; transform: translateY(-2px); }
+        .btn-success { background: #10b981; }
+        .btn-success:hover { background: #059669; }
+        .btn-warning { background: #f59e0b; }
+        .btn-warning:hover { background: #d97706; }
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+        .data-table th, .data-table td {
+            padding: 12px 12px;
+            text-align: center;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .data-table th {
+            background: #f1f5f9;
+            color: #1e293b;
+            font-weight: 600;
+        }
+        .nivel-superior { background: #d1fae5; color: #065f46; }
+        .nivel-alto { background: #d9f99d; color: #3f6212; }
+        .nivel-medio { background: #fef08a; color: #854d0e; }
+        .nivel-basico { background: #fed7aa; color: #9a3412; }
+        .nivel-bajo { background: #fee2e2; color: #991b1b; }
+        .progress-container {
+            margin-top: 20px;
+            background: #e2e8f0;
+            border-radius: 30px;
+            height: 8px;
+            overflow: hidden;
+        }
+        .progress-bar {
+            background: #3b82f6;
+            width: 0%;
+            height: 100%;
+            border-radius: 30px;
+            transition: width 0.3s ease;
+        }
+        .status { margin-top: 12px; font-size: 0.8rem; color: #475569; text-align: center; }
+        canvas { max-height: 250px; margin-top: 20px; background: white; border-radius: 16px; }
+        .analisis-items { max-height: 300px; overflow-y: auto; margin-top: 16px; }
+        .item-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #e2e8f0; }
+        .interpretacion-card {
+            background: #fef9e3;
+            border-left: 5px solid #facc15;
+            padding: 20px;
+            border-radius: 24px;
+            margin-top: 20px;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: #1e293b;
+        }
+        .hidden { display: none; }
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 0.75rem;
+            color: #94a3b8;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 20px;
+        }
+        @media (max-width: 800px) {
+            .sidebar { width: 240px; }
+            .main { margin-left: 240px; padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+<div class="sidebar">
+    <div class="logo">📊 STEM PRO</div>
+    <div class="menu">
+        <button id="btnDashboard">📈 Dashboard</button>
+        <button id="btnOCR">📄 OCR Certificados</button>
+        <button id="btnOMR">📝 Calificador OMR</button>
+        <button id="btnRanking">🏆 Ranking General</button>
+    </div>
+</div>
+<div class="main">
+    <div class="topbar">
+        <div class="title">Evaluador Pedagógico RSL</div>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div id="dashboard" class="section">
+        <h2>📈 Panel de Rendimiento</h2>
+        <div class="cards">
+            <div class="card-stat"><h3>Total estudiantes</h3><p id="totalDash">0</p></div>
+            <div class="card-stat"><h3>Promedio</h3><p id="promDash">0.0</p></div>
+            <div class="card-stat"><h3>Mejor nota</h3><p id="mejorDash">0.0</p></div>
+            <div class="card-stat"><h3>Peor nota</h3><p id="peorDash">0.0</p></div>
+        </div>
+        <canvas id="graficoDash" height="200"></canvas>
+    </div>
+
+    <!-- OCR CERTIFICADOS -->
+    <div id="ocr" class="section hidden">
+        <h2>📄 OCR: Extraer notas de PDFs</h2>
+        <input type="file" id="pdfs" multiple accept=".pdf">
+        <div class="progress-container"><div class="progress-bar" id="progressOCR"></div></div>
+        <div class="status" id="estadoOCR"></div>
+        <div class="actions">
+            <button class="btn" onclick="procesarOCR()">🔍 Procesar PDFs</button>
+            <button class="btn btn-warning" onclick="exportarExcelOCR()">📊 Exportar Excel</button>
+            <button class="btn" onclick="exportarPDFOCR()">📄 Exportar PDF</button>
+        </div>
+        <div id="resultadosOCR"></div>
+        <pre id="debugOCR" style="background:#f1f5f9; padding:12px; border-radius:20px; font-size:11px; overflow:auto; max-height:150px;"></pre>
+    </div>
+
+    <!-- OMR CALIFICADOR -->
+    <div id="omr" class="section hidden">
+        <h2>📝 Calificador OMR (Exámenes)</h2>
+        <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+            <div style="flex:1">
+                <label>📌 Clave de respuestas:</label>
+                <textarea id="claveOMR" rows="3" placeholder="Ej: A B C D A B ..."></textarea>
+                <input type="file" id="archivoClaveExcel" accept=".xlsx,.xls,.csv" style="display:none">
+                <button class="btn" onclick="cargarClaveExcel()">📂 Cargar clave desde Excel</button>
+            </div>
+            <div style="flex:1">
+                <label>📋 Datos estudiantes (nombre + respuestas):</label>
+                <textarea id="tablaInputOMR" rows="3" placeholder="Juan Pérez A B C D&#10;María López B C D A"></textarea>
+                <input type="file" id="archivoRespuestasOMR" accept=".xlsx,.xls,.csv" style="display:none">
+                <button class="btn" onclick="document.getElementById('archivoRespuestasOMR').click()">📂 Cargar respuestas</button>
+            </div>
+        </div>
+        <div class="actions">
+            <button class="btn btn-success" onclick="calcularOMR()">✅ Calcular</button>
+            <button class="btn btn-warning" onclick="exportarExcelOMR()">📊 Exportar Excel</button>
+            <button class="btn" onclick="exportarPDFOMR()">📄 Exportar PDF</button>
+        </div>
+        <div id="resultadosOMR" style="display: none;">
+            <div class="cards" style="grid-template-columns: repeat(3,1fr); margin-top:20px;">
+                <div class="card-stat"><h3>Promedio</h3><p id="promOMR">-</p></div>
+                <div class="card-stat"><h3>Mejor nota</h3><p id="mejorOMR">-</p></div>
+                <div class="card-stat"><h3>Peor nota</h3><p id="peorOMR">-</p></div>
+            </div>
+            <canvas id="graficoOMR" height="200"></canvas>
+            <h3>📊 Análisis por ítems</h3>
+            <div id="analisisItemsOMR" class="analisis-items"></div>
+            <div id="interpretacionOMR" class="interpretacion-card"></div>
+            <div style="overflow-x:auto;">
+                <table class="data-table" id="tablaOMR">
+                    <thead><tr><th>#</th><th>Nombre</th><th>Aciertos</th><th>Nota</th><th>Nivel</th></tr></thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- RANKING GENERAL -->
+    <div id="ranking" class="section hidden">
+        <h2>🏆 Ranking General (desde OCR)</h2>
+        <div style="overflow-x:auto;">
+            <table class="data-table" id="tablaRanking">
+                <thead><tr><th>Puesto</th><th>Estudiante</th><th>Calificación</th><th>Nota (0-5)</th></tr></thead>
+                <tbody></tbody>
+            </table>
+        </div>
+        <div class="actions">
+            <button class="btn btn-warning" onclick="exportarExcelRanking()">📊 Exportar Excel Ranking</button>
+            <button class="btn" onclick="exportarPDFRanking()">📄 Exportar PDF Ranking</button>
+        </div>
+        <div id="interpretacionRanking" class="interpretacion-card"></div>
+    </div>
+    <footer>🔷 Rural STEAM Lab — Diseñado por Eng. Medina H. A.</footer>
+</div>
+
+<script>
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    
+    let rankingOCR = [];
+    let chartDash = null;
+    let chartOMR = null;
+    let resultadosOMR = [];
+    let estadisticasItems = [];
+    let claveOMRActual = [];
+
+    function getNivel(nota) {
+        if (nota >= 4.5) return { nombre: 'SUPERIOR', clase: 'nivel-superior' };
+        if (nota >= 4.1) return { nombre: 'ALTO', clase: 'nivel-alto' };
+        if (nota >= 3.5) return { nombre: 'MEDIO', clase: 'nivel-medio' };
+        if (nota >= 3.0) return { nombre: 'BÁSICO', clase: 'nivel-basico' };
+        return { nombre: 'BAJO', clase: 'nivel-bajo' };
+    }
+
+    // Interpretación pedagógica inteligente
+    function generarInterpretacion(conteo, promedio, total, itemsDificiles = null) {
+        const porcBajo = (conteo.BAJO / total) * 100;
+        const porcBasico = (conteo.BASICO / total) * 100;
+        const porcMedio = (conteo.MEDIO / total) * 100;
+        const porcAlto = (conteo.ALTO / total) * 100;
+        const porcSuperior = (conteo.SUPERIOR / total) * 100;
+        
+        let mensaje = `📊 **Análisis del grupo** (${total} estudiantes)\n\n`;
+        mensaje += `📈 **Promedio grupal:** ${promedio.toFixed(2)} sobre 5\n\n`;
+        mensaje += `📌 **Distribución por niveles:**\n`;
+        mensaje += `• Superior: ${porcSuperior.toFixed(1)}% (${conteo.SUPERIOR} estudiantes)\n`;
+        mensaje += `• Alto: ${porcAlto.toFixed(1)}% (${conteo.ALTO} estudiantes)\n`;
+        mensaje += `• Medio: ${porcMedio.toFixed(1)}% (${conteo.MEDIO} estudiantes)\n`;
+        mensaje += `• Básico: ${porcBasico.toFixed(1)}% (${conteo.BASICO} estudiantes)\n`;
+        mensaje += `• Bajo: ${porcBajo.toFixed(1)}% (${conteo.BAJO} estudiantes)\n\n`;
+        
+        // Diagnóstico general
+        if (promedio >= 4) {
+            mensaje += `✅ **Diagnóstico:** El grupo tiene un desempeño SOBRESALIENTE. La mayoría de los estudiantes alcanzan niveles Alto o Superior.\n`;
+            mensaje += `🎯 **Recomendación:** Mantener las estrategias pedagógicas y fomentar la profundización mediante proyectos de investigación y retos de alta complejidad.\n`;
+        } else if (promedio >= 3.5) {
+            mensaje += `📈 **Diagnóstico:** El grupo tiene un desempeño ACEPTABLE, aunque hay espacio para mejorar.\n`;
+            mensaje += `🎯 **Recomendación:** Identificar las competencias con menor rendimiento y diseñar actividades de refuerzo específicas. Fortalecer la retroalimentación personalizada.\n`;
+        } else if (promedio >= 3) {
+            mensaje += `⚠️ **Diagnóstico:** El grupo se encuentra en nivel BÁSICO. Se requiere implementar estrategias de refuerzo pedagógico.\n`;
+            mensaje += `🎯 **Recomendación:** Priorizar el desarrollo de competencias fundamentales mediante talleres nivelatorios, trabajo colaborativo y seguimiento individualizado.\n`;
+        } else {
+            mensaje += `🔴 **Diagnóstico:** El grupo tiene un desempeño BAJO. Es necesaria una intervención pedagógica urgente.\n`;
+            mensaje += `🎯 **Recomendación:** Realizar un diagnóstico detallado por competencias, implementar nivelación intensiva y ajustar la planeación curricular para abordar las dificultades identificadas.\n`;
+        }
+        
+        // Análisis de riesgo
+        if (porcBajo + porcBasico >= 50) {
+            mensaje += `\n⚠️ **Alerta:** Más de la mitad del grupo se encuentra en niveles Básico o Bajo. Se recomienda jornadas de nivelación y acompañamiento personalizado.\n`;
+        } else if (porcAlto + porcSuperior >= 60) {
+            mensaje += `\n🌟 **Fortaleza:** Más del 60% del grupo se ubica en niveles Alto o Superior. Excelente trabajo.\n`;
+        }
+        
+        // Si hay preguntas difíciles (OMR)
+        if (itemsDificiles && itemsDificiles.length > 0) {
+            mensaje += `\n📌 **Preguntas críticas (menos del 50% de acierto):** ${itemsDificiles.join(', ')}\n`;
+            mensaje += `🎯 **Acción:** Revisar estos temas en clase y diseñar ejercicios específicos para fortalecer la comprensión.\n`;
+        }
+        
+        return mensaje;
+    }
+
+    function mostrarInterpretacion(conteo, promedio, total, elementoId, itemsDificiles = null) {
+        const texto = generarInterpretacion(conteo, promedio, total, itemsDificiles);
+        document.getElementById(elementoId).innerHTML = texto.replace(/\n/g, '<br>');
+    }
+
+    // ==================== CAMBIO DE PESTAÑAS ====================
+    function mostrarSeccion(id) {
+        document.querySelectorAll('.section').forEach(sec => sec.classList.add('hidden'));
+        document.getElementById(id).classList.remove('hidden');
+        if (id === 'dashboard') actualizarDashboard();
+        if (id === 'ranking') mostrarRankingConInterpretacion();
+    }
+    document.getElementById('btnDashboard').onclick = () => mostrarSeccion('dashboard');
+    document.getElementById('btnOCR').onclick = () => mostrarSeccion('ocr');
+    document.getElementById('btnOMR').onclick = () => mostrarSeccion('omr');
+    document.getElementById('btnRanking').onclick = () => mostrarSeccion('ranking');
+
+    // ==================== MÓDULO OCR ====================
+    async function renderPDF(file) {
+        const buffer = await file.arrayBuffer();
+        const pdf = await pdfjsLib.getDocument({ data: buffer }).promise;
+        const page = await pdf.getPage(1);
+        const viewport = page.getViewport({ scale: 3 });
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+        await page.render({ canvasContext: ctx, viewport }).promise;
+        return canvas;
+    }
+
+    async function OCR(canvas) { return (await Tesseract.recognize(canvas, 'spa')).data.text; }
+    function limpiarTexto(texto) { return texto.replace(/\n/g, ' ').replace(/\s+/g, ' ').trim(); }
+    function extraerNombre(texto) {
+        let m = texto.match(/Estudiante[:\s]+([A-ZÁÉÍÓÚÑa-záéíóúñ\s]+?)(?=\s*(Fecha|Calificación|Nota|$))/i);
+        if (m) return m[1].trim().toUpperCase();
+        m = texto.match(/Nombre[:\s]+([A-ZÁÉÍÓÚÑa-záéíóúñ\s]+?)(?=\s*(Fecha|Calificación|Nota|$))/i);
+        return m ? m[1].trim().toUpperCase() : 'DESCONOCIDO';
+    }
+    function extraerNota(texto) {
+        let m = texto.match(/Nota[:\s]+([0-5](?:\.[0-9])?)/i);
+        if (m) return parseFloat(m[1]);
+        m = texto.match(/([0-5](?:\.[0-9])?)\s*\/\s*5/i);
+        if (m) return parseFloat(m[1]);
+        const calif = extraerCalificacion(texto);
+        return calif > 0 ? (calif / 100) * 5 : 0;
+    }
+    function extraerCalificacion(texto) {
+        let m = texto.match(/([0-9]{1,3})\s*\/\s*100/i);
+        return m ? parseInt(m[1]) : 0;
+    }
+
+    async function procesarOCR() {
+        const files = Array.from(document.getElementById('pdfs').files);
+        if (files.length === 0) { alert("Selecciona al menos un PDF"); return; }
+        rankingOCR = [];
+        const progressBar = document.getElementById('progressOCR');
+        const debugDiv = document.getElementById('debugOCR');
+        debugDiv.innerHTML = '';
+        for (let i = 0; i < files.length; i++) {
+            document.getElementById('estadoOCR').innerHTML = `Procesando ${i+1}/${files.length}: ${files[i].name}`;
+            progressBar.style.width = `${(i / files.length) * 100}%`;
+            try {
+                const canvas = await renderPDF(files[i]);
+                let texto = await OCR(canvas);
+                texto = limpiarTexto(texto);
+                debugDiv.innerHTML += `\n========== ${files[i].name} ==========\n${texto.substring(0, 800)}\n\n`;
+                const nombre = extraerNombre(texto);
+                const nota = extraerNota(texto);
+                const calif = extraerCalificacion(texto);
+                if (nota > 0 || calif > 0) rankingOCR.push({ nombre, nota, calificacion: calif });
+                else debugDiv.innerHTML += `⚠️ No se pudo extraer nota de ${files[i].name}\n`;
+            } catch (err) { debugDiv.innerHTML += `❌ Error en ${files[i].name}: ${err.message}\n`; }
+        }
+        progressBar.style.width = '100%';
+        rankingOCR.sort((a,b) => b.nota - a.nota);
+        mostrarRankingConInterpretacion();
+        actualizarDashboard();
+        document.getElementById('estadoOCR').innerHTML = `✅ Procesados ${rankingOCR.length} estudiantes.`;
+        
+        // Mostrar tabla resumen OCR (sin colores estridentes) y la interpretación
+        const resumenDiv = document.getElementById('resultadosOCR');
+        resumenDiv.innerHTML = `
+            <h3>📋 Resumen de notas extraídas</h3>
+            <div style="overflow-x:auto;"><table class="data-table"><thead><tr><th>#</th><th>Nombre</th><th>Nota (0-5)</th><th>Nivel</th></tr></thead><tbody>${
+                rankingOCR.map((e,i)=>`<tr class="${getNivel(e.nota).clase}"><td>${i+1}</td><td>${e.nombre}</td><td>${e.nota.toFixed(1)}</td><td>${getNivel(e.nota).nombre}</td></tr>`).join('')
+            }</tbody></table></div>
+        `;
+        // Interpretación para OCR
+        const conteo = { SUPERIOR:0, ALTO:0, MEDIO:0, BASICO:0, BAJO:0 };
+        rankingOCR.forEach(e => { const n = getNivel(e.nota).nombre; conteo[n]++; });
+        const promedio = rankingOCR.reduce((s,e)=>s+e.nota,0)/rankingOCR.length;
+        mostrarInterpretacion(conteo, promedio, rankingOCR.length, 'interpretacionRanking');
+    }
+
+    function mostrarRankingConInterpretacion() {
+        const tbody = document.getElementById('tablaRanking');
+        tbody.innerHTML = '';
+        rankingOCR.forEach((e, i) => {
+            const nivel = getNivel(e.nota);
+            tbody.innerHTML += `<tr class="${nivel.clase}"><td>${i+1}</td><td>${e.nombre}</td><td>${e.calificacion}/100</td><td>${e.nota.toFixed(1)}</td></tr>`;
+        });
+        const conteo = { SUPERIOR:0, ALTO:0, MEDIO:0, BASICO:0, BAJO:0 };
+        rankingOCR.forEach(e => { const n = getNivel(e.nota).nombre; conteo[n]++; });
+        const promedio = rankingOCR.reduce((s,e)=>s+e.nota,0)/rankingOCR.length;
+        mostrarInterpretacion(conteo, promedio, rankingOCR.length, 'interpretacionRanking');
+    }
+
+    function actualizarDashboard() {
+        if (rankingOCR.length === 0) return;
+        const notas = rankingOCR.map(e => e.nota);
+        const prom = notas.reduce((a,b)=>a+b,0)/rankingOCR.length;
+        document.getElementById('totalDash').innerText = rankingOCR.length;
+        document.getElementById('promDash').innerText = prom.toFixed(2);
+        document.getElementById('mejorDash').innerText = Math.max(...notas).toFixed(1);
+        document.getElementById('peorDash').innerText = Math.min(...notas).toFixed(1);
+        if (chartDash) chartDash.destroy();
+        const ctx = document.getElementById('graficoDash').getContext('2d');
+        const colores = rankingOCR.map(e => {
+            const n = getNivel(e.nota).nombre;
+            if (n === 'SUPERIOR') return '#059669';
+            if (n === 'ALTO') return '#10b981';
+            if (n === 'MEDIO') return '#facc15';
+            if (n === 'BÁSICO') return '#f97316';
+            return '#ef4444';
+        });
+        chartDash = new Chart(ctx, {
+            type: 'bar',
+            data: { labels: rankingOCR.map(e => e.nombre), datasets: [{ label: 'Nota (0-5)', data: notas, backgroundColor: colores, borderRadius: 8 }] },
+            options: { responsive: true, maintainAspectRatio: true, scales: { y: { max: 5 } } }
+        });
+    }
+
+    // Exportaciones OCR
+    async function preguntarDatos() {
+        const curso = prompt("Ingrese el curso / grado:", "No especificado");
+        const materia = prompt("Ingrese la materia / asignatura:", "No especificada");
+        return { curso: curso || "No especificado", materia: materia || "No especificada" };
+    }
+    async function exportarExcelOCR() {
+        if (rankingOCR.length === 0) { alert("No hay datos."); return; }
+        const { curso, materia } = await preguntarDatos();
+        const data = rankingOCR.map((e,i) => ({ Puesto: i+1, Estudiante: e.nombre, Nota: e.nota.toFixed(1), Nivel: getNivel(e.nota).nombre, Curso: curso, Materia: materia }));
+        const ws = XLSX.utils.json_to_sheet(data);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "OCR");
+        XLSX.writeFile(wb, `OCR_${curso}_${materia}.xlsx`);
+    }
+    async function exportarPDFOCR() {
+        if (rankingOCR.length === 0) { alert("No hay datos."); return; }
+        const { curso, materia } = await preguntarDatos();
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF({ orientation: 'landscape' });
+        doc.setFontSize(16);
+        doc.text(`Reporte OCR - ${curso} - ${materia}`, 20, 20);
+        doc.setFontSize(10);
+        doc.text(`Generado: ${new Date().toLocaleString()}`, 20, 30);
+        const body = rankingOCR.map((e,i) => [i+1, e.nombre, e.nota.toFixed(1), getNivel(e.nota).nombre]);
+        doc.autoTable({ head: [['Puesto', 'Estudiante', 'Nota (0-5)', 'Nivel']], body: body, startY: 40, styles: { fontSize: 9 } });
+        doc.save(`OCR_${curso}_${materia}.pdf`);
+    }
+
+    // ==================== MÓDULO OMR ====================
+    function esValida(r) { return ["A","B","C","D"].includes(r.toUpperCase()); }
+    function parseClave(text) {
+        if (text.includes("\n")) return text.split("\n").map(x=>x.trim()).filter(x=>x!="");
+        return text.trim().split(/\s+|\t|,/).filter(x=>x!="");
+    }
+    function parseLinea(linea) {
+        if (linea.includes("\t")) return linea.split("\t");
+        let partes = linea.trim().split(/\s+/);
+        let idx = partes.findIndex(p => esValida(p));
+        if (idx === -1) return [];
+        let nombre = partes.slice(0, idx).join(" ");
+        let resp = partes.slice(idx);
+        return [nombre, ...resp];
+    }
+
+    window.cargarClaveExcel = function() {
+        const input = document.getElementById('archivoClaveExcel');
+        input.click();
+        input.onchange = (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (evt) => {
+                const data = new Uint8Array(evt.target.result);
+                const workbook = XLSX.read(data, { type: 'array' });
+                const sheet = workbook.Sheets[workbook.SheetNames[0]];
+                const rows = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: "" });
+                let respuestas = [];
+                for (let r = 0; r < rows.length; r++) {
+                    let row = rows[r];
+                    if (row && row.length > 0) {
+                        let posibles = row.filter(cell => cell && /^[A-D]$/i.test(cell.toString().trim()));
+                        if (posibles.length >= 3) {
+                            respuestas = row.map(cell => cell ? cell.toString().trim().toUpperCase() : "").filter(c => c !== "");
+                            break;
+                        }
+                    }
+                }
+                if (respuestas.length === 0) {
+                    for (let r = 0; r < rows.length; r++) {
+                        let cell = rows[r] && rows[r][0];
+                        if (cell && /^[A-D]$/i.test(cell.toString().trim())) {
+                            respuestas.push(cell.toString().trim().toUpperCase());
+                        }
+                    }
+                }
+                if (respuestas.length === 0) { alert("No se encontraron respuestas válidas."); return; }
+                document.getElementById('claveOMR').value = respuestas.join(' ');
+                alert(`Clave cargada (${respuestas.length} respuestas).`);
+            };
+            reader.readAsArrayBuffer(file);
+        };
+    };
+
+    document.getElementById('archivoRespuestasOMR').onchange = (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (evt) => {
+            const data = new Uint8Array(evt.target.result);
+            const workbook = XLSX.read(data, { type: 'array' });
+            const sheet = workbook.Sheets[workbook.SheetNames[0]];
+            const rows = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: "" });
+            let lineas = [];
+            for (let i = 0; i < rows.length; i++) {
+                let row = rows[i];
+                if (!row || row.length === 0) continue;
+                let nombre = row[0] ? row[0].toString().trim() : "Estudiante";
+                let respuestas = row.slice(1).map(c => c ? c.toString().trim().toUpperCase() : "").filter(c => c !== "");
+                if (respuestas.length) lineas.push(nombre + " " + respuestas.join(" "));
+            }
+            if (lineas.length === 0) { alert("No hay datos."); return; }
+            document.getElementById('tablaInputOMR').value = lineas.join("\n");
+            alert(`Cargadas ${lineas.length} líneas.`);
+        };
+        reader.readAsArrayBuffer(file);
+    };
+
+    function calcularOMR() {
+        let textoClave = document.getElementById('claveOMR').value.trim();
+        if (!textoClave) { alert("Ingresa la clave."); return; }
+        let clave = parseClave(textoClave);
+        if (clave.length === 0) { alert("Clave inválida."); return; }
+        claveOMRActual = clave;
+
+        let lineas = document.getElementById('tablaInputOMR').value.trim().split("\n");
+        let estudiantes = [];
+        let conteo = { SUPERIOR:0, ALTO:0, MEDIO:0, BASICO:0, BAJO:0 };
+        estadisticasItems = new Array(clave.length).fill().map(() => ({ correctas: 0, total: 0 }));
+
+        for (let linea of lineas) {
+            let d = parseLinea(linea);
+            if (d.length < 2) continue;
+            let nombre = d[0];
+            let resp = d.slice(1);
+            let total = Math.min(clave.length, resp.length);
+            if (total === 0) continue;
+            let aciertos = 0;
+            for (let i=0; i<total; i++) {
+                if (!resp[i] || !esValida(resp[i])) continue;
+                estadisticasItems[i].total++;
+                if (clave[i].toUpperCase() === resp[i].toUpperCase()) {
+                    aciertos++;
+                    estadisticasItems[i].correctas++;
+                }
+            }
+            let nota = (aciertos / total) * 5;
+            let nivel = getNivel(nota);
+            conteo[nivel.nombre]++;
+            estudiantes.push({ nombre, aciertos, total, nota, nivel: nivel.nombre, clase: nivel.clase });
+        }
+
+        if (estudiantes.length === 0) { alert("No hay datos de estudiantes."); return; }
+        resultadosOMR = estudiantes;
+        estudiantes.sort((a,b)=>b.nota - a.nota);
+        const tbody = document.querySelector('#tablaOMR tbody');
+        tbody.innerHTML = "";
+        estudiantes.forEach((e,i) => {
+            tbody.innerHTML += `<tr class="${e.clase}"><td>${i+1}</td><td>${e.nombre}</td><td>${e.aciertos}/${e.total}</td><td>${e.nota.toFixed(2)}</td><td>${e.nivel}</td></tr>`;
+        });
+
+        let notas = estudiantes.map(e=>e.nota);
+        let prom = notas.reduce((a,b)=>a+b,0)/notas.length;
+        let mejor = Math.max(...notas);
+        let peor = Math.min(...notas);
+        document.getElementById('promOMR').innerText = prom.toFixed(2);
+        document.getElementById('mejorOMR').innerText = mejor.toFixed(2);
+        document.getElementById('peorOMR').innerText = peor.toFixed(2);
+
+        if (chartOMR) chartOMR.destroy();
+        const ctx = document.getElementById('graficoOMR').getContext('2d');
+        chartOMR = new Chart(ctx, {
+            type: 'pie',
+            data: { labels: ["Superior","Alto","Medio","Básico","Bajo"], datasets: [{ data: [conteo.SUPERIOR, conteo.ALTO, conteo.MEDIO, conteo.BASICO, conteo.BAJO], backgroundColor: ["#059669","#10b981","#facc15","#f97316","#ef4444"] }] },
+            options: { responsive: true, plugins: { datalabels: false } }
+        });
+
+        const analisisDiv = document.getElementById('analisisItemsOMR');
+        analisisDiv.innerHTML = "";
+        let preguntasDifciles = [];
+        estadisticasItems.forEach((it,i) => {
+            let pct = it.total ? (it.correctas/it.total)*100 : 0;
+            let nivel = pct >= 80 ? "Fácil" : (pct >= 50 ? "Media" : "Difícil");
+            if (pct < 50) preguntasDifciles.push(i+1);
+            let color = pct >= 80 ? "#10b981" : (pct >= 50 ? "#f59e0b" : "#ef4444");
+            analisisDiv.innerHTML += `<div class="item-row"><span>Pregunta ${i+1}</span><span>${pct.toFixed(1)}%</span><span style="color:${color}">${nivel}</span></div>`;
+        });
+        mostrarInterpretacion(conteo, prom, estudiantes.length, 'interpretacionOMR', preguntasDifciles);
+        document.getElementById('resultadosOMR').style.display = 'block';
+    }
+
+    async function exportarExcelOMR() {
+        if (resultadosOMR.length === 0) { alert("No hay datos."); return; }
+        const { curso, materia } = await preguntarDatos();
+        const data = resultadosOMR.map((e,i) => ({ "#": i+1, Nombre: e.nombre, Aciertos: `${e.aciertos}/${e.total}`, Nota: e.nota.toFixed(2), Nivel: e.nivel, Curso: curso, Materia: materia }));
+        const ws = XLSX.utils.json_to_sheet(data);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "OMR");
+        XLSX.writeFile(wb, `OMR_${curso}_${materia}.xlsx`);
+    }
+    async function exportarPDFOMR() {
+        if (resultadosOMR.length === 0) { alert("No hay datos."); return; }
+        const { curso, materia } = await preguntarDatos();
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF({ orientation: 'landscape' });
+        doc.setFontSize(16);
+        doc.text(`Reporte OMR - ${curso} - ${materia}`, 20, 20);
+        doc.setFontSize(10);
+        doc.text(`Generado: ${new Date().toLocaleString()}`, 20, 30);
+        const body = resultadosOMR.map((e,i) => [i+1, e.nombre, `${e.aciertos}/${e.total}`, e.nota.toFixed(2), e.nivel]);
+        doc.autoTable({ head: [['#', 'Nombre', 'Aciertos', 'Nota (0-5)', 'Nivel']], body: body, startY: 40, styles: { fontSize: 9 } });
+        doc.save(`OMR_${curso}_${materia}.pdf`);
+    }
+
+    async function exportarExcelRanking() {
+        if (rankingOCR.length === 0) { alert("No hay datos."); return; }
+        const { curso, materia } = await preguntarDatos();
+        const data = rankingOCR.map((e,i) => ({ Puesto: i+1, Estudiante: e.nombre, Nota: e.nota.toFixed(1), Nivel: getNivel(e.nota).nombre, Curso: curso, Materia: materia }));
+        const ws = XLSX.utils.json_to_sheet(data);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Ranking");
+        XLSX.writeFile(wb, `Ranking_${curso}_${materia}.xlsx`);
+    }
+    async function exportarPDFRanking() {
+        if (rankingOCR.length === 0) { alert("No hay datos."); return; }
+        const { curso, materia } = await preguntarDatos();
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF({ orientation: 'landscape' });
+        doc.setFontSize(16);
+        doc.text(`Ranking - ${curso} - ${materia}`, 20, 20);
+        doc.setFontSize(10);
+        doc.text(`Generado: ${new Date().toLocaleString()}`, 20, 30);
+        const body = rankingOCR.map((e,i) => [i+1, e.nombre, e.nota.toFixed(1), getNivel(e.nota).nombre]);
+        doc.autoTable({ head: [['Puesto', 'Estudiante', 'Nota (0-5)', 'Nivel']], body: body, startY: 40, styles: { fontSize: 9 } });
+        doc.save(`Ranking_${curso}_${materia}.pdf`);
+    }
+
+    mostrarSeccion('dashboard');
+</script>
+</body>
+</html>
