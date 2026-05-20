@@ -34,6 +34,7 @@
             100% { background-position: 50% 50%; background-size: 105%; }
         }
 
+        /* Topbar */
         .topbar {
             background: #020617;
             padding: 1rem 2rem;
@@ -79,10 +80,11 @@
             color: #94a3b8;
         }
 
+        /* Hero con imagen animada (banner de estudiantes) */
         .hero {
             text-align: center;
             padding: 100px 20px;
-            background: url('../assets/profe-banner.png');
+            background: url('../assets/student-banner.png');
             background-size: 105%;
             background-position: 50% 50%;
             background-repeat: no-repeat;
@@ -111,6 +113,7 @@
             text-shadow: 1px 1px 6px rgba(0,0,0,0.8);
         }
 
+        /* Layout de dos columnas */
         .two-columns {
             max-width: 1300px;
             margin: 0 auto;
@@ -120,12 +123,17 @@
             gap: 2rem;
         }
 
+        /* Secciones internas */
         .section {
             background: #1e293b;
             border-radius: 1.8rem;
             padding: 1.5rem;
             border: 1px solid #334155;
             animation: fadeInUp 0.5s ease-out;
+            transition: transform 0.2s;
+        }
+        .section:hover {
+            transform: translateY(-3px);
         }
 
         .section-title {
@@ -208,6 +216,11 @@
             border-radius: 1.2rem;
             padding: 1rem;
             margin-bottom: 1rem;
+            transition: transform 0.2s;
+        }
+        .info-block:hover {
+            transform: translateY(-2px);
+            border-color: #3b82f6;
         }
 
         .info-block h4 {
@@ -240,21 +253,37 @@
             font-size: 0.85rem;
         }
 
-        /* Estilos para la sección de resultados del simulacro */
+        /* Nueva sección de resultados del simulacro ICFES */
         .resultados-simulacro {
+            background: #1e293b;
+            border-radius: 1.8rem;
+            padding: 1.5rem;
+            margin: 2rem auto;
+            max-width: 1300px;
+            border: 1px solid #334155;
+            animation: fadeInUp 0.5s ease-out;
+        }
+        .resultados-simulacro h2 {
+            color: #60a5fa;
+            margin-bottom: 1rem;
+            border-left: 4px solid #3b82f6;
+            padding-left: 1rem;
+        }
+        .tabla-resultados {
+            overflow-x: auto;
             margin-top: 1rem;
         }
-        .ranking-table {
+        .tabla-resultados table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 0.75rem;
+            font-size: 0.8rem;
         }
-        .ranking-table th, .ranking-table td {
-            padding: 8px 4px;
-            border-bottom: 1px solid #334155;
+        .tabla-resultados th, .tabla-resultados td {
+            border: 1px solid #334155;
+            padding: 8px;
             text-align: center;
         }
-        .ranking-table th {
+        .tabla-resultados th {
             background: #0f172a;
             color: #facc15;
         }
@@ -263,23 +292,7 @@
         .rank3 { background: #92400e; }
         .fortaleza { background: #14532d; color: #bbf7d0; }
         .debilidad { background: #7f1a1a; color: #fecaca; }
-        .mensaje-vacio {
-            background: #fef9e3;
-            color: #1e293b;
-            padding: 1rem;
-            border-radius: 1rem;
-            text-align: center;
-        }
-        .btn-actualizar {
-            background: #3b82f6;
-            color: white;
-            border: none;
-            padding: 0.4rem 1rem;
-            border-radius: 30px;
-            font-size: 0.7rem;
-            cursor: pointer;
-            margin-top: 0.5rem;
-        }
+
         footer {
             text-align: center;
             padding: 2rem;
@@ -339,15 +352,6 @@
             </div>
         </div>
         
-        <!-- NUEVA SECCIÓN: Resultados del Simulacro ICFES -->
-        <div class="info-block">
-            <h4>🏆 Resultados del Simulacro ICFES</h4>
-            <div id="resultadosSimulacro">
-                <p>Cargando resultados...</p>
-            </div>
-            <button class="btn-actualizar" onclick="cargarResultadosSimulacro()">🔄 Actualizar</button>
-        </div>
-        
         <!-- Calendario Escolar -->
         <div class="info-block">
             <h4>📅 Calendario Escolar</h4>
@@ -387,12 +391,12 @@
                 <a href="https://docs.google.com/spreadsheets/d/1703K5MCT7tGcWMwrAJ-kfYQq_zQpsC9V/edit?usp=sharing" target="_blank" class="btn-card">📝 Abrir Bitácora</a>
             </div>
             
-            <!-- Juegos STEM -->
+            <!-- Juegos STEM (enlazados a la carpeta elementary) -->
             <div class="card">
                 <div class="card-icon">🧩</div>
                 <h4>Juegos STEM</h4>
                 <p>Juegos interactivos de matemáticas, física y química.</p>
-                <a href="../simulators/" class="btn-card">🎮 Explorar juegos</a>
+                <a href="../elementary/" class="btn-card">🎮 Explorar juegos</a>
             </div>
             
             <!-- Cuestionarios ICFES -->
@@ -414,92 +418,126 @@
     </div>
 </div>
 
+<!-- NUEVA SECCIÓN: RESULTADOS DEL SIMULACRO ICFES (con puntaje total 0-500) -->
+<div id="resultadosSimulacro" class="resultados-simulacro"></div>
+
 <footer>
     <p>Rural STEAM Platform — Zona de Estudiantes</p>
-    <p style="margin-top: 0.5rem;">✨ Diseñado por Eng. Medina H. A. para el aprendizaje interactivo ✨</p>
+    <p style="margin-top: 0.5rem;">✨ Diseñado por Eng. Medina H. A. ✨</p>
 </footer>
 
 <script>
+    // Función para cargar y mostrar los resultados del simulacro publicados por el profesor
     function cargarResultadosSimulacro() {
-        const contenedor = document.getElementById('resultadosSimulacro');
         const guardado = localStorage.getItem('icfes_resultados_publicos');
-
+        const contenedor = document.getElementById('resultadosSimulacro');
+        
         if (!guardado) {
-            contenedor.innerHTML = `<div class="mensaje-vacio">📭 No hay resultados publicados aún. Consulta a tu profesor.</div>`;
+            contenedor.innerHTML = `
+                <h2>📊 Resultados del Simulacro ICFES</h2>
+                <div style="background: #0f172a; border-radius: 1.2rem; padding: 1.5rem; text-align: center;">
+                    <p style="color: #94a3b8;">📭 Tu profesor aún no ha publicado los resultados de este simulacro. Consulta con él.</p>
+                </div>
+            `;
             return;
         }
 
-        try {
-            const data = JSON.parse(guardado);
-            const estudiantes = data.estudiantes;
-            const areas = data.areas;
+        const data = JSON.parse(guardado);
+        const estudiantes = data.estudiantes;
+        const areas = data.areas;
 
-            if (!estudiantes || estudiantes.length === 0) {
-                contenedor.innerHTML = `<div class="mensaje-vacio">⚠️ No hay datos de estudiantes.</div>`;
-                return;
-            }
-
-            // Ordenar por nota (de mayor a menor)
-            estudiantes.sort((a,b) => b.notaGlobalSobre100 - a.notaGlobalSobre100);
-
-            // Mostrar tabla de ranking simplificada (primeros 5 o todos según se quiera)
-            let html = `<div style="overflow-x:auto;">`;
-            html += `<table class="ranking-table"><thead>`;
-            html += `<tr><th>#</th><th>Estudiante</th><th>Aciertos</th><th>Nota %</th><th>Área fuerte</th><th>Área débil</th></tr>`;
-            html += `</thead><tbody>`;
-
-            estudiantes.forEach((e, i) => {
-                let clase = i === 0 ? 'rank1' : (i === 1 ? 'rank2' : (i === 2 ? 'rank3' : ''));
-                let medalla = i === 0 ? '🥇 ' : (i === 1 ? '🥈 ' : (i === 2 ? '🥉 ' : ''));
-                html += `<tr class="${clase}">
-                            <td>${medalla}${i+1}</td>
-                            <td>${e.nombre}</td>
-                            <td>${e.aciertos}/${e.totalPreguntas}</td>
-                            <td>${e.notaGlobalSobre100.toFixed(2)}%</td>
-                            <td>${e.areaFuerte}</td>
-                            <td>${e.areaDebil}</td>
-                         </tr>`;
-            });
-            html += `</tbody></table></div>`;
-
-            // Fortalezas y debilidades (solo para el estudiante actual, pero si no hay login, mostramos la tabla completa)
-            // Aquí mostramos la tabla de fortalezas/debilidades completa para todos (puede ser mucha info, pero es pedagógico)
-            html += `<div style="margin-top: 16px;"><h4 style="color:#facc15;">📌 Fortalezas y Recomendaciones</h4>`;
-            html += `<div style="overflow-x:auto;"><table class="ranking-table"><thead>`;
-            html += `<tr><th>Estudiante</th><th>Fortaleza</th><th>Debilidad</th><th>Recomendación</th></tr>`;
-            html += `</thead><tbody>`;
-            for (let e of estudiantes) {
-                let recomendacion = '';
-                let puntDebil = e.puntajesAreas[e.areaDebil];
-                if (puntDebil < 60) recomendacion = `Reforzar ${e.areaDebil} (puntaje bajo)`;
-                else if (puntDebil < 70) recomendacion = `Mejorar en ${e.areaDebil} con práctica.`;
-                else recomendacion = `Mantener nivel en ${e.areaDebil} y profundizar en ${e.areaFuerte}.`;
-                html += `<tr>
-                            <td>${e.nombre}</td>
-                            <td class="fortaleza">${e.areaFuerte} (${e.puntajesAreas[e.areaFuerte]})</td>
-                            <td class="debilidad">${e.areaDebil} (${puntDebil})</td>
-                            <td>${recomendacion}</td>
-                         </tr>`;
-            }
-            html += `</tbody></table></div></div>`;
-
-            // Interpretación general del grupo
-            const promedioGlobal = estudiantes.reduce((a,b) => a + b.notaGlobalSobre100, 0) / estudiantes.length;
-            html += `<div style="margin-top: 16px; background:#0f172a; padding: 12px; border-radius: 16px;">`;
-            html += `<p><strong>📊 Promedio del grupo:</strong> ${promedioGlobal.toFixed(2)}%</p>`;
-            if (promedioGlobal >= 80) html += `<p>🌟 ¡Excelente desempeño! Sigan así.</p>`;
-            else if (promedioGlobal >= 60) html += `<p>📈 Buen desempeño. Reforzar las áreas débiles.</p>`;
-            else html += `<p>⚠️ Se recomienda reforzar los temas con más dificultad.</p>`;
-            html += `</div>`;
-
-            contenedor.innerHTML = html;
-        } catch (err) {
-            console.error(err);
-            contenedor.innerHTML = `<div class="mensaje-vacio">❌ Error al cargar los resultados.</div>`;
+        if (!estudiantes || estudiantes.length === 0) {
+            contenedor.innerHTML = `<h2>📊 Resultados del Simulacro ICFES</h2><div style="background: #0f172a; border-radius: 1.2rem; padding: 1.5rem;"><p>No hay datos de estudiantes.</p></div>`;
+            return;
         }
+
+        // Ordenar por nota global (ya vienen ordenados, pero por si acaso)
+        estudiantes.sort((a,b) => b.notaGlobalSobre100 - a.notaGlobalSobre100);
+
+        // 1. Tabla de ranking con puntaje total (0-500)
+        let rankingHtml = `
+            <h2>🏆 Ranking del Simulacro ICFES</h2>
+            <div class="tabla-resultados">
+                <table>
+                    <thead>
+                        <tr><th>#</th><th>Estudiante</th><th>Aciertos</th><th>Nota /100</th>
+        `;
+        areas.forEach(area => { rankingHtml += `<th>${area}</th>`; });
+        rankingHtml += `<th>Puntaje total<br>(0-500)</th><th>Área fuerte</th><th>Área débil</th></thead><tbody>`;
+
+        estudiantes.forEach((e, i) => {
+            let clase = i === 0 ? 'rank1' : (i === 1 ? 'rank2' : (i === 2 ? 'rank3' : ''));
+            let medalla = i === 0 ? '🥇 ' : (i === 1 ? '🥈 ' : (i === 2 ? '🥉 ' : ''));
+            rankingHtml += `<tr class="${clase}">
+                <td>${medalla}${i+1}</td>
+                <td>${e.nombre}</td>
+                <td>${e.aciertos}/${e.totalPreguntas}</td>
+                <td>${e.notaGlobalSobre100.toFixed(2)}%</td>`;
+            for (let area of areas) {
+                rankingHtml += `<td>${e.puntajesAreas[area] || 0}</td>`;
+            }
+            rankingHtml += `<td><strong>${e.sumaPuntajes}</strong> (sobre 500)</td>
+                <td>${e.areaFuerte}</td>
+                <td>${e.areaDebil}</td>
+            </tr>`;
+        });
+        rankingHtml += `</tbody></table></div>`;
+
+        // 2. Fortalezas y debilidades por estudiante
+        let analisisHtml = `<h2 style="margin-top: 2rem;">📌 Fortalezas y Debilidades</h2>
+            <div class="tabla-resultados"><table>
+            <thead><tr><th>Estudiante</th><th>Fortaleza (puntaje)</th><th>Debilidad (puntaje)</th><th>Recomendación</th></tr></thead><tbody>`;
+        for (let e of estudiantes) {
+            let recomendacion = '';
+            let puntDebil = e.puntajesAreas[e.areaDebil];
+            if (puntDebil < 60) recomendacion = `Reforzar urgentemente ${e.areaDebil} (puntaje bajo). Trabajar competencias básicas.`;
+            else if (puntDebil < 70) recomendacion = `Mejorar en ${e.areaDebil} con práctica específica.`;
+            else recomendacion = `Mantener nivel en ${e.areaDebil} y seguir profundizando en ${e.areaFuerte}.`;
+            analisisHtml += `<tr>
+                <td>${e.nombre}</td>
+                <td class="fortaleza">${e.areaFuerte} (${e.puntajesAreas[e.areaFuerte]})</td>
+                <td class="debilidad">${e.areaDebil} (${puntDebil})</td>
+                <td>${recomendacion}</td>
+            </tr>`;
+        }
+        analisisHtml += `</tbody></table></div>`;
+
+        // 3. Matriz de riesgo grupal
+        let matrizHtml = `<h2 style="margin-top: 2rem;">⚠️ Matriz de Riesgo (áreas con promedio < 60)</h2>`;
+        let areasCriticas = [];
+        for (let area of areas) {
+            let suma = 0, count = 0;
+            for (let e of estudiantes) {
+                suma += e.puntajesAreas[area] || 0;
+                count++;
+            }
+            let promedio = suma / count;
+            if (promedio < 60) areasCriticas.push({ area, promedio: promedio.toFixed(1) });
+        }
+        if (areasCriticas.length === 0) {
+            matrizHtml += `<p style="background: #0f172a; border-radius: 1.2rem; padding: 1rem;">✅ No hay áreas críticas. El grupo tiene buen desempeño general.</p>`;
+        } else {
+            matrizHtml += `<div class="tabla-resultados"><table><thead><tr><th>Área</th><th>Promedio grupal</th><th>Recomendación pedagógica</th></tr></thead><tbody>`;
+            for (let crit of areasCriticas) {
+                matrizHtml += `<tr><td>${crit.area}</td><td>${crit.promedio}%</td><td>Priorizar nivelación en ${crit.area}. Talleres específicos.</td></tr>`;
+            }
+            matrizHtml += `</tbody></table></div>`;
+        }
+
+        // 4. Interpretación general
+        const promedioGlobal = estudiantes.reduce((a,b) => a + b.notaGlobalSobre100, 0) / estudiantes.length;
+        let interpretacionHtml = `<h2 style="margin-top: 2rem;">📊 Interpretación Pedagógica General</h2>
+            <div style="background: #0f172a; border-radius: 1.2rem; padding: 1rem;">
+                <p>Promedio global del grupo: <strong>${promedioGlobal.toFixed(2)}%</strong>.</p>`;
+        if (promedioGlobal >= 80) interpretacionHtml += `<p>🌟 El grupo tiene un desempeño sobresaliente. ¡Felicidades!</p>`;
+        else if (promedioGlobal >= 60) interpretacionHtml += `<p>📈 El grupo tiene un desempeño aceptable. Se recomienda reforzar las áreas con menor puntaje.</p>`;
+        else interpretacionHtml += `<p>⚠️ El grupo presenta dificultades significativas. Se necesita intervención pedagógica urgente.</p>`;
+        interpretacionHtml += `</div>`;
+
+        contenedor.innerHTML = rankingHtml + analisisHtml + matrizHtml + interpretacionHtml;
     }
 
-    // Cargar resultados al iniciar
+    // Ejecutar al cargar la página
     cargarResultadosSimulacro();
 </script>
 </body>
