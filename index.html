@@ -4,9 +4,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Rural STEAM Lab</title>
-    <!-- MathJax para fórmulas (opcional) -->
+    
+    <!-- === MEJORAS SEO === -->
+    <link rel="canonical" href="https://ruralstemlab.github.io/rural-steam-platform/">
+    <meta name="robots" content="index, follow">
+    
+    <!-- === OPEN GRAPH (para Facebook, WhatsApp, LinkedIn) === -->
+    <meta property="og:title" content="Rural STEAM Lab - Plataforma STEM Interactiva">
+    <meta property="og:description" content="Simuladores de física, matemáticas, química y evaluación ICFES para educación rural. Laboratorios virtuales y recursos offline.">
+    <meta property="og:image" content="https://ruralstemlab.github.io/rural-steam-platform/assets/og-image.jpg">
+    <meta property="og:url" content="https://ruralstemlab.github.io/rural-steam-platform/">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Rural STEAM Lab">
+    
+    <!-- === TWITTER CARD === -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Rural STEAM Lab - STEM para educación rural">
+    <meta name="twitter:description" content="Simuladores interactivos de Física, Matemáticas y Química. Ideal para colegios rurales y preparación ICFES.">
+    <meta name="twitter:image" content="https://ruralstemlab.github.io/rural-steam-platform/assets/og-image.jpg">
+    
+    <title>Rural STEAM Lab | Plataforma Educativa STEM Rural</title>
+    
+    <!-- MathJax para fórmulas -->
     <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" id="MathJax-script" async></script>
+    
     <style>
         * {
             margin: 0;
@@ -237,7 +258,7 @@
             font-size: 1.3rem;
         }
 
-        /* MODAL INSTITUCIONAL (sin cambios) */
+        /* MODAL INSTITUCIONAL */
         .modal {
             display: none;
             position: fixed;
@@ -402,7 +423,6 @@
     <div class="modal-content">
         <h2>🧪 Rural STEM Lab - Ecosistema Educativo</h2>
         <table>
-            <!-- (El contenido de la tabla es el mismo que tenías, no lo cambio para no alargar) -->
             <tr><th>Ítem</th><th>Descripción</th></tr>
             <tr><td><strong>Nombre del ecosistema</strong></td><td><strong>Rural STEM Lab</strong></td></tr>
             <tr><td>Tipo de proyecto</td><td>Ecosistema educativo STEM interactivo para contexto rural</td></tr>
@@ -438,7 +458,7 @@
 </div>
 
 <script>
-    // === PARTÍCULAS FLOTANTES (NEÓN) ===
+    // === PARTÍCULAS FLOTANTES ===
     const particlesContainer = document.getElementById('particlesContainer');
     const PARTICLE_COUNT = 150;
     const colors = ['rgba(96, 165, 250, 0.7)', 'rgba(163, 230, 53, 0.6)', 'rgba(249, 115, 22, 0.6)', 'rgba(255, 255, 255, 0.5)'];
@@ -463,7 +483,6 @@
         particlesContainer.appendChild(particle);
     }
 
-    // Añadir keyframes si no existen (ya están definidos en CSS, pero por si acaso)
     if (!document.querySelector('#particle-keyframes')) {
         const style = document.createElement('style');
         style.id = 'particle-keyframes';
