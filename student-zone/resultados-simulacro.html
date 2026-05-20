@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Mis Resultados - Simulacro ICFES</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0f172a;
+            color: #f1f5f9;
+            padding: 2rem;
+        }
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+        h1 {
+            font-size: 2rem;
+            background: linear-gradient(135deg, #c084fc, #60a5fa);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            margin-bottom: 0.5rem;
+        }
+        .card {
+            background: #1e293b;
+            border-radius: 28px;
+            padding: 1.8rem;
+            margin-bottom: 2rem;
+            border: 1px solid #334155;
+        }
+        h2 {
+            color: #60a5fa;
+            margin-bottom: 1.2rem;
+            border-left: 4px solid #3b82f6;
+            padding-left: 16px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            font-size: 0.85rem;
+        }
+        th, td {
+            padding: 10px 6px;
+            text-align: center;
+            border-bottom: 1px solid #334155;
+        }
+        th {
+            background: #0f172a;
+            color: #facc15;
+        }
+        .rank1 { background: #ca8a04; }
+        .rank2 { background: #64748b; }
+        .rank3 { background: #92400e; }
+        .fortaleza { background: #14532d; color: #bbf7d0; }
+        .debilidad { background: #7f1a1a; color: #fecaca; }
+        .mensaje { background: #fef9e3; border-left: 4px solid #facc15; padding: 1rem; border-radius: 20px; margin-top: 1rem; }
+        .btn-volver {
+            background: #3b82f6;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 40px;
+            text-decoration: none;
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+        .btn-volver:hover { background: #2563eb; }
+        footer {
+            text-align: center;
+            margin-top: 2rem;
+            font-size: 0.75rem;
+            color: #64748b;
+        }
+        @media (max-width: 700px) {
+            body { padding: 1rem; }
+            .card { padding: 1rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <a href="index.html" class="btn-volver">⬅ Volver a mi zona</a>
+    <h1>🎓 Mis resultados - Simulacro ICFES</h1>
+    
+    <div id="resultados" class="card">
+        <h2>🏆 Ranking general</h2>
+        <div id="tablaRanking"></div>
+    </div>
+
+    <div id="analitica" class="card">
+        <h2>📈 Fortalezas y debilidades por estudiante</h2>
+        <div id="fortalezasTabla"></div>
+        <div id="matrizRiesgo" style="margin-top: 1.5rem;"></div>
+        <div id="interpretacion" class="mensaje" style="margin-top: 1rem;"></div>
+    </div>
+    
+    <footer>🔷 Rural STEAM Lab — Resultados publicados por tu profesor</footer>
+</div>
+
+<script>
+    function cargarResultados() {
+        const guardado = localStorage.getItem('icfes_resultados_publicos');
+        if (!guardado) {
+            document.getElementById('tablaRanking').innerHTML = '<p>⚠️ No hay resultados disponibles. Consulta a tu profesor.</p>';
+            return;
+        }
+        const data = JSON.parse(guardado);
+        const estudiantes = data.estudiantes;
+        const areas = data.areas;
+
+        // Ranking
+        let htmlRanking = `<table>
+            <thead>
+                <tr><th>#</th><th>Estudiante</th><th>Aciertos</th><th>Nota /100</th>${areas.map(a => `<th>${a}</th>`).join('')}<th>Suma áreas</th><th>Área fuerte</th><th>Área débil</th></tr>
+            </thead>
+            <tbody>`;
+        estudiantes.forEach((e, i) => {
+            let clase = i===0 ? 'rank1' : (i===1 ? 'rank2' : (i===2 ? 'rank3' : ''));
+            let medalla = i===0 ? '🥇 ' : (i===1 ? '🥈 ' : (i===2 ? '🥉 ' : ''));
+            htmlRanking += `<tr class="${clase}">
+                <td>${medalla}${i+1}</td>
+                <td>${e.nombre}</td>
+                <td>${e.aciertos}/${e.totalPreguntas}</td>
+                <td>${e.notaGlobalSobre100.toFixed(2)}%</td>`;
+            for (let area of areas) {
+                htmlRanking += `<td>${e.puntajesAreas[area] || 0}</td>`;
+            }
+            htmlRanking += `<td>${e.sumaPuntajes}</td>
+                <td>${e.areaFuerte}</td>
+                <td>${e.areaDebil}</td>
+            </tr>`;
+        });
+        htmlRanking += '</tbody></table>';
+        document.getElementById('tablaRanking').innerHTML = htmlRanking;
+
+        // Fortalezas y debilidades por estudiante
+        let htmlFort = `<table style="width:100%">
+            <thead><tr><th>Estudiante</th><th>Fortaleza</th><th>Debilidad</th><th>Recomendación</th></tr></thead>
+            <tbody>`;
+        for (let e of estudiantes) {
+            let recomendacion = '';
+            if (e.puntajesAreas[e.areaDebil] < 60) recomendacion = `Reforzar urgentemente ${e.areaDebil} (puntaje bajo).`;
+            else if (e.puntajesAreas[e.areaDebil] < 70) recomendacion = `Mejorar en ${e.areaDebil} con práctica específica.`;
+            else recomendacion = `Seguir profundizando en ${e.areaFuerte}.`;
+            htmlFort += `<tr>
+                <td>${e.nombre}</td>
+                <td class="fortaleza">${e.areaFuerte} (${e.puntajesAreas[e.areaFuerte]})</td>
+                <td class="debilidad">${e.areaDebil} (${e.puntajesAreas[e.areaDebil]})</td>
+                <td>${recomendacion}</td>
+            </tr>`;
+        }
+        htmlFort += '</tbody></table>';
+        document.getElementById('fortalezasTabla').innerHTML = htmlFort;
+
+        // Matriz de riesgo grupal
+        let areasCriticas = [];
+        for (let area of areas) {
+            let suma = 0, count = 0;
+            for (let e of estudiantes) {
+                suma += e.puntajesAreas[area] || 0;
+                count++;
+            }
+            let prom = suma / count;
+            if (prom < 60) areasCriticas.push({ area, prom: prom.toFixed(1) });
+        }
+        let riesgoHtml = '<h3>⚠️ Áreas de atención (promedio grupal &lt; 60)</h3>';
+        if (areasCriticas.length === 0) riesgoHtml += '<p>✅ No hay áreas críticas. Buen desempeño general.</p>';
+        else {
+            riesgoHtml += '<ul>';
+            for (let a of areasCriticas) riesgoHtml += `<li>${a.area}: promedio ${a.prom}% → Requiere refuerzo.</li>`;
+            riesgoHtml += '</ul>';
+        }
+        document.getElementById('matrizRiesgo').innerHTML = riesgoHtml;
+
+        // Interpretación general
+        const promedioGlobal = estudiantes.reduce((a,b)=>a+b.notaGlobalSobre100,0)/estudiantes.length;
+        let interpretacion = `<strong>📊 Promedio del grupo:</strong> ${promedioGlobal.toFixed(2)}%<br>`;
+        if (promedioGlobal >= 80) interpretacion += '🌟 Desempeño sobresaliente. ¡Felicidades!';
+        else if (promedioGlobal >= 60) interpretacion += '📈 Desempeño aceptable. Sigue trabajando en las áreas débiles.';
+        else interpretacion += '⚠️ Se recomienda reforzar las áreas críticas con el profesor.';
+        document.getElementById('interpretacion').innerHTML = interpretacion;
+    }
+
+    cargarResultados();
+</script>
+</body>
+</html>
