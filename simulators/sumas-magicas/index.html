@@ -52,7 +52,7 @@
         <p>¡Ayuda a los animales de la granja a sumar!</p>
     </div>
 
-    <!-- SIMULADOR PRINCIPAL (sin cambios) -->
+    <!-- SIMULADOR PRINCIPAL -->
     <div class="card">
         <div class="card-header"><span>🐣</span> Aventura de Sumas</div>
         <div class="selector-animal" id="selectorAnimal">
@@ -85,7 +85,7 @@
         </div>
     </div>
 
-    <!-- QUIZ CORREGIDO -->
+    <!-- QUIZ CORREGIDO (error de la segunda pregunta solucionado) -->
     <div class="card">
         <div class="card-header"><span>🏆</span> Desafío de Campeones</div>
         <div>
@@ -104,7 +104,7 @@
 
     <footer>
         <p>🐄 Granja Matemática — Sumas Mágicas 🐓</p>
-        <p>✨ Versión corregida – ¡ahora 4+4 sí tiene respuesta! ✨</p>
+        <p>✨ Versión corregida – ¡ahora 4+2 sí tiene su respuesta correcta! ✨</p>
     </footer>
 </div>
 
@@ -188,12 +188,13 @@
     // ========================
     // QUIZ DE 5 PREGUNTAS - CORREGIDO
     // ========================
+    // Corrección: segunda pregunta (4+2=6) ahora tiene correcta: "b" (antes estaba "c")
     const preguntas = [
         { texto: "🐔 2 + 3 = ?", opciones: ["4", "5", "6", "7"], correcta: "b" },   // 5
-        { texto: "🐱 4 + 2 = ?", opciones: ["5", "6", "7", "8"], correcta: "c" },   // 6 (opción c es 7? No, antes estaba mal. Ahora: indice 0=a=5,1=b=6,2=c=7,3=d=8 -> la correcta es 6 => opción b)
-        { texto: "🦆 1 + 6 = ?", opciones: ["6", "7", "8", "9"], correcta: "b" },   // 7 (opción b)
+        { texto: "🐱 4 + 2 = ?", opciones: ["5", "6", "7", "8"], correcta: "b" },   // 6 (ahora sí apunta a la opción b)
+        { texto: "🦆 1 + 6 = ?", opciones: ["6", "7", "8", "9"], correcta: "b" },   // 7
         { texto: "🐐 5 + 3 = ?", opciones: ["8", "9", "10", "7"], correcta: "a" },   // 8
-        { texto: "🐴 4 + 4 = ?", opciones: ["7", "8", "9", "10"], correcta: "b" }    // 8 (opción b)
+        { texto: "🐴 4 + 4 = ?", opciones: ["7", "8", "9", "10"], correcta: "b" }    // 8
     ];
 
     let respuestasUsuario = new Array(5).fill(null);
