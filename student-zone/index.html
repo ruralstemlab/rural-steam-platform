@@ -3,59 +3,258 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Zona de Estudiantes | Resultados ICFES PRO</title>
+    <title>Student Zone | Rural STEAM Lab</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             font-family: 'Inter', sans-serif;
             background: #0f172a;
             color: #f1f5f9;
-            padding: 30px 20px;
+            line-height: 1.5;
         }
-        .container {
-            max-width: 1300px;
-            margin: 0 auto;
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
-        .header h1 {
-            font-size: 2rem;
+        @keyframes subtleZoom {
+            0% { background-position: 50% 50%; background-size: 105%; }
+            50% { background-position: 49% 51%; background-size: 108%; }
+            100% { background-position: 50% 50%; background-size: 105%; }
+        }
+
+        .topbar {
+            background: #020617;
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            border-bottom: 1px solid #1e293b;
+        }
+
+        .back-btn {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .back-btn:hover {
+            background: #3b82f6;
+            transform: scale(0.98);
+        }
+
+        .title-area h1 {
+            font-size: 1.7rem;
+            font-weight: 700;
             background: linear-gradient(135deg, #c084fc, #60a5fa);
             background-clip: text;
             -webkit-background-clip: text;
             color: transparent;
         }
-        .card {
+
+        .title-area p {
+            font-size: 0.9rem;
+            color: #94a3b8;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 100px 20px;
+            background: url('../assets/profe-banner.png');
+            background-size: 105%;
+            background-position: 50% 50%;
+            background-repeat: no-repeat;
+            animation: subtleZoom 25s ease-in-out infinite;
+            position: relative;
+        }
+        .hero h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ffffff, #facc15);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            text-shadow: 2px 2px 10px rgba(0,0,0,0.6);
+            animation: gradientShift 6s ease infinite;
+            background-size: 200% 200%;
+            display: inline-block;
+            margin-bottom: 0.5rem;
+        }
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto;
+            color: #ffffff;
+            font-weight: 500;
+            text-shadow: 1px 1px 6px rgba(0,0,0,0.8);
+        }
+
+        .two-columns {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 2rem 2rem 2rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .section {
             background: #1e293b;
-            border-radius: 28px;
-            padding: 28px;
-            margin-bottom: 30px;
+            border-radius: 1.8rem;
+            padding: 1.5rem;
             border: 1px solid #334155;
+            animation: fadeInUp 0.5s ease-out;
         }
-        .card h2 {
-            color: #60a5fa;
-            margin-bottom: 20px;
+
+        .section-title {
             font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
             border-left: 4px solid #3b82f6;
-            padding-left: 16px;
+            padding-left: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
-        table {
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 1.2rem;
+            margin-top: 1rem;
+        }
+
+        .card {
+            background: #0f172a;
+            border-radius: 1.2rem;
+            padding: 1.2rem;
+            transition: transform 0.2s;
+            border: 1px solid #2d3a4e;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            border-color: #3b82f6;
+        }
+
+        .card-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .card h4 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .card p {
+            color: #94a3b8;
+            font-size: 0.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .btn-card {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 0.4rem 0.8rem;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.7rem;
+            cursor: pointer;
+            transition: 0.2s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-card:hover {
+            background: #3b82f6;
+        }
+
+        .btn-card.secondary {
+            background: #7c3aed;
+        }
+
+        .btn-card.outline {
+            background: transparent;
+            border: 1px solid #3b82f6;
+            color: #3b82f6;
+        }
+
+        .info-block {
+            background: #0f172a;
+            border-radius: 1.2rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .info-block h4 {
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .iframe-container {
+            background: #0f172a;
+            border-radius: 1rem;
+            overflow: hidden;
+            border: 1px solid #334155;
+            margin-bottom: 1rem;
+        }
+
+        .iframe-container iframe {
+            width: 100%;
+            height: 300px;
+            border: none;
+        }
+
+        .announcement {
+            background: #1e293b;
+            border-left: 4px solid #f59e0b;
+            padding: 0.8rem;
+            margin-top: 0.8rem;
+            border-radius: 0.8rem;
+            font-size: 0.85rem;
+        }
+
+        /* Estilos para la sección de resultados del simulacro */
+        .resultados-simulacro {
+            margin-top: 1rem;
+        }
+        .ranking-table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
-            font-size: 0.85rem;
-            overflow-x: auto;
-            display: block;
+            font-size: 0.75rem;
         }
-        th, td {
-            padding: 12px 8px;
-            text-align: center;
+        .ranking-table th, .ranking-table td {
+            padding: 8px 4px;
             border-bottom: 1px solid #334155;
+            text-align: center;
         }
-        th {
+        .ranking-table th {
             background: #0f172a;
             color: #facc15;
         }
@@ -64,172 +263,244 @@
         .rank3 { background: #92400e; }
         .fortaleza { background: #14532d; color: #bbf7d0; }
         .debilidad { background: #7f1a1a; color: #fecaca; }
-        .table-responsive { overflow-x: auto; }
-        .btn-print {
-            background: #3b82f6;
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 40px;
-            font-weight: 600;
-            cursor: pointer;
-            margin-top: 20px;
-            display: inline-block;
-        }
-        .btn-print:hover {
-            background: #2563eb;
-        }
         .mensaje-vacio {
             background: #fef9e3;
             color: #1e293b;
-            padding: 20px;
-            border-radius: 20px;
+            padding: 1rem;
+            border-radius: 1rem;
             text-align: center;
+        }
+        .btn-actualizar {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 0.4rem 1rem;
+            border-radius: 30px;
+            font-size: 0.7rem;
+            cursor: pointer;
+            margin-top: 0.5rem;
         }
         footer {
             text-align: center;
-            margin-top: 40px;
-            font-size: 0.75rem;
-            color: #64748b;
+            padding: 2rem;
             border-top: 1px solid #1e293b;
-            padding-top: 20px;
+            margin-top: 2rem;
+            font-size: 0.8rem;
+            color: #64748b;
         }
-        @media (max-width: 700px) {
-            body { padding: 20px; }
-            th, td { padding: 8px 4px; font-size: 0.75rem; }
+
+        @media (max-width: 800px) {
+            .two-columns {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+                padding: 1rem;
+            }
+            .hero h2 {
+                font-size: 1.8rem;
+            }
+            .hero p {
+                font-size: 1rem;
+            }
         }
     </style>
 </head>
 <body>
-<div class="container">
-    <div class="header">
-        <h1>📊 Mis Resultados - Simulacro ICFES</h1>
-        <p>Resultados publicados por tu profesor</p>
+
+<div class="topbar">
+    <a href="../index.html" class="back-btn">⬅ Volver a la Plataforma</a>
+    <div class="title-area">
+        <h1>🎓 Zona de Estudiantes</h1>
+        <p>Actividades interactivas, juegos, cuestionarios y desafíos STEM</p>
     </div>
-
-    <div id="contenidoResultados"></div>
-
-    <div style="text-align: center;">
-        <button class="btn-print" onclick="window.print()">🖨️ Imprimir / Guardar PDF</button>
-    </div>
-
-    <footer>
-        🔷 Rural STEAM Lab — Resultados oficiales del simulacro
-    </footer>
 </div>
 
+<section class="hero">
+    <h2>📚 Bienvenido a tu espacio de aprendizaje</h2>
+    <p>Organiza tus notas, revisa el calendario escolar y accede a herramientas interactivas para potenciar tu aprendizaje.</p>
+</section>
+
+<div class="two-columns">
+    
+    <!-- COLUMNA IZQUIERDA: HERRAMIENTAS -->
+    <div class="section">
+        <div class="section-title">
+            <span>📊</span> Tus Herramientas de Estudio
+        </div>
+        
+        <!-- Mis Calificaciones -->
+        <div class="info-block">
+            <h4>📈 Mis Calificaciones</h4>
+            <p>Consulta aquí el registro actualizado de tus notas por asignatura.</p>
+            <div class="iframe-container">
+                <iframe src="https://docs.google.com/spreadsheets/d/1i0ggPzvl2rofYWmGsy5kf8idtaBrJnuI/preview"></iframe>
+            </div>
+            <div class="iframe-container">
+                <iframe src="https://docs.google.com/spreadsheets/d/16D53qnUqkK98xrFdXAx2088bIb288-lR/preview"></iframe>
+            </div>
+        </div>
+        
+        <!-- NUEVA SECCIÓN: Resultados del Simulacro ICFES -->
+        <div class="info-block">
+            <h4>🏆 Resultados del Simulacro ICFES</h4>
+            <div id="resultadosSimulacro">
+                <p>Cargando resultados...</p>
+            </div>
+            <button class="btn-actualizar" onclick="cargarResultadosSimulacro()">🔄 Actualizar</button>
+        </div>
+        
+        <!-- Calendario Escolar -->
+        <div class="info-block">
+            <h4>📅 Calendario Escolar</h4>
+            <p>Fechas importantes, exámenes y eventos académicos.</p>
+            <div class="iframe-container">
+                <iframe src="https://calendar.google.com/calendar/embed?src=c_af9250d00f6eef129c22cbfb2e29bea0ae0323b5702356e7e75df80ae4b4444d%40group.calendar.google.com&ctz=America%2FBogota" style="border: 0" width="100%" height="400" frameborder="0" scrolling="no"></iframe>
+            </div>
+        </div>
+        
+        <!-- Avisos Importantes -->
+        <div class="info-block">
+            <h4>🔔 Avisos Importantes</h4>
+            <div class="announcement">
+                📌 <strong>Exámenes finales segundo periodo:</strong> Del 9 al 12 de junio.
+            </div>
+            <div class="announcement">
+                📌 <strong>Día del Docente:</strong> 15 de mayo (no habrá clases).
+            </div>
+            <div class="announcement">
+                📌 <strong>Entrega de informes:</strong> Los boletines estarán disponibles el 20 de junio.
+            </div>
+        </div>
+    </div>
+    
+    <!-- COLUMNA DERECHA: ACTIVIDADES Y JUEGOS -->
+    <div class="section">
+        <div class="section-title">
+            <span>🎮</span> Directorio de Actividades
+        </div>
+        
+        <div class="cards-grid">
+            <!-- Bitácora de Laboratorio -->
+            <div class="card">
+                <div class="card-icon">📓</div>
+                <h4>Bitácora de Laboratorio</h4>
+                <p>Registra tus experimentos y observaciones científicas.</p>
+                <a href="https://docs.google.com/spreadsheets/d/1703K5MCT7tGcWMwrAJ-kfYQq_zQpsC9V/edit?usp=sharing" target="_blank" class="btn-card">📝 Abrir Bitácora</a>
+            </div>
+            
+            <!-- Juegos STEM -->
+            <div class="card">
+                <div class="card-icon">🧩</div>
+                <h4>Juegos STEM</h4>
+                <p>Juegos interactivos de matemáticas, física y química.</p>
+                <a href="../simulators/" class="btn-card">🎮 Explorar juegos</a>
+            </div>
+            
+            <!-- Cuestionarios ICFES -->
+            <div class="card">
+                <div class="card-icon">📝</div>
+                <h4>Cuestionarios ICFES</h4>
+                <p>Pon a prueba tus conocimientos con evaluaciones estilo ICFES.</p>
+                <a href="#" class="btn-card secondary">Próximamente</a>
+            </div>
+            
+            <!-- Retos y Misiones -->
+            <div class="card">
+                <div class="card-icon">🏆</div>
+                <h4>Retos y Misiones</h4>
+                <p>Completa desafíos STEM y sube en el ranking.</p>
+                <a href="#" class="btn-card outline">Próximamente</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <p>Rural STEAM Platform — Zona de Estudiantes</p>
+    <p style="margin-top: 0.5rem;">✨ Diseñado por Eng. Medina H. A. para el aprendizaje interactivo ✨</p>
+</footer>
+
 <script>
-    function cargarResultados() {
+    function cargarResultadosSimulacro() {
+        const contenedor = document.getElementById('resultadosSimulacro');
         const guardado = localStorage.getItem('icfes_resultados_publicos');
-        const contenedor = document.getElementById('contenidoResultados');
 
         if (!guardado) {
-            contenedor.innerHTML = `
-                <div class="card mensaje-vacio">
-                    <h2>📭 No hay resultados disponibles</h2>
-                    <p>Tu profesor aún no ha publicado los resultados de este simulacro. Por favor, consulta con él.</p>
-                </div>
-            `;
+            contenedor.innerHTML = `<div class="mensaje-vacio">📭 No hay resultados publicados aún. Consulta a tu profesor.</div>`;
             return;
         }
 
-        const data = JSON.parse(guardado);
-        const estudiantes = data.estudiantes;
-        const areas = data.areas;
+        try {
+            const data = JSON.parse(guardado);
+            const estudiantes = data.estudiantes;
+            const areas = data.areas;
 
-        if (!estudiantes || estudiantes.length === 0) {
-            contenedor.innerHTML = `<div class="card mensaje-vacio"><p>No hay datos de estudiantes.</p></div>`;
-            return;
-        }
-
-        // Ordenar por nota (ya vienen ordenados, pero por si acaso)
-        estudiantes.sort((a,b) => b.notaGlobalSobre100 - a.notaGlobalSobre100);
-
-        // 1. Tabla de ranking
-        let rankingHtml = `
-            <div class="card">
-                <h2>🏆 Ranking del simulacro</h2>
-                <div class="table-responsive">
-                    <table>
-                        <thead>
-                            <tr><th>#</th><th>Estudiante</th><th>Aciertos</th><th>Nota /100</th>
-                `;
-        areas.forEach(area => { rankingHtml += `<th>${area}</th>`; });
-        rankingHtml += `<th>Suma áreas<br>(0-500)</th><th>Área fuerte</th><th>Área débil</th></thead><tbody>`;
-
-        estudiantes.forEach((e, i) => {
-            let clase = i === 0 ? 'rank1' : (i === 1 ? 'rank2' : (i === 2 ? 'rank3' : ''));
-            let medalla = i === 0 ? '🥇 ' : (i === 1 ? '🥈 ' : (i === 2 ? '🥉 ' : ''));
-            rankingHtml += `<tr class="${clase}">
-                <td>${medalla}${i+1}</td>
-                <td>${e.nombre}</td>
-                <td>${e.aciertos}/${e.totalPreguntas}</td>
-                <td>${e.notaGlobalSobre100.toFixed(2)}%</td>`;
-            for (let area of areas) {
-                rankingHtml += `<td>${e.puntajesAreas[area] || 0}</td>`;
+            if (!estudiantes || estudiantes.length === 0) {
+                contenedor.innerHTML = `<div class="mensaje-vacio">⚠️ No hay datos de estudiantes.</div>`;
+                return;
             }
-            rankingHtml += `<td>${e.sumaPuntajes}</td>
-                <td>${e.areaFuerte}</td>
-                <td>${e.areaDebil}</td>
-            </tr>`;
-        });
-        rankingHtml += `</tbody></table></div></div>`;
 
-        // 2. Fortalezas y debilidades por estudiante
-        let analisisHtml = `<div class="card"><h2>📌 Fortalezas y Debilidades</h2>
-            <div class="table-responsive"><table>
-            <thead><tr><th>Estudiante</th><th>Fortaleza (puntaje)</th><th>Debilidad (puntaje)</th><th>Recomendación</th></tr></thead><tbody>`;
-        for (let e of estudiantes) {
-            let recomendacion = '';
-            let puntDebil = e.puntajesAreas[e.areaDebil];
-            if (puntDebil < 60) recomendacion = `Reforzar urgentemente ${e.areaDebil} (puntaje bajo). Trabajar competencias básicas.`;
-            else if (puntDebil < 70) recomendacion = `Mejorar en ${e.areaDebil} con práctica específica.`;
-            else recomendacion = `Mantener nivel en ${e.areaDebil} y seguir profundizando en ${e.areaFuerte}.`;
-            analisisHtml += `<tr>
-                <td>${e.nombre}</td>
-                <td class="fortaleza">${e.areaFuerte} (${e.puntajesAreas[e.areaFuerte]})</td>
-                <td class="debilidad">${e.areaDebil} (${puntDebil})</td>
-                <td>${recomendacion}</td>
-            </tr>`;
-        }
-        analisisHtml += `</tbody></table></div></div>`;
+            // Ordenar por nota (de mayor a menor)
+            estudiantes.sort((a,b) => b.notaGlobalSobre100 - a.notaGlobalSobre100);
 
-        // 3. Matriz de riesgo grupal
-        let matrizHtml = `<div class="card"><h2>⚠️ Matriz de Riesgo (áreas con promedio < 60)</h2>`;
-        let areasCriticas = [];
-        for (let area of areas) {
-            let suma = 0, count = 0;
+            // Mostrar tabla de ranking simplificada (primeros 5 o todos según se quiera)
+            let html = `<div style="overflow-x:auto;">`;
+            html += `<table class="ranking-table"><thead>`;
+            html += `<tr><th>#</th><th>Estudiante</th><th>Aciertos</th><th>Nota %</th><th>Área fuerte</th><th>Área débil</th></tr>`;
+            html += `</thead><tbody>`;
+
+            estudiantes.forEach((e, i) => {
+                let clase = i === 0 ? 'rank1' : (i === 1 ? 'rank2' : (i === 2 ? 'rank3' : ''));
+                let medalla = i === 0 ? '🥇 ' : (i === 1 ? '🥈 ' : (i === 2 ? '🥉 ' : ''));
+                html += `<tr class="${clase}">
+                            <td>${medalla}${i+1}</td>
+                            <td>${e.nombre}</td>
+                            <td>${e.aciertos}/${e.totalPreguntas}</td>
+                            <td>${e.notaGlobalSobre100.toFixed(2)}%</td>
+                            <td>${e.areaFuerte}</td>
+                            <td>${e.areaDebil}</td>
+                         </tr>`;
+            });
+            html += `</tbody></table></div>`;
+
+            // Fortalezas y debilidades (solo para el estudiante actual, pero si no hay login, mostramos la tabla completa)
+            // Aquí mostramos la tabla de fortalezas/debilidades completa para todos (puede ser mucha info, pero es pedagógico)
+            html += `<div style="margin-top: 16px;"><h4 style="color:#facc15;">📌 Fortalezas y Recomendaciones</h4>`;
+            html += `<div style="overflow-x:auto;"><table class="ranking-table"><thead>`;
+            html += `<tr><th>Estudiante</th><th>Fortaleza</th><th>Debilidad</th><th>Recomendación</th></tr>`;
+            html += `</thead><tbody>`;
             for (let e of estudiantes) {
-                suma += e.puntajesAreas[area] || 0;
-                count++;
+                let recomendacion = '';
+                let puntDebil = e.puntajesAreas[e.areaDebil];
+                if (puntDebil < 60) recomendacion = `Reforzar ${e.areaDebil} (puntaje bajo)`;
+                else if (puntDebil < 70) recomendacion = `Mejorar en ${e.areaDebil} con práctica.`;
+                else recomendacion = `Mantener nivel en ${e.areaDebil} y profundizar en ${e.areaFuerte}.`;
+                html += `<tr>
+                            <td>${e.nombre}</td>
+                            <td class="fortaleza">${e.areaFuerte} (${e.puntajesAreas[e.areaFuerte]})</td>
+                            <td class="debilidad">${e.areaDebil} (${puntDebil})</td>
+                            <td>${recomendacion}</td>
+                         </tr>`;
             }
-            let promedio = suma / count;
-            if (promedio < 60) areasCriticas.push({ area, promedio: promedio.toFixed(1) });
-        }
-        if (areasCriticas.length === 0) {
-            matrizHtml += `<p>✅ No hay áreas críticas. El grupo tiene buen desempeño general.</p>`;
-        } else {
-            matrizHtml += `<div class="table-responsive"><table><thead><tr><th>Área</th><th>Promedio grupal</th><th>Recomendación pedagógica</th></tr></thead><tbody>`;
-            for (let crit of areasCriticas) {
-                matrizHtml += `<tr><td>${crit.area}</td><td>${crit.promedio}%</td><td>Priorizar nivelación en ${crit.area}. Talleres específicos.</td></tr>`;
-            }
-            matrizHtml += `</tbody></table></div>`;
-        }
-        matrizHtml += `</div>`;
+            html += `</tbody></table></div></div>`;
 
-        // 4. Interpretación general
-        const promedioGlobal = estudiantes.reduce((a,b) => a + b.notaGlobalSobre100, 0) / estudiantes.length;
-        let interpretacionHtml = `<div class="card"><h2>📊 Interpretación Pedagógica General</h2>
-            <p>Promedio global del grupo: <strong>${promedioGlobal.toFixed(2)}%</strong>.</p>`;
-        if (promedioGlobal >= 80) interpretacionHtml += `<p>🌟 El grupo tiene un desempeño sobresaliente. ¡Felicidades!</p>`;
-        else if (promedioGlobal >= 60) interpretacionHtml += `<p>📈 El grupo tiene un desempeño aceptable. Se recomienda reforzar las áreas con menor puntaje.</p>`;
-        else interpretacionHtml += `<p>⚠️ El grupo presenta dificultades significativas. Se necesita intervención pedagógica urgente.</p>`;
-        interpretacionHtml += `</div>`;
+            // Interpretación general del grupo
+            const promedioGlobal = estudiantes.reduce((a,b) => a + b.notaGlobalSobre100, 0) / estudiantes.length;
+            html += `<div style="margin-top: 16px; background:#0f172a; padding: 12px; border-radius: 16px;">`;
+            html += `<p><strong>📊 Promedio del grupo:</strong> ${promedioGlobal.toFixed(2)}%</p>`;
+            if (promedioGlobal >= 80) html += `<p>🌟 ¡Excelente desempeño! Sigan así.</p>`;
+            else if (promedioGlobal >= 60) html += `<p>📈 Buen desempeño. Reforzar las áreas débiles.</p>`;
+            else html += `<p>⚠️ Se recomienda reforzar los temas con más dificultad.</p>`;
+            html += `</div>`;
 
-        contenedor.innerHTML = rankingHtml + analisisHtml + matrizHtml + interpretacionHtml;
+            contenedor.innerHTML = html;
+        } catch (err) {
+            console.error(err);
+            contenedor.innerHTML = `<div class="mensaje-vacio">❌ Error al cargar los resultados.</div>`;
+        }
     }
 
-    cargarResultados();
+    // Cargar resultados al iniciar
+    cargarResultadosSimulacro();
 </script>
 </body>
 </html>
