@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>ICFES PRO | Analítica con fortalezas y debilidades</title>
+    <title>ICFES PRO | Evaluador por áreas</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
@@ -58,6 +58,7 @@
         <button onclick="mostrar('analitica')">📈 Analítica</button>
         <button onclick="mostrar('manual')">📘 Manual</button>
         <button onclick="resetearConfiguraciones()" style="background:#dc2626;">🗑️ Resetear configuración</button>
+        <button onclick="publicarResultados()" style="background:#10b981;">📢 Publicar resultados</button>
     </div>
 </div>
 <div class="main">
@@ -66,7 +67,7 @@
     <div id="captura" class="section hidden"><h2>📝 Captura de Respuestas</h2><textarea id="respuestasTexto" rows="6" placeholder="Ejemplo:&#10;LEANDRO A B C D A B C&#10;MARIA B C D A B C D"></textarea><input type="file" id="archivoRespuestas" accept=".xlsx, .xls, .csv" style="display:none"><button class="btn" onclick="cargarRespuestasExcel()">📂 Cargar desde Excel</button><button class="btn btn-outline" onclick="calcularResultados()">✅ Calcular resultados</button></div>
     <div id="resultados" class="section hidden"><h2>🏆 Ranking de estudiantes</h2><div class="table-responsive"><table id="tablaRanking"><thead id="tablaHead"></thead><tbody id="rankingBody"></tbody></table></div><button class="btn btn-outline" onclick="exportarExcelResultados()">📊 Exportar a Excel</button></div>
     <div id="analitica" class="section hidden"><h2>📈 Analítica Pedagógica</h2><div id="analisisEstudiantes"></div><div id="matrizRiesgo" style="margin-top: 30px;"></div><div id="interpretacionExtra" class="analisis-text" style="margin-top: 20px;"></div></div>
-    <div id="manual" class="section hidden"><h2>📘 Manual de usuario</h2><div><p><strong>ICFES PRO – Evaluador por áreas</strong></p><p>Configura áreas y sesiones, carga las respuestas y obtén ranking, puntajes por materia (0-100) y una analítica con fortalezas/debilidades por estudiante y matriz de riesgo.</p></div></div>
+    <div id="manual" class="section hidden"><h2>📘 Manual de usuario</h2><div><p><strong>ICFES PRO – Evaluador por áreas</strong></p><p>Configura áreas y sesiones, carga las respuestas y obtén ranking, puntajes por materia (0-100) y una analítica con fortalezas/debilidades por estudiante y matriz de riesgo.</p><p>💡 Usa el botón "Publicar resultados" para que los estudiantes vean sus resultados en la Zona de Estudiantes.</p></div></div>
     <footer>🔷 Rural STEAM Lab — ICFES PRO | Diseñado por Eng. Medina H. A.</footer>
 </div>
 
@@ -75,28 +76,33 @@
     let estudiantes = [];
     let chartDashboard = null;
 
+    // ================= CONFIGURACIÓN POR DEFECTO (basada en la captura del usuario) =================
+    function cargarConfiguracionesPorDefecto() {
+        configuraciones = [
+            // MATEMÁTICAS Sesión 1
+            { sesion: 1, area: "MATEMÁTICA", competencia: "General", inicio: 1, fin: 25, claveArray: "B B C C D A B D C A A D B C D A A B D B A A C B C".split(/\s+/) },
+            // LECTURA Sesión 1
+            { sesion: 1, area: "LECTURA", competencia: "General", inicio: 26, fin: 66, claveArray: "B A D C D A B C B A B B C D A D B A B B D A B D A C C B A D B C A D B A C D D A C".split(/\s+/) },
+            // SOCIALES Sesión 1
+            { sesion: 1, area: "SOCIALES", competencia: "General", inicio: 67, fin: 91, claveArray: "C B C B A C D B B C A D B C D C B B B A D C B D A".split(/\s+/) },
+            // NATURALES Sesión 1
+            { sesion: 1, area: "NATURALES", competencia: "General", inicio: 92, fin: 120, claveArray: "C A B C B B A A C D D A D C A B B C A D D D D A C C B B B".split(/\s+/) },
+            // MATEMÁTICAS Sesión 2
+            { sesion: 2, area: "MATEMÁTICA", competencia: "General", inicio: 121, fin: 145, claveArray: "B C D B A D C B C B D A C C A D B C C C A B A D B".split(/\s+/) },
+            // SOCIALES Sesión 2
+            { sesion: 2, area: "SOCIALES", competencia: "General", inicio: 146, fin: 170, claveArray: "D A B D B A B C D A C D A B C A C A C B A D B C A".split(/\s+/) },
+            // INGLÉS Sesión 2
+            { sesion: 2, area: "INGLES", competencia: "General", inicio: 171, fin: 224, claveArray: "B A C B A D B A C B A D B A C B A D B A C B A D B A C B A D B A C B A D B A C B A D B A C B A D B A C B A D".split(/\s+/) }
+        ];
+    }
+
     function resetearConfiguraciones() {
-        if (confirm("¿Borrar todas las configuraciones guardadas?")) {
+        if (confirm("¿Borrar todas las configuraciones y restaurar valores de fábrica?")) {
             localStorage.removeItem('icfes_configs');
             cargarConfiguracionesPorDefecto();
             renderizarConfiguraciones();
-            alert("Configuración restablecida.");
+            alert("Configuración restablecida a los valores de fábrica.");
         }
-    }
-
-    function cargarConfiguracionesPorDefecto() {
-        configuraciones = [
-            { sesion: 1, area: "Matemáticas", competencia: "Interpretación", inicio: 1, fin: 20, claveArray: [] },
-            { sesion: 2, area: "Matemáticas", competencia: "Interpretación", inicio: 21, fin: 40, claveArray: [] },
-            { sesion: 1, area: "Lectura Crítica", competencia: "Argumentación", inicio: 41, fin: 60, claveArray: [] },
-            { sesion: 2, area: "Lectura Crítica", competencia: "Argumentación", inicio: 61, fin: 80, claveArray: [] },
-            { sesion: 1, area: "Sociales", competencia: "Pensamiento Social", inicio: 81, fin: 95, claveArray: [] },
-            { sesion: 2, area: "Sociales", competencia: "Pensamiento Social", inicio: 96, fin: 110, claveArray: [] },
-            { sesion: 1, area: "Ciencias Naturales", competencia: "Indagación", inicio: 111, fin: 125, claveArray: [] },
-            { sesion: 2, area: "Ciencias Naturales", competencia: "Indagación", inicio: 126, fin: 140, claveArray: [] },
-            { sesion: 1, area: "Inglés", competencia: "Comprensión", inicio: 141, fin: 150, claveArray: [] },
-            { sesion: 2, area: "Inglés", competencia: "Comprensión", inicio: 151, fin: 160, claveArray: [] }
-        ];
     }
 
     function cargarConfiguraciones() {
@@ -256,7 +262,7 @@
     function mostrarRanking() {
         const areas = [...new Map(configuraciones.map(c => [c.area, c.area])).values()];
         const thead = document.getElementById('tablaHead');
-        thead.innerHTML = '</table><th>#</th><th>Estudiante</th><th>Aciertos</th><th>Nota /100</th>' + areas.map(a => `<th>${a}</th>`).join('') + '<th>Suma áreas<br>(0-500)</th><th>Área fuerte</th><th>Área débil</th></tr>';
+        thead.innerHTML = '<tr><th>#</th><th>Estudiante</th><th>Aciertos</th><th>Nota /100</th>' + areas.map(a => `<th>${a}</th>`).join('') + '<th>Suma áreas<br>(0-500)</th><th>Área fuerte</th><th>Área débil</th></tr>';
         const tbody = document.getElementById('rankingBody');
         tbody.innerHTML = '';
         estudiantes.forEach((e, i) => {
@@ -298,13 +304,11 @@
         // Tabla de fortalezas y debilidades por estudiante
         let html = '<h3>📌 Fortalezas y Debilidades por Estudiante</h3><div class="table-responsive"><table style="width:100%"><thead><tr><th>Estudiante</th><th>Fortaleza (Área con mayor puntaje)</th><th>Debilidad (Área con menor puntaje)</th><th>Recomendación</th></tr></thead><tbody>';
         for (let e of estudiantes) {
-            const fortaleza = e.areaFuerte;
-            const debilidad = e.areaDebil;
             let recomendacion = '';
-            if (e.puntajesAreas[debilidad] < 60) recomendacion = `Reforzar urgentemente ${debilidad} (puntaje bajo). Trabajar competencias básicas.`;
-            else if (e.puntajesAreas[debilidad] < 70) recomendacion = `Mejorar en ${debilidad} con práctica específica.`;
-            else recomendacion = `Mantener nivel en ${debilidad} y seguir profundizando en ${fortaleza}.`;
-            html += `<tr><td>${e.nombre}</td><td class="fortaleza">${fortaleza} (${e.puntajesAreas[fortaleza]})</td><td class="debilidad">${debilidad} (${e.puntajesAreas[debilidad]})</td><td>${recomendacion}</td></tr>`;
+            if (e.puntajesAreas[e.areaDebil] < 60) recomendacion = `Reforzar urgentemente ${e.areaDebil} (puntaje bajo). Trabajar competencias básicas.`;
+            else if (e.puntajesAreas[e.areaDebil] < 70) recomendacion = `Mejorar en ${e.areaDebil} con práctica específica.`;
+            else recomendacion = `Mantener nivel en ${e.areaDebil} y seguir profundizando en ${e.areaFuerte}.`;
+            html += `<tr><td class="fortaleza">${e.areaFuerte} (${e.puntajesAreas[e.areaFuerte]})</td><td class="debilidad">${e.areaDebil} (${e.puntajesAreas[e.areaDebil]})</td><td>${recomendacion}</td></tr>`;
         }
         html += '</tbody></table></div>';
         document.getElementById('analisisEstudiantes').innerHTML = html;
@@ -325,7 +329,7 @@
         else {
             riesgoHtml += '<div class="table-responsive"><table><thead><tr><th>Área</th><th>Promedio grupal</th><th>Recomendación pedagógica</th></tr></thead><tbody>';
             for (let crit of areasCriticas) {
-                riesgoHtml += `<tr><td>${crit.area}</td><td>${crit.promedio}</td><td>Priorizar nivelación en ${crit.area}. Diseñar talleres específicos y seguimiento personalizado.</td></tr>`;
+                riesgoHtml += `<tr><td>${crit.area}</td><td>${crit.promedio}%</td><td>Priorizar nivelación en ${crit.area}. Diseñar talleres específicos y seguimiento personalizado.</td></tr>`;
             }
             riesgoHtml += '</tbody></table></div>';
         }
@@ -355,6 +359,26 @@
         const wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, "Resultados_ICFES");
         XLSX.writeFile(wb, `ICFES_${new Date().toISOString().slice(0,19)}.xlsx`);
+    }
+
+    function publicarResultados() {
+        if (estudiantes.length === 0) { alert("No hay resultados para publicar. Calcula primero."); return; }
+        const areas = [...new Map(configuraciones.map(c => [c.area, c.area])).values()];
+        const datosPublicos = {
+            estudiantes: estudiantes.map(e => ({
+                nombre: e.nombre,
+                aciertos: e.aciertos,
+                totalPreguntas: e.totalPreguntas,
+                notaGlobalSobre100: e.notaGlobalSobre100,
+                puntajesAreas: e.puntajesAreas,
+                sumaPuntajes: e.sumaPuntajes,
+                areaFuerte: e.areaFuerte,
+                areaDebil: e.areaDebil
+            })),
+            areas: areas
+        };
+        localStorage.setItem('icfes_resultados_publicos', JSON.stringify(datosPublicos));
+        alert("✅ Resultados publicados. Los estudiantes pueden verlos en la Zona de Estudiantes.");
     }
 
     function mostrar(sectionId) {
