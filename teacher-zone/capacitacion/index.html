@@ -262,7 +262,7 @@
     function mostrarRanking() {
         const areas = [...new Map(configuraciones.map(c => [c.area, c.area])).values()];
         const thead = document.getElementById('tablaHead');
-        thead.innerHTML = '<tr><th>#</th><th>Estudiante</th><th>Aciertos</th><th>Nota /100</th>' + areas.map(a => `<th>${a}</th>`).join('') + '<th>Suma áreas<br>(0-500)</th><th>Área fuerte</th><th>Área débil</th></tr>';
+        thead.innerHTML = '<table><th>#</th><th>Estudiante</th><th>Aciertos</th><th>Nota /100</th>' + areas.map(a => `<th>${a}</th>`).join('') + '<th>Suma áreas<br>(0-500)</th><th>Área fuerte</th><th>Área débil</th></tr>';
         const tbody = document.getElementById('rankingBody');
         tbody.innerHTML = '';
         estudiantes.forEach((e, i) => {
@@ -301,14 +301,19 @@
     function mostrarAnalitica() {
         if (estudiantes.length === 0) return;
         const areas = [...new Map(configuraciones.map(c => [c.area, c.area])).values()];
-        // Tabla de fortalezas y debilidades por estudiante
+        // Tabla de fortalezas y debilidades por estudiante (con nombre)
         let html = '<h3>📌 Fortalezas y Debilidades por Estudiante</h3><div class="table-responsive"><table style="width:100%"><thead><tr><th>Estudiante</th><th>Fortaleza (Área con mayor puntaje)</th><th>Debilidad (Área con menor puntaje)</th><th>Recomendación</th></tr></thead><tbody>';
         for (let e of estudiantes) {
             let recomendacion = '';
             if (e.puntajesAreas[e.areaDebil] < 60) recomendacion = `Reforzar urgentemente ${e.areaDebil} (puntaje bajo). Trabajar competencias básicas.`;
             else if (e.puntajesAreas[e.areaDebil] < 70) recomendacion = `Mejorar en ${e.areaDebil} con práctica específica.`;
             else recomendacion = `Mantener nivel en ${e.areaDebil} y seguir profundizando en ${e.areaFuerte}.`;
-            html += `<tr><td class="fortaleza">${e.areaFuerte} (${e.puntajesAreas[e.areaFuerte]})</td><td class="debilidad">${e.areaDebil} (${e.puntajesAreas[e.areaDebil]})</td><td>${recomendacion}</td></tr>`;
+            html += `<tr>
+                        <td>${e.nombre}</td>
+                        <td class="fortaleza">${e.areaFuerte} (${e.puntajesAreas[e.areaFuerte]})</td>
+                        <td class="debilidad">${e.areaDebil} (${e.puntajesAreas[e.areaDebil]})</td>
+                        <td>${recomendacion}</td>
+                     </tr>`;
         }
         html += '</tbody></table></div>';
         document.getElementById('analisisEstudiantes').innerHTML = html;
@@ -327,7 +332,7 @@
         let riesgoHtml = '<h3>⚠️ Matriz de Riesgo (Áreas con promedio inferior a 60)</h3>';
         if (areasCriticas.length === 0) riesgoHtml += '<p>✅ No hay áreas críticas. El grupo tiene buen desempeño general.</p>';
         else {
-            riesgoHtml += '<div class="table-responsive"><table><thead><tr><th>Área</th><th>Promedio grupal</th><th>Recomendación pedagógica</th></tr></thead><tbody>';
+            riesgoHtml += '<div class="table-responsive"><table style="width:100%"><thead><tr><th>Área</th><th>Promedio grupal</th><th>Recomendación pedagógica</th></tr></thead><tbody>';
             for (let crit of areasCriticas) {
                 riesgoHtml += `<tr><td>${crit.area}</td><td>${crit.promedio}%</td><td>Priorizar nivelación en ${crit.area}. Diseñar talleres específicos y seguimiento personalizado.</td></tr>`;
             }
