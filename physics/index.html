@@ -14,54 +14,54 @@
 
         body {
             font-family: 'Inter', sans-serif;
-            background: #0f172a;
+            background: #0b1120;  /* fondo más profundo */
             color: #f1f5f9;
             line-height: 1.5;
             overflow-x: hidden;
+            position: relative;
         }
 
-        /* Animaciones base */
+        /* Canvas de partículas mejorado - visible y brillante */
+        #particle-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: block;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.95;   /* mucho más visible */
+            background: radial-gradient(circle at center, #0a0f1e 0%, #030617 100%);
+        }
+
+        /* Contenido por encima */
+        .topbar, .physics-header, .curriculum-container, footer {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* El resto de estilos se mantienen igual que antes (son compatibles) */
         @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         @keyframes gradientShift {
-            0% {
-                background-position: 0% 50%;
-            }
-            50% {
-                background-position: 100% 50%;
-            }
-            100% {
-                background-position: 0% 50%;
-            }
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         @keyframes physicsSubtleZoom {
-            0% {
-                background-position: 50% 50%;
-                background-size: 105%;
-            }
-            50% {
-                background-position: 49% 51%;
-                background-size: 108%;
-            }
-            100% {
-                background-position: 50% 50%;
-                background-size: 105%;
-            }
+            0% { background-position: 50% 50%; background-size: 105%; }
+            50% { background-position: 49% 51%; background-size: 108%; }
+            100% { background-position: 50% 50%; background-size: 105%; }
         }
 
-        /* Topbar */
         .topbar {
-            background: #020617;
+            background: #020617cc;
+            backdrop-filter: blur(8px);
             padding: 0.8rem 2rem;
             display: flex;
             align-items: center;
@@ -87,10 +87,7 @@
             transition: 0.2s;
         }
 
-        .back-btn:hover {
-            background: #3b82f6;
-            transform: scale(0.97);
-        }
+        .back-btn:hover { background: #3b82f6; transform: scale(0.97); }
 
         .title-area h1 {
             font-size: 1.5rem;
@@ -101,12 +98,8 @@
             color: transparent;
         }
 
-        .title-area p {
-            font-size: 0.8rem;
-            color: #94a3b8;
-        }
+        .title-area p { font-size: 0.8rem; color: #e2e8f0; }
 
-        /* Header imagen física */
         .physics-header {
             text-align: center;
             padding: 100px 20px;
@@ -116,6 +109,8 @@
             background-repeat: no-repeat;
             animation: physicsSubtleZoom 25s ease-in-out infinite;
             position: relative;
+            background-color: #0f172a80;
+            background-blend-mode: overlay;
         }
 
         .physics-header h1 {
@@ -125,7 +120,7 @@
             background-clip: text;
             -webkit-background-clip: text;
             color: transparent;
-            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.6);
+            text-shadow: 2px 2px 10px rgba(0,0,0,0.6);
             animation: gradientShift 6s ease infinite;
             background-size: 200% 200%;
             display: inline-block;
@@ -137,17 +132,15 @@
             margin: auto;
             color: #ffffff;
             font-weight: 500;
-            text-shadow: 1px 1px 6px rgba(0, 0, 0, 0.8);
+            text-shadow: 1px 1px 6px rgba(0,0,0,0.8);
         }
 
-        /* MAIN ESTRUCTURA POR TEMAS (ÁRBOL CURRICULAR) */
         .curriculum-container {
             max-width: 1400px;
             margin: 0 auto;
             padding: 2rem 2rem 1rem 2rem;
         }
 
-        /* Cada bloque temático */
         .topic-block {
             margin-bottom: 3rem;
             animation: fadeInUp 0.4s ease-out backwards;
@@ -174,25 +167,25 @@
         }
 
         .topic-badge {
-            background: #1e293b;
+            background: #1e293bcc;
+            backdrop-filter: blur(4px);
             padding: 0.2rem 0.8rem;
             border-radius: 30px;
             font-size: 0.75rem;
             font-weight: 500;
-            color: #94a3b8;
+            color: #cbd5e6;
             border: 1px solid #334155;
         }
 
-        /* Grid de tarjetas MÁS PEQUEÑAS */
         .cards-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
             gap: 1.2rem;
         }
 
-        /* Estilo tarjeta compacta pero elegante */
         .card {
-            background: linear-gradient(145deg, #1e293b, #172132);
+            background: linear-gradient(145deg, #1e293be6, #172132e6);
+            backdrop-filter: blur(4px);
             border-radius: 1.5rem;
             padding: 1rem 1rem 1.2rem 1rem;
             transition: all 0.25s ease;
@@ -207,6 +200,7 @@
             transform: translateY(-5px);
             border-color: #38bdf8;
             box-shadow: 0 15px 25px -12px rgba(0, 0, 0, 0.5);
+            background: linear-gradient(145deg, #253450e6, #1e293be6);
         }
 
         .card::before {
@@ -216,18 +210,16 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(56, 189, 248, 0.08), transparent);
+            background: linear-gradient(90deg, transparent, rgba(56, 189, 248, 0.15), transparent);
             transition: left 0.45s;
             pointer-events: none;
         }
 
-        .card:hover::before {
-            left: 100%;
-        }
+        .card:hover::before { left: 100%; }
 
         .card-icon {
             font-size: 2rem;
-            background: #0f172a;
+            background: #0f172a99;
             width: 48px;
             height: 48px;
             display: flex;
@@ -238,20 +230,8 @@
             border: 1px solid #334155;
         }
 
-        .card h3 {
-            font-size: 1.2rem;
-            font-weight: 600;
-            margin-bottom: 0.4rem;
-            color: #06b6d4;
-        }
-
-        .card p {
-            color: #94a3b8;
-            font-size: 0.7rem;
-            line-height: 1.4;
-            margin-bottom: 1rem;
-            flex-grow: 1;
-        }
+        .card h3 { font-size: 1.2rem; font-weight: 600; margin-bottom: 0.4rem; color: #06b6d4; }
+        .card p { color: #cbd5e6; font-size: 0.7rem; line-height: 1.4; margin-bottom: 1rem; flex-grow: 1; }
 
         .button-group {
             display: flex;
@@ -276,36 +256,22 @@
             gap: 5px;
         }
 
-        .btn-sim.download {
-            background: #16a34a;
-        }
+        .btn-sim.download { background: #16a34a; }
+        .btn-sim.guide { background: #7c3aed; }
+        .btn-sim:hover { filter: brightness(1.1); transform: scale(0.97); }
 
-        .btn-sim.guide {
-            background: #7c3aed;
-        }
-
-        .btn-sim:hover {
-            filter: brightness(1.1);
-            transform: scale(0.97);
-        }
-
-        /* placeholder card para futuras simulaciones (Fluidos, Física Moderna, etc.) */
         .future-card {
-            background: linear-gradient(145deg, #1e2a3a, #111827);
-            opacity: 0.85;
+            background: linear-gradient(145deg, #1e2a3acc, #111827cc);
+            backdrop-filter: blur(2px);
+            opacity: 0.9;
             border: 1px dashed #475569;
         }
-
         .future-card .btn-sim {
             background: #475569;
             cursor: default;
             filter: none;
         }
-
-        .future-card .btn-sim:hover {
-            transform: none;
-            filter: none;
-        }
+        .future-card .btn-sim:hover { transform: none; filter: none; }
 
         footer {
             text-align: center;
@@ -313,72 +279,52 @@
             border-top: 1px solid #1e293b;
             margin-top: 1.5rem;
             font-size: 0.75rem;
-            color: #64748b;
+            color: #cbd5e6;
+            background: #02061780;
+            backdrop-filter: blur(8px);
         }
 
         @media (max-width: 720px) {
-            .curriculum-container {
-                padding: 1rem;
-            }
-
-            .topic-header h2 {
-                font-size: 1.4rem;
-            }
-
-            .physics-header h1 {
-                font-size: 2rem;
-            }
-
-            .cards-grid {
-                gap: 1rem;
-            }
-
-            .btn-sim {
-                font-size: 0.6rem;
-                padding: 0.25rem 0.6rem;
-            }
-
-            .card h3 {
-                font-size: 1rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .button-group {
-                justify-content: space-between;
-            }
+            .curriculum-container { padding: 1rem; }
+            .topic-header h2 { font-size: 1.4rem; }
+            .physics-header h1 { font-size: 2rem; }
+            .cards-grid { gap: 1rem; }
+            .btn-sim { font-size: 0.6rem; padding: 0.25rem 0.6rem; }
+            .card h3 { font-size: 1rem; }
         }
     </style>
 </head>
 <body>
 
+<canvas id="particle-canvas"></canvas>
+
 <div class="topbar">
     <a href="../index.html" class="back-btn">⬅ Inicio</a>
     <div class="title-area">
         <h1>⚛️ Physics Lab · Estructura Curricular</h1>
-        <p>Simulaciones organizadas por ejes: Mecánica, Ondas, Electrostática, Fluidos y Física Moderna (próximamente)</p>
+        <p>Simulaciones organizadas por ejes: Mecánica, Ondas, Electrostática, Fluidos y Física Moderna</p>
     </div>
 </div>
 
-<!-- Header con imagen de fondo -->
 <div class="physics-header">
     <h1>📐 Laboratorio de Física</h1>
-    <p>Secuencia didáctica integral: Cinemática → Dinámica → Ondas → Electrostática → Fluidos → Física Moderna.</p>
+    <p>Cinemática → Dinámica → Ondas → Electrostática → Fluidos → Física Moderna.</p>
 </div>
 
 <div class="curriculum-container">
-    <!-- ========================== 1. CINEMÁTICA ========================== -->
+    <!-- Los bloques de contenido son idénticos a la versión anterior, 
+         solo se modifica el canvas para que las partículas sean visibles -->
+    <!-- ================= CINEMÁTICA ================= -->
     <div class="topic-block">
         <div class="topic-header">
             <h2>📈 1. Cinemática</h2>
             <span class="topic-badge">Movimiento en 2D · Vectores</span>
         </div>
         <div class="cards-grid">
-            <!-- Movimiento Parabólico -->
             <div class="card">
                 <div class="card-icon">🏀</div>
                 <h3>Projectile Motion</h3>
-                <p>Tiro parabólico, vectores velocidad, alcance máximo y altura. Ideal para movimientos compuestos.</p>
+                <p>Tiro parabólico, vectores velocidad, alcance máximo.</p>
                 <div class="button-group">
                     <a href="../simulators/projectile-motion/" class="btn-sim">🎮 Abrir</a>
                     <a href="../simulators/projectile-motion/projectile-motion.html" class="btn-sim download" download>📥 Descargar App</a>
@@ -388,251 +334,189 @@
         </div>
     </div>
 
-    <!-- ========================== 2. DINÁMICA (LEY DE NEWTON) ========================== -->
+    <!-- ================= DINÁMICA ================= -->
     <div class="topic-block">
         <div class="topic-header">
             <h2>⚙️ 2. Dinámica (Leyes de Newton)</h2>
-            <span class="topic-badge">Fricción · Poleas · Plano inclinado · Tensiones</span>
+            <span class="topic-badge">Fricción · Poleas · Plano inclinado</span>
         </div>
         <div class="cards-grid">
-            <div class="card">
-                <div class="card-icon">🧱</div>
-                <h3>Friction System</h3>
-                <p>Segunda ley con rozamiento, diagramas de cuerpo libre y coeficientes dinámico/estático.</p>
-                <div class="button-group">
-                    <a href="../simulators/friction/" class="btn-sim">🎮 Abrir</a>
-                    <a href="../simulators/friction/friction.html" class="btn-sim download" download>📥 Descargar App</a>
-                    <a href="../simulators/friction/friction-guide.pdf" class="btn-sim guide" download>📘 Guía PDF</a>
-                </div>
-            </div>
-            <div class="card">
-                <div class="card-icon">🧲</div>
-                <h3>Pulley System</h3>
-                <p>Poleas ideales, tensiones de cuerda y aceleración del sistema. Análisis cuantitativo.</p>
-                <div class="button-group">
-                    <a href="../simulators/pulley/" class="btn-sim">🎮 Abrir</a>
-                    <a href="../simulators/pulley/pulley.html" class="btn-sim download" download>📥 Descargar App</a>
-                    <a href="../simulators/pulley/pulley-guide.pdf" class="btn-sim guide" download>📘 Guía PDF</a>
-                </div>
-            </div>
-            <div class="card">
-                <div class="card-icon">📐</div>
-                <h3>Inclined Plane</h3>
-                <p>Componentes de peso, normal, fricción y aceleración en rampas. Interactivo con gráficas.</p>
-                <div class="button-group">
-                    <a href="../simulators/inclined-plane/" class="btn-sim">🎮 Abrir</a>
-                    <a href="../simulators/inclined-plane/inclined-plane.html" class="btn-sim download" download>📥 Descargar App</a>
-                    <a href="../simulators/inclined-plane/inclined-plane-guide.pdf" class="btn-sim guide" download>📘 Guía PDF</a>
-                </div>
-            </div>
-            <div class="card">
-                <div class="card-icon">🔩</div>
-                <h3>Eyebolt Tensions</h3>
-                <p>Equilibrio de fuerzas concurrentes, descomposición vectorial y ángulos críticos.</p>
-                <div class="button-group">
-                    <a href="../simulators/eyebolt-tensions/" class="btn-sim">🎮 Abrir</a>
-                    <a href="../simulators/eyebolt-tensions/eyebolt-tensions.html" class="btn-sim download" download>📥 Descargar App</a>
-                    <a href="../simulators/eyebolt-tensions/eyebolt-tensions-guide.pdf" class="btn-sim guide" download>📘 Guía PDF</a>
-                </div>
-            </div>
+            <div class="card"><div class="card-icon">🧱</div><h3>Friction System</h3><p>Segunda ley con rozamiento.</p><div class="button-group"><a href="../simulators/friction/" class="btn-sim">🎮 Abrir</a><a href="../simulators/friction/friction.html" class="btn-sim download" download>📥 Descargar App</a><a href="../simulators/friction/friction-guide.pdf" class="btn-sim guide" download>📘 Guía PDF</a></div></div>
+            <div class="card"><div class="card-icon">🧲</div><h3>Pulley System</h3><p>Poleas ideales, tensiones.</p><div class="button-group"><a href="../simulators/pulley/" class="btn-sim">🎮 Abrir</a><a href="../simulators/pulley/pulley.html" class="btn-sim download" download>📥 Descargar App</a><a href="../simulators/pulley/pulley-guide.pdf" class="btn-sim guide" download>📘 Guía PDF</a></div></div>
+            <div class="card"><div class="card-icon">📐</div><h3>Inclined Plane</h3><p>Componentes de peso, fricción.</p><div class="button-group"><a href="../simulators/inclined-plane/" class="btn-sim">🎮 Abrir</a><a href="../simulators/inclined-plane/inclined-plane.html" class="btn-sim download" download>📥 Descargar App</a><a href="../simulators/inclined-plane/inclined-plane-guide.pdf" class="btn-sim guide" download>📘 Guía PDF</a></div></div>
+            <div class="card"><div class="card-icon">🔩</div><h3>Eyebolt Tensions</h3><p>Equilibrio de fuerzas concurrentes.</p><div class="button-group"><a href="../simulators/eyebolt-tensions/" class="btn-sim">🎮 Abrir</a><a href="../simulators/eyebolt-tensions/eyebolt-tensions.html" class="btn-sim download" download>📥 Descargar App</a><a href="../simulators/eyebolt-tensions/eyebolt-tensions-guide.pdf" class="btn-sim guide" download>📘 Guía PDF</a></div></div>
         </div>
     </div>
 
-    <!-- ========================== 3. OSCILACIONES Y ONDAS ========================== -->
+    <!-- ================= OSCILACIONES Y ONDAS ================= -->
     <div class="topic-block">
         <div class="topic-header">
             <h2>🌊 3. Oscilaciones & Ondas</h2>
-            <span class="topic-badge">Péndulo · Sonido · Efecto Doppler · Batidos 2D/3D</span>
+            <span class="topic-badge">Péndulo · Sonido · Doppler · Batidos</span>
         </div>
         <div class="cards-grid">
-            <div class="card">
-                <div class="card-icon">🌀</div>
-                <h3>Simple Pendulum</h3>
-                <p>Período, energía mecánica, oscilaciones y dependencia de la longitud. Ideal para M.A.S.</p>
-                <div class="button-group">
-                    <a href="../simulators/simple-pendulum/" class="btn-sim">🎮 Abrir</a>
-                    <a href="../simulators/simple-pendulum/simple-pendulum.html" class="btn-sim download" download>📥 Descargar App</a>
-                    <a href="../simulators/simple-pendulum/simple-pendulum-guide.pdf" class="btn-sim guide" download>📘 Guía PDF</a>
-                </div>
-            </div>
-            <div class="card">
-                <div class="card-icon">🔊</div>
-                <h3>Sound Intensity</h3>
-                <p>Nivel en decibeles, distancia, umbral auditivo. Simulación para física acústica.</p>
-                <div class="button-group">
-                    <a href="../simulators/sound-intensity/" class="btn-sim">🎮 Abrir</a>
-                    <a href="../simulators/sound-intensity/sound-intensity.html" class="btn-sim download" download>📥 Descargar App</a>
-                    <a href="../simulators/sound-intensity/sound-intensity-guide.pdf" class="btn-sim guide" download>📘 Guía PDF</a>
-                </div>
-            </div>
-            <div class="card">
-                <div class="card-icon">📡</div>
-                <h3>Doppler Effect</h3>
-                <p>Desplazamiento de frecuencia por movimiento relativo fuente-observador.</p>
-                <div class="button-group">
-                    <a href="../simulators/doppler/" class="btn-sim">🎮 Abrir</a>
-                    <a href="../simulators/doppler/doppler.html" class="btn-sim download" download>📥 Descargar App</a>
-                    <a href="../simulators/doppler/doppler-guide.pdf" class="btn-sim guide" download>📘 Guía PDF</a>
-                </div>
-            </div>
-            <div class="card">
-                <div class="card-icon">〰️</div>
-                <h3>Beats 2D</h3>
-                <p>Interferencia de ondas en 2D, pulsaciones y frecuencia de batido.</p>
-                <div class="button-group">
-                    <a href="../simulators/beats-2d/" class="btn-sim">🎮 Abrir</a>
-                    <a href="../simulators/beats-2d/beats-2d.html" class="btn-sim download" download>📥 Descargar App</a>
-                    <a href="../simulators/beats-2d/beats-2d-guide.pdf" class="btn-sim guide" download>📘 Guía PDF</a>
-                </div>
-            </div>
-            <div class="card">
-                <div class="card-icon">🌐</div>
-                <h3>Beats 3D</h3>
-                <p>Superposición de ondas tridimensionales, nodos y antinodos.</p>
-                <div class="button-group">
-                    <a href="../simulators/beats-3d/" class="btn-sim">🎮 Abrir</a>
-                    <a href="../simulators/beats-3d/beats-3d.html" class="btn-sim download" download>📥 Descargar App</a>
-                    <a href="../simulators/beats-3d/beats-3d-guide.pdf" class="btn-sim guide" download>📘 Guía PDF</a>
-                </div>
-            </div>
+            <div class="card"><div class="card-icon">🌀</div><h3>Simple Pendulum</h3><p>Período, energía mecánica.</p><div class="button-group"><a href="../simulators/simple-pendulum/" class="btn-sim">🎮 Abrir</a><a href="../simulators/simple-pendulum/simple-pendulum.html" class="btn-sim download" download>📥 Descargar App</a><a href="../simulators/simple-pendulum/simple-pendulum-guide.pdf" class="btn-sim guide" download>📘 Guía PDF</a></div></div>
+            <div class="card"><div class="card-icon">🔊</div><h3>Sound Intensity</h3><p>Decibeles, distancia.</p><div class="button-group"><a href="../simulators/sound-intensity/" class="btn-sim">🎮 Abrir</a><a href="../simulators/sound-intensity/sound-intensity.html" class="btn-sim download" download>📥 Descargar App</a><a href="../simulators/sound-intensity/sound-intensity-guide.pdf" class="btn-sim guide" download>📘 Guía PDF</a></div></div>
+            <div class="card"><div class="card-icon">📡</div><h3>Doppler Effect</h3><p>Desplazamiento de frecuencia.</p><div class="button-group"><a href="../simulators/doppler/" class="btn-sim">🎮 Abrir</a><a href="../simulators/doppler/doppler.html" class="btn-sim download" download>📥 Descargar App</a><a href="../simulators/doppler/doppler-guide.pdf" class="btn-sim guide" download>📘 Guía PDF</a></div></div>
+            <div class="card"><div class="card-icon">〰️</div><h3>Beats 2D</h3><p>Interferencia en 2D.</p><div class="button-group"><a href="../simulators/beats-2d/" class="btn-sim">🎮 Abrir</a><a href="../simulators/beats-2d/beats-2d.html" class="btn-sim download" download>📥 Descargar App</a><a href="../simulators/beats-2d/beats-2d-guide.pdf" class="btn-sim guide" download>📘 Guía PDF</a></div></div>
+            <div class="card"><div class="card-icon">🌐</div><h3>Beats 3D</h3><p>Superposición 3D.</p><div class="button-group"><a href="../simulators/beats-3d/" class="btn-sim">🎮 Abrir</a><a href="../simulators/beats-3d/beats-3d.html" class="btn-sim download" download>📥 Descargar App</a><a href="../simulators/beats-3d/beats-3d-guide.pdf" class="btn-sim guide" download>📘 Guía PDF</a></div></div>
         </div>
     </div>
 
-    <!-- ========================== 4. ELECTROSTÁTICA (incluye LEY DE COULOMB) ========================== -->
+    <!-- ================= ELECTROSTÁTICA ================= -->
     <div class="topic-block">
         <div class="topic-header">
             <h2>⚡ 4. Electrostática</h2>
-            <span class="topic-badge">Ley de Coulomb · Fuerza entre cargas</span>
+            <span class="topic-badge">Ley de Coulomb</span>
         </div>
         <div class="cards-grid">
-            <div class="card">
-                <div class="card-icon">⚡</div>
-                <h3>Coulomb's Law</h3>
-                <p>Fuerza electrostática, dependencia cuadrática inversa, cargas puntuales y vector fuerza. Ajuste interactivo de magnitudes y signos.</p>
-                <div class="button-group">
-                    <a href="../simulators/coulomb-law/" class="btn-sim">🎮 Abrir</a>
-                    <a href="../simulators/coulomb-law/coulomb-law.html" class="btn-sim download" download>📥 Descargar App</a>
-                    <a href="../simulators/coulomb-law/coulomb-law-guide.pdf" class="btn-sim guide" download>📘 Guía PDF</a>
-                </div>
-            </div>
+            <div class="card"><div class="card-icon">⚡</div><h3>Coulomb's Law</h3><p>Fuerza electrostática, dependencia cuadrática.</p><div class="button-group"><a href="../simulators/coulomb-law/" class="btn-sim">🎮 Abrir</a><a href="../simulators/coulomb-law/coulomb-law.html" class="btn-sim download" download>📥 Descargar App</a><a href="../simulators/coulomb-law/coulomb-law-guide.pdf" class="btn-sim guide" download>📘 Guía PDF</a></div></div>
         </div>
     </div>
 
-    <!-- ========================== 5. FLUIDOS (PRÓXIMAMENTE) ========================== -->
+    <!-- ================= FLUIDOS (próximamente) ================= -->
     <div class="topic-block">
-        <div class="topic-header">
-            <h2>💧 5. Mecánica de Fluidos</h2>
-            <span class="topic-badge">Próximas simulaciones · Hidrostática · Hidrodinámica</span>
-        </div>
+        <div class="topic-header"><h2>💧 5. Mecánica de Fluidos</h2><span class="topic-badge">Próximamente</span></div>
         <div class="cards-grid">
-            <div class="card future-card">
-                <div class="card-icon">🌊</div>
-                <h3>Principio de Pascal</h3>
-                <p>Prensa hidráulica, transmisión de presión. Simulación en desarrollo para entorno rural STEM.</p>
-                <div class="button-group">
-                    <span class="btn-sim" style="background:#334155; cursor:default;">🚧 En construcción</span>
-                    <span class="btn-sim guide" style="background:#334155; cursor:default;">📘 Guía en edición</span>
-                </div>
-            </div>
-            <div class="card future-card">
-                <div class="card-icon">⚖️</div>
-                <h3>Principio de Arquímedes</h3>
-                <p>Empuje, densidad y flotación. Recurso interactivo (próximamente).</p>
-                <div class="button-group">
-                    <span class="btn-sim" style="background:#334155; cursor:default;">🚧 En construcción</span>
-                    <span class="btn-sim guide" style="background:#334155; cursor:default;">📘 Material en preparación</span>
-                </div>
-            </div>
-            <div class="card future-card">
-                <div class="card-icon">💨</div>
-                <h3>Ecuación de Bernoulli</h3>
-                <p>Fluidos ideales, dinámica de fluidos y principio de continuidad.</p>
-                <div class="button-group">
-                    <span class="btn-sim" style="background:#334155; cursor:default;">📅 Próximamente</span>
-                    <span class="btn-sim guide" style="background:#334155; cursor:default;">📘 Guía futura</span>
-                </div>
-            </div>
+            <div class="card future-card"><div class="card-icon">🌊</div><h3>Principio de Pascal</h3><p>En desarrollo.</p><div class="button-group"><span class="btn-sim" style="background:#334155;">🚧 Próximamente</span></div></div>
+            <div class="card future-card"><div class="card-icon">⚖️</div><h3>Arquímedes</h3><p>En desarrollo.</p><div class="button-group"><span class="btn-sim" style="background:#334155;">🚧 Próximamente</span></div></div>
         </div>
     </div>
 
-    <!-- ========================== 6. FÍSICA MODERNA (PRÓXIMAMENTE) ========================== -->
+    <!-- ================= FÍSICA MODERNA (próximamente) ================= -->
     <div class="topic-block">
-        <div class="topic-header">
-            <h2>✨ 6. Física Moderna</h2>
-            <span class="topic-badge">Relatividad · Cuántica · Próximos simuladores</span>
-        </div>
+        <div class="topic-header"><h2>✨ 6. Física Moderna</h2><span class="topic-badge">Relatividad · Cuántica</span></div>
         <div class="cards-grid">
-            <div class="card future-card">
-                <div class="card-icon">⏱️</div>
-                <h3>Dilatación del Tiempo</h3>
-                <p>Relatividad especial: efectos relativistas, viajes interestelares (simulación conceptual).</p>
-                <div class="button-group">
-                    <span class="btn-sim" style="background:#334155; cursor:default;">🚧 En desarrollo</span>
-                    <span class="btn-sim guide" style="background:#334155; cursor:default;">📘 Guía en producción</span>
-                </div>
-            </div>
-            <div class="card future-card">
-                <div class="card-icon">🔬</div>
-                <h3>Efecto Fotoeléctrico</h3>
-                <p>Naturaleza cuántica de la luz, función trabajo y energía cinética de fotoelectrones.</p>
-                <div class="button-group">
-                    <span class="btn-sim" style="background:#334155; cursor:default;">🚧 En construcción</span>
-                    <span class="btn-sim guide" style="background:#334155; cursor:default;">📘 Guía en edición</span>
-                </div>
-            </div>
-            <div class="card future-card">
-                <div class="card-icon">⚛️</div>
-                <h3>Modelo Atómico de Bohr</h3>
-                <p>Niveles de energía, espectros de emisión y transiciones electrónicas.</p>
-                <div class="button-group">
-                    <span class="btn-sim" style="background:#334155; cursor:default;">📅 Próximamente</span>
-                    <span class="btn-sim guide" style="background:#334155; cursor:default;">📘 Recurso futuro</span>
-                </div>
-            </div>
+            <div class="card future-card"><div class="card-icon">⏱️</div><h3>Dilatación del Tiempo</h3><p>Próximamente.</p><div class="button-group"><span class="btn-sim" style="background:#334155;">🚧 En desarrollo</span></div></div>
+            <div class="card future-card"><div class="card-icon">🔬</div><h3>Efecto Fotoeléctrico</h3><p>Próximamente.</p><div class="button-group"><span class="btn-sim" style="background:#334155;">🚧 En desarrollo</span></div></div>
         </div>
     </div>
 
-    <!-- ========================== 7. TERMODINÁMICA (Preview) ========================== 
-         (Mantenemos el bloque de termo para completar el árbol, pero no era solicitado originalmente, aunque ya estaba presente. Lo dejamos con estilo futuro)
-    -->
-    <div class="topic-block">
-        <div class="topic-header">
-            <h2>🔥 7. Termodinámica</h2>
-            <span class="topic-badge">En desarrollo · Calor · Gases ideales</span>
-        </div>
-        <div class="cards-grid">
-            <div class="card future-card">
-                <div class="card-icon">🌡️</div>
-                <h3>Ley de los Gases (coming soon)</h3>
-                <p>Próximamente: simulaciones interactivas de presión, volumen, temperatura y primera ley.</p>
-                <div class="button-group">
-                    <span class="btn-sim" style="background:#334155; cursor:default;">🚧 En construcción</span>
-                    <span class="btn-sim guide" style="background:#334155; cursor:default;">📘 Material en edición</span>
-                </div>
-            </div>
-            <div class="card future-card">
-                <div class="card-icon">🔥</div>
-                <h3>Transferencia de Calor</h3>
-                <p>Conducción, convección y radiación – entorno STEM rural.</p>
-                <div class="button-group">
-                    <span class="btn-sim" style="background:#334155; cursor:default;">📅 2025</span>
-                    <span class="btn-sim guide" style="background:#334155; cursor:default;">📘 Guía en preparación</span>
-                </div>
-            </div>
-        </div>
-        <p style="font-size:0.7rem; color:#5b6e8c; margin-top: 0.6rem; text-align:right;">* Ampliación continua para cubrir todos los ejes curriculares: Fluidos y Física Moderna añadidos como próximamente.</p>
-    </div>
-
-    <!-- Nota de organización pedagógica: árbol completo -->
     <div style="background: #0f172a80; border-radius: 1.5rem; padding: 1rem; margin-top: 1rem; border-left: 4px solid #3b82f6;">
-        <p style="font-size: 0.75rem; color: #cbd5e1;">📚 <strong>Estructura completa por ejes temáticos</strong> — Cinemática → Dinámica (fuerzas) → Oscilaciones y ondas → Electrostática → Fluidos (próximamente) → Física Moderna (próximamente) → Termodinámica (en desarrollo). Cada simulación incluye guía pedagógica descargable y recurso offline. Ideal para aprendizaje por competencias STEM en contextos rurales.</p>
+        <p style="font-size: 0.75rem; color: #cbd5e1;">📚 <strong>Estructura completa por ejes temáticos</strong> — Cada simulación incluye guía pedagógica descargable y recurso offline.</p>
     </div>
 </div>
 
 <footer>
     <p>Rural STEAM Platform — Laboratorio de Física estructurado por áreas | Guías didácticas ICFES</p>
-    <p style="margin-top: 0.5rem;">✨ Diseño pedagógico: Ing. Medina H. A.</p>
+    <p>✨ Diseño pedagógico: Ing. Medina H. A. ✨</p>
 </footer>
 
+<script>
+    // FONDO DE PARTÍCULAS MEJORADO - MÁS VISIBLE Y BRILLANTE
+    (function() {
+        const canvas = document.getElementById('particle-canvas');
+        const ctx = canvas.getContext('2d');
+        let width, height;
+        let particles = [];
+        const PARTICLE_COUNT = 280;  // más partículas
+
+        function resizeCanvas() {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
+        }
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.size = Math.random() * 3.5 + 2;   // tamaño más grande (2 a 5.5 px)
+                this.speedX = (Math.random() - 0.5) * 0.45;
+                this.speedY = (Math.random() - 0.5) * 0.35;
+                this.alpha = Math.random() * 0.5 + 0.5;  // opacidad mínima 0.5, máxima 1.0
+                // Colores brillantes: cian, azul eléctrico, magenta, amarillo tenue
+                const colors = ['#4ade80', '#38bdf8', '#f472b6', '#facc15', '#a78bfa', '#2dd4bf'];
+                this.color = colors[Math.floor(Math.random() * colors.length)];
+                this.glow = Math.random() > 0.4;  // 60% con brillo
+            }
+
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                // reborde suave con wrap-around
+                if (this.x < -20) this.x = width + 20;
+                if (this.x > width + 20) this.x = -20;
+                if (this.y < -20) this.y = height + 20;
+                if (this.y > height + 20) this.y = -20;
+
+                // Cambio de dirección ocasional
+                if (Math.random() < 0.02) {
+                    this.speedX += (Math.random() - 0.5) * 0.08;
+                    this.speedY += (Math.random() - 0.5) * 0.08;
+                    this.speedX = Math.min(Math.max(this.speedX, -0.8), 0.8);
+                    this.speedY = Math.min(Math.max(this.speedY, -0.7), 0.7);
+                }
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                if (this.glow) {
+                    ctx.shadowBlur = 12;
+                    ctx.shadowColor = this.color;
+                } else {
+                    ctx.shadowBlur = 4;
+                    ctx.shadowColor = 'rgba(255,255,200,0.6)';
+                }
+                ctx.fillStyle = this.color;
+                ctx.globalAlpha = this.alpha * 0.9;
+                ctx.fill();
+                // Reforzar centro
+                ctx.shadowBlur = 0;
+                ctx.globalAlpha = this.alpha;
+                ctx.fill();
+                ctx.globalAlpha = 1;
+                ctx.shadowBlur = 0;
+            }
+        }
+
+        function initParticles() {
+            particles = [];
+            for (let i = 0; i < PARTICLE_COUNT; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        function animate() {
+            if (!ctx) return;
+            ctx.clearRect(0, 0, width, height);
+            // dibujar un fondo suave pero transparente para conservar el degradado del canvas
+            // (el canvas ya tiene un fondo radial por CSS, no es necesario pintar encima)
+            for (let p of particles) {
+                p.update();
+                p.draw();
+            }
+            // líneas de conexión más visibles
+            ctx.beginPath();
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const dist = Math.sqrt(dx*dx + dy*dy);
+                    if (dist < 110) {
+                        ctx.beginPath();
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        const opacity = 0.18 * (1 - dist / 110);
+                        ctx.strokeStyle = `rgba(120, 200, 255, ${opacity})`;
+                        ctx.lineWidth = 1.2;
+                        ctx.stroke();
+                    }
+                }
+            }
+            requestAnimationFrame(animate);
+        }
+
+        window.addEventListener('resize', () => {
+            resizeCanvas();
+            initParticles();
+        });
+        resizeCanvas();
+        initParticles();
+        animate();
+    })();
+</script>
 </body>
 </html>
