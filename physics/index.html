@@ -14,14 +14,13 @@
 
         body {
             font-family: 'Inter', sans-serif;
-            background: #0b1120;  /* fondo más profundo */
+            background: #0b1120;
             color: #f1f5f9;
             line-height: 1.5;
             overflow-x: hidden;
             position: relative;
         }
 
-        /* Canvas de partículas mejorado - visible y brillante */
         #particle-canvas {
             position: fixed;
             top: 0;
@@ -31,17 +30,15 @@
             display: block;
             pointer-events: none;
             z-index: 0;
-            opacity: 0.95;   /* mucho más visible */
+            opacity: 0.95;
             background: radial-gradient(circle at center, #0a0f1e 0%, #030617 100%);
         }
 
-        /* Contenido por encima */
         .topbar, .physics-header, .curriculum-container, footer {
             position: relative;
             z-index: 2;
         }
 
-        /* El resto de estilos se mantienen igual que antes (son compatibles) */
         @keyframes fadeInUp {
             from { opacity: 0; transform: translateY(30px); }
             to { opacity: 1; transform: translateY(0); }
@@ -312,8 +309,6 @@
 </div>
 
 <div class="curriculum-container">
-    <!-- Los bloques de contenido son idénticos a la versión anterior, 
-         solo se modifica el canvas para que las partículas sean visibles -->
     <!-- ================= CINEMÁTICA ================= -->
     <div class="topic-block">
         <div class="topic-header">
@@ -363,14 +358,24 @@
         </div>
     </div>
 
-    <!-- ================= ELECTROSTÁTICA ================= -->
+    <!-- ================= ELECTROSTÁTICA (con ruta coulomb_law) ================= -->
     <div class="topic-block">
         <div class="topic-header">
             <h2>⚡ 4. Electrostática</h2>
             <span class="topic-badge">Ley de Coulomb</span>
         </div>
         <div class="cards-grid">
-            <div class="card"><div class="card-icon">⚡</div><h3>Coulomb's Law</h3><p>Fuerza electrostática, dependencia cuadrática.</p><div class="button-group"><a href="../simulators/coulomb-law/" class="btn-sim">🎮 Abrir</a><a href="../simulators/coulomb-law/coulomb-law.html" class="btn-sim download" download>📥 Descargar App</a><a href="../simulators/coulomb-law/coulomb-law-guide.pdf" class="btn-sim guide" download>📘 Guía PDF</a></div></div>
+            <div class="card">
+                <div class="card-icon">⚡</div>
+                <h3>Coulomb's Law</h3>
+                <p>Fuerza electrostática, dependencia cuadrática inversa. Cargas puntuales y vector fuerza.</p>
+                <div class="button-group">
+                    <!-- Rutas modificadas: guión bajo en lugar de guión medio -->
+                    <a href="../simulators/coulomb_law/" class="btn-sim">🎮 Abrir</a>
+                    <a href="../simulators/coulomb_law/coulomb_law.html" class="btn-sim download" download>📥 Descargar App</a>
+                    <a href="../simulators/coulomb_law/coulomb_law-guide.pdf" class="btn-sim guide" download>📘 Guía PDF</a>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -398,18 +403,18 @@
 </div>
 
 <footer>
-    <p>Rural STEAM Platform — Laboratorio de Física estructurado por áreas | Guías didácticas ICFES</p>
-    <p>✨ Diseño pedagógico: Ing. Medina H. A. ✨</p>
+    <p>Rural STEAM Platform — Laboratorio de Física estructurado por áreas | Guías didácticas ICFES | Descargas offline</p>
+    <p>✨ Desing by: MSc Medina H. A. ✨</p>
 </footer>
 
 <script>
-    // FONDO DE PARTÍCULAS MEJORADO - MÁS VISIBLE Y BRILLANTE
+    // FONDO DE PARTÍCULAS DINÁMICAS (visible y brillante)
     (function() {
         const canvas = document.getElementById('particle-canvas');
         const ctx = canvas.getContext('2d');
         let width, height;
         let particles = [];
-        const PARTICLE_COUNT = 280;  // más partículas
+        const PARTICLE_COUNT = 280;
 
         function resizeCanvas() {
             width = window.innerWidth;
@@ -422,26 +427,22 @@
             constructor() {
                 this.x = Math.random() * width;
                 this.y = Math.random() * height;
-                this.size = Math.random() * 3.5 + 2;   // tamaño más grande (2 a 5.5 px)
+                this.size = Math.random() * 3.5 + 2;
                 this.speedX = (Math.random() - 0.5) * 0.45;
                 this.speedY = (Math.random() - 0.5) * 0.35;
-                this.alpha = Math.random() * 0.5 + 0.5;  // opacidad mínima 0.5, máxima 1.0
-                // Colores brillantes: cian, azul eléctrico, magenta, amarillo tenue
+                this.alpha = Math.random() * 0.5 + 0.5;
                 const colors = ['#4ade80', '#38bdf8', '#f472b6', '#facc15', '#a78bfa', '#2dd4bf'];
                 this.color = colors[Math.floor(Math.random() * colors.length)];
-                this.glow = Math.random() > 0.4;  // 60% con brillo
+                this.glow = Math.random() > 0.4;
             }
 
             update() {
                 this.x += this.speedX;
                 this.y += this.speedY;
-                // reborde suave con wrap-around
                 if (this.x < -20) this.x = width + 20;
                 if (this.x > width + 20) this.x = -20;
                 if (this.y < -20) this.y = height + 20;
                 if (this.y > height + 20) this.y = -20;
-
-                // Cambio de dirección ocasional
                 if (Math.random() < 0.02) {
                     this.speedX += (Math.random() - 0.5) * 0.08;
                     this.speedY += (Math.random() - 0.5) * 0.08;
@@ -463,7 +464,6 @@
                 ctx.fillStyle = this.color;
                 ctx.globalAlpha = this.alpha * 0.9;
                 ctx.fill();
-                // Reforzar centro
                 ctx.shadowBlur = 0;
                 ctx.globalAlpha = this.alpha;
                 ctx.fill();
@@ -482,13 +482,10 @@
         function animate() {
             if (!ctx) return;
             ctx.clearRect(0, 0, width, height);
-            // dibujar un fondo suave pero transparente para conservar el degradado del canvas
-            // (el canvas ya tiene un fondo radial por CSS, no es necesario pintar encima)
             for (let p of particles) {
                 p.update();
                 p.draw();
             }
-            // líneas de conexión más visibles
             ctx.beginPath();
             for (let i = 0; i < particles.length; i++) {
                 for (let j = i + 1; j < particles.length; j++) {
