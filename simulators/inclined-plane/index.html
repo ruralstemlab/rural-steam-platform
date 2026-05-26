@@ -1,0 +1,1207 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>Plano Inclinado con Polea · Light / Dark · STEM Premium</title>
+
+<!-- MathJax para fórmulas estáticas -->
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']],
+      processEscapes: true
+    }
+  };
+</script>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+
+<!-- KaTeX para el motor pedagógico dinámico -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+
+<!-- Librerías para PDF y Excel -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
+
+<style>
+/* ========== VARIABLES GLOBALES (TEMA CLARO POR DEFECTO) ========== */
+:root {
+  --bg-body: linear-gradient(145deg, #f8fafc 0%, #eef2ff 100%);
+  --bg-panel: rgba(255, 255, 255, 0.92);
+  --bg-panel-solid: #ffffff;
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --border-light: #e2e8f0;
+  --border-card: rgba(148, 163, 184, 0.25);
+  --card-bg: #ffffff;
+  --card-bg-alt: #f8fafc;
+  --btn-primary: linear-gradient(135deg, #2563eb, #06b6d4);
+  --btn-play: linear-gradient(135deg, #16a34a, #15803d);
+  --btn-pause: linear-gradient(135deg, #f59e0b, #d97706);
+  --btn-reset: linear-gradient(135deg, #ef4444, #dc2626);
+  --shadow-sm: 0 12px 30px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 20px 35px rgba(0, 0, 0, 0.1);
+  --table-header: #e2e8f0;
+  --table-border: #e2e8f0;
+  --input-bg: #ffffff;
+  --input-border: #cbd5e1;
+  --badge-bg: #f1f5f9;
+  --accent: #3b82f6;
+  --accent-light: #eef2ff;
+  --code-bg: rgba(0, 0, 0, 0.02);
+  --footer-bg: #f8fafc;
+}
+
+/* ========== TEMA OSCURO ========== */
+body.dark {
+  --bg-body: radial-gradient(circle at top, #0f172a 0%, #020617 100%);
+  --bg-panel: rgba(30, 41, 59, 0.92);
+  --bg-panel-solid: #1e293b;
+  --text-primary: #e2e8f0;
+  --text-secondary: #94a3b8;
+  --border-light: #334155;
+  --border-card: rgba(255, 255, 255, 0.05);
+  --card-bg: #0f172a;
+  --card-bg-alt: #111827;
+  --btn-primary: linear-gradient(135deg, #1e293b, #0f172a);
+  --btn-play: linear-gradient(135deg, #15803d, #166534);
+  --btn-pause: linear-gradient(135deg, #d97706, #b45309);
+  --btn-reset: linear-gradient(135deg, #dc2626, #b91c1c);
+  --shadow-sm: 0 10px 30px rgba(0, 0, 0, 0.45);
+  --shadow-md: 0 20px 35px rgba(0, 0, 0, 0.6);
+  --table-header: #334155;
+  --table-border: #334155;
+  --input-bg: #0f172a;
+  --input-border: #475569;
+  --badge-bg: #1e293b;
+  --accent: #38bdf8;
+  --accent-light: #1e293b;
+  --code-bg: rgba(255, 255, 255, 0.05);
+  --footer-bg: #111827;
+}
+
+/* ========== ESTILOS BASE ========== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+body {
+  background: var(--bg-body);
+  color: var(--text-primary);
+  padding: 20px;
+  transition: background 0.3s ease, color 0.2s ease;
+}
+
+/* Header premium */
+.header {
+  background: var(--bg-panel-solid);
+  border-radius: 32px;
+  padding: 24px;
+  margin-bottom: 24px;
+  text-align: center;
+  border: 1px solid var(--border-card);
+  box-shadow: var(--shadow-sm);
+  backdrop-filter: blur(4px);
+}
+.header h1 {
+  font-size: 1.8rem;
+  background: linear-gradient(135deg, #1e293b, #2563eb);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  margin-bottom: 8px;
+}
+body.dark .header h1 {
+  background: linear-gradient(135deg, #38bdf8, #a855f7);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+.header p {
+  color: var(--text-secondary);
+}
+
+/* Layout */
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.panel {
+  background: var(--bg-panel);
+  backdrop-filter: blur(4px);
+  border-radius: 28px;
+  padding: 20px;
+  border: 1px solid var(--border-card);
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.panel:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.section-title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin-bottom: 18px;
+  color: var(--text-primary);
+  border-left: 6px solid var(--accent);
+  padding-left: 16px;
+}
+
+/* Pedagogía - tarjetas */
+.pedagogia {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.pedagogia-card {
+  background: var(--card-bg);
+  border-radius: 24px;
+  padding: 22px;
+  border-left: 6px solid;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.03);
+}
+body.dark .pedagogia-card {
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.2);
+}
+.card-blue { border-left-color: #3b82f6; background: var(--card-bg-alt); }
+.card-green { border-left-color: #22c55e; background: var(--card-bg-alt); }
+.card-orange { border-left-color: #f97316; background: var(--card-bg-alt); }
+.card-purple { border-left-color: #a855f7; background: var(--card-bg-alt); }
+.card-gold { border-left-color: #facc15; background: var(--card-bg-alt); }
+
+.pedagogia-card h3 {
+  font-size: 1.4rem;
+  color: var(--text-primary);
+  margin-bottom: 16px;
+}
+
+.latex-block {
+  margin: 16px 0;
+  overflow-x: auto;
+  background: var(--code-bg);
+  padding: 12px;
+  border-radius: 16px;
+}
+
+/* Controles deslizantes */
+.control {
+  margin: 16px 0;
+}
+label {
+  font-weight: 600;
+  color: var(--text-primary);
+  display: block;
+  margin-bottom: 8px;
+}
+input[type=range] {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 6px;
+  border-radius: 10px;
+  background: var(--border-light);
+  outline: none;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: 0.2s;
+  border: 2px solid white;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+#m1Slider::-webkit-slider-thumb { background: #3b82f6; }
+#m2Slider::-webkit-slider-thumb { background: #f97316; }
+#angSlider::-webkit-slider-thumb { background: #a855f7; }
+#muSlider::-webkit-slider-thumb { background: #38bdf8; }
+
+/* Botones */
+button {
+  border: none;
+  border-radius: 40px;
+  padding: 12px 20px;
+  font-weight: 600;
+  background: var(--btn-primary);
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2);
+}
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(37, 99, 235, 0.3);
+}
+.buttons {
+  display: flex;
+  gap: 16px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+#btnPlay { background: var(--btn-play); }
+#btnPause { background: var(--btn-pause); }
+#btnReset { background: var(--btn-reset); }
+
+/* Canvas y DCL */
+.canvas-container {
+  position: relative;
+  text-align: center;
+}
+canvas {
+  max-width: 100%;
+  height: auto;
+  background: linear-gradient(180deg, #ffffff, var(--border-light));
+  border-radius: 24px;
+  border: 2px solid var(--border-light);
+  box-shadow: inset 0 0 8px rgba(0,0,0,0.02), 0 8px 20px rgba(0,0,0,0.05);
+}
+body.dark canvas {
+  background: #0f172a;
+  border-color: #334155;
+}
+
+/* Controles flotantes sobre el canvas */
+.floating-controls {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  background: var(--bg-panel-solid);
+  backdrop-filter: blur(12px);
+  border-radius: 28px;
+  padding: 16px;
+  width: 260px;
+  border: 1px solid var(--border-card);
+  box-shadow: var(--shadow-sm);
+  z-index: 10;
+}
+.floating-controls .control {
+  margin: 10px 0;
+}
+.floating-controls label {
+  font-size: 0.85rem;
+}
+.floating-controls input[type=range] {
+  height: 4px;
+}
+.floating-controls .control span {
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+.floating-controls input[type=number] {
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  border-radius: 16px;
+  padding: 8px 12px;
+  font-size: 0.85rem;
+  color: var(--text-primary);
+  width: 100%;
+  transition: 0.2s;
+}
+.floating-controls input[type=number]:focus {
+  border-color: var(--accent);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
+}
+
+/* Evaluación */
+.evaluacion-panel {
+  background: var(--bg-panel-solid);
+  border-radius: 32px;
+  padding: 24px;
+  margin-top: 20px;
+  border: 1px solid var(--border-card);
+}
+.pregunta {
+  background: var(--card-bg-alt);
+  border-radius: 20px;
+  padding: 18px;
+  margin-bottom: 20px;
+  border: 1px solid var(--border-light);
+}
+.option-btn {
+  background: var(--input-bg);
+  padding: 12px 18px;
+  margin: 8px 0;
+  border-radius: 60px;
+  border: 1px solid var(--input-border);
+  cursor: pointer;
+  transition: all 0.2s;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+.option-btn.selected {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: white;
+  box-shadow: 0 2px 8px rgba(59,130,246,0.3);
+}
+.option-letter {
+  font-weight: bold;
+  margin-right: 12px;
+  color: var(--accent);
+}
+.option-btn.selected .option-letter {
+  color: white;
+}
+.nombre-section {
+  background: var(--badge-bg);
+  border-radius: 20px;
+  padding: 16px;
+  margin-bottom: 24px;
+}
+.nombre-section label {
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+.nombre-section input {
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  border-radius: 20px;
+  padding: 12px 18px;
+  font-size: 1rem;
+  width: 100%;
+  color: var(--text-primary);
+}
+.nombre-section input:focus {
+  border-color: var(--accent);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
+}
+.resultado {
+  background: var(--card-bg-alt);
+  border-radius: 24px;
+  padding: 20px;
+  border-left: 6px solid #22c55e;
+}
+.stem-footer {
+  margin-top: 40px;
+  padding: 24px;
+  text-align: center;
+  background: var(--footer-bg);
+  border-radius: 32px;
+  border: 1px solid var(--border-light);
+}
+/* Tabla de resultados */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--card-bg);
+  border-radius: 20px;
+  overflow: hidden;
+}
+th {
+  background: var(--table-header);
+  color: var(--text-primary);
+  padding: 12px;
+}
+td {
+  border-bottom: 1px solid var(--table-border);
+  padding: 10px;
+  color: var(--text-primary);
+}
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 10px;
+}
+body.dark ::-webkit-scrollbar-thumb {
+  background: #475569;
+}
+
+/* Botón de tema elegante */
+#themeToggleBtn {
+  background: rgba(100, 116, 139, 0.2);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.2);
+  box-shadow: none;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+#themeToggleBtn:hover {
+  background: rgba(100, 116, 139, 0.4);
+  transform: translateY(-2px);
+}
+
+/* Responsive */
+@media (min-width: 900px) {
+  .container {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 24px;
+  }
+  .full {
+    grid-column: 1 / 3;
+  }
+  .dcl-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    grid-column: 1 / 3;
+  }
+}
+@media (max-width: 900px) {
+  .dcl-row {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+  .floating-controls {
+    position: static;
+    width: 100%;
+    margin-top: 16px;
+  }
+}
+</style>
+</head>
+<body>
+
+<div style="background: var(--badge-bg); padding:12px; display:flex; gap:12px; flex-wrap:wrap; border-radius: 40px; margin-bottom: 20px; justify-content: center;">
+  <button id="quizBtn" style="background:var(--btn-primary); width:auto; padding:10px 24px;">📋 Presentar Quiz</button>
+  <button id="descargarAppBtn" style="background:#16a34a; width:auto;">📥 Descargar App Offline</button>
+  <button id="themeToggleBtn" style="width:auto;">☀️ Light</button>
+</div>
+
+<div class="header">
+  <h1>🔧 PLANO INCLINADO CON POLEA + EVALUACIÓN ICFES</h1>
+  <p>Segunda Ley de Newton | Fricción | Tensión | Descarga y trabaja offline | ruralsteamlab.com</p>
+</div>
+
+<div class="container">
+  <div class="panel full" style="position: relative;">
+    <div class="canvas-container">
+      <canvas id="canvasMain" width="900" height="450" style="width:100%; height:auto; background:white;"></canvas>
+      <div class="floating-controls">
+        <div class="control"><label>⚖️ $m_1 =$ <span id="m1ValFloat">10</span> kg</label><input type="range" id="m1Slider" min="1" max="50" value="10" step="0.5"></div>
+        <div class="control"><label>⚖️ $m_2 =$ <span id="m2ValFloat">8</span> kg</label><input type="range" id="m2Slider" min="1" max="50" value="8" step="0.5"></div>
+        <div class="control"><label>📐 $\theta =$ <span id="angValFloat">30</span>°</label><input type="range" id="angSlider" min="10" max="60" value="30" step="1"></div>
+        <div class="control"><label>🧲 $\mu =$ <span id="muValFloat">0.20</span></label><input type="range" id="muSlider" min="0" max="1" step="0.01" value="0.2"></div>
+        <div class="control"><label>🌍 $g =$ <span id="gValFloat">9.81</span> m/s²</label><input type="number" id="gravedad" value="9.81" step="0.01"></div>
+      </div>
+    </div>
+    <div class="buttons">
+      <button id="btnPlay">▶ Iniciar</button>
+      <button id="btnPause">⏸ Pausar</button>
+      <button id="btnReset">⟳ Reiniciar</button>
+    </div>
+  </div>
+
+  <div class="dcl-row">
+    <div class="panel"><div class="section-title">📐 Diagrama de cuerpo libre - $m_1$</div><canvas id="dclM1" width="700" height="300" style="width:100%; height:auto;"></canvas></div>
+    <div class="panel"><div class="section-title">📐 Diagrama de cuerpo libre - $m_2$</div><canvas id="dclM2" width="700" height="300" style="width:100%; height:auto;"></canvas></div>
+  </div>
+
+  <div class="panel full">
+    <div class="section-title">📖 Desarrollo pedagógico paso a paso</div>
+    <div id="pedagogiaContainer" class="pedagogia"></div>
+  </div>
+
+  <div id="quizSection" class="panel full evaluacion-panel quiz-section" style="display: none;">
+    <div class="section-title">🧠 EVALUACIÓN TIPO ICFES (20 preguntas)</div>
+    <div class="nombre-section"><label>📝 Nombre completo del estudiante</label><input type="text" id="nombreEstudiante" placeholder="Ej: Marie Curie"></div>
+    <div id="evaluacionContainer"></div>
+    <div style="display:flex; gap:12px; flex-wrap:wrap; margin:20px 0 10px;">
+      <button id="calificarBtn">✅ CALIFICAR EVALUACIÓN</button>
+      <button id="exportPDFBtn">📄 EXPORTAR PDF</button>
+      <button id="exportExcelBtn">📊 EXPORTAR EXCEL</button>
+    </div>
+    <div id="contadorIntentos" style="background:var(--badge-bg); padding:14px; border-radius: 50px; text-align:center; font-weight:bold; margin-top:10px;">🎯 Intentos restantes: <span id="intentosQuedan">3</span></div>
+    <div id="resultadoEvaluacion" style="display:none; margin-top:20px;" class="resultado"></div>
+  </div>
+</div>
+
+<div class="stem-footer">
+  <div class="section-title" style="font-size:1.3rem;">🚀 Rural STEAM Lab</div>
+  <div class="autor-footer">Designed by Eng. Medina H. A. | Light / Dark Premium STEM Edition</div>
+</div>
+
+<script>
+// ==================== CONFIGURACIÓN GLOBAL ====================
+let simRunning = false;
+let posicionBloque = 120;
+let velocidad = 0;
+
+const canvas = document.getElementById('canvasMain');
+const ctx = canvas.getContext('2d');
+const dcl1Canvas = document.getElementById('dclM1');
+const dcl1Ctx = dcl1Canvas.getContext('2d');
+const dcl2Canvas = document.getElementById('dclM2');
+const dcl2Ctx = dcl2Canvas.getContext('2d');
+
+const m1Slider = document.getElementById('m1Slider');
+const m2Slider = document.getElementById('m2Slider');
+const angSlider = document.getElementById('angSlider');
+const muSlider = document.getElementById('muSlider');
+const gravedadInput = document.getElementById('gravedad');
+const m1ValFloat = document.getElementById('m1ValFloat');
+const m2ValFloat = document.getElementById('m2ValFloat');
+const angValFloat = document.getElementById('angValFloat');
+const muValFloat = document.getElementById('muValFloat');
+const gValFloat = document.getElementById('gValFloat');
+
+let intentosRestantes = 3;
+let respuestasAlumno = new Array(20).fill(null);
+let historialEvaluaciones = [];
+
+// ==================== FUNCIONES DE DIBUJO ====================
+function drawArrow(ctx, fromX, fromY, toX, toY) {
+  ctx.beginPath();
+  ctx.moveTo(fromX, fromY);
+  ctx.lineTo(toX, toY);
+  ctx.stroke();
+  const angle = Math.atan2(toY - fromY, toX - fromX);
+  const arrowSize = 10;
+  ctx.beginPath();
+  ctx.moveTo(toX, toY);
+  ctx.lineTo(toX - arrowSize * Math.cos(angle - Math.PI/6), toY - arrowSize * Math.sin(angle - Math.PI/6));
+  ctx.lineTo(toX - arrowSize * Math.cos(angle + Math.PI/6), toY - arrowSize * Math.sin(angle + Math.PI/6));
+  ctx.closePath();
+  ctx.fill();
+}
+
+function calcularSistema() {
+  let m1 = parseFloat(m1Slider.value);
+  let m2 = parseFloat(m2Slider.value);
+  let thetaDeg = parseFloat(angSlider.value);
+  let mu = parseFloat(muSlider.value);
+  let g = parseFloat(gravedadInput.value);
+  if(isNaN(g) || g<=0) g=9.81;
+  const thetaRad = thetaDeg * Math.PI/180;
+  const W1 = m1 * g;
+  const W2 = m2 * g;
+  const N = W1 * Math.cos(thetaRad);
+  const friccion = mu * N;
+  const fuerzaNeta = W2 - W1 * Math.sin(thetaRad) - friccion;
+  const masaTotal = m1 + m2;
+  let a = fuerzaNeta / masaTotal;
+  if(isNaN(a)) a = 0;
+  const T = m2 * (g - a);
+  return { m1, m2, thetaDeg, thetaRad, mu, g, W1, W2, N, friccion, a, T, fuerzaNeta };
+}
+
+function escalaFuerza(fuerza) {
+  return Math.min(120, Math.max(25, 30 + fuerza / 6));
+}
+
+let sistemaActual = null;
+
+function actualizarSimulacion() {
+  sistemaActual = calcularSistema();
+  const { a, thetaRad } = sistemaActual;
+  if(simRunning) {
+    const dt = 0.035;
+    velocidad += a * dt;
+    velocidad *= 0.995;
+    posicionBloque += velocidad * dt;
+    if(posicionBloque < 0) { posicionBloque = 0; velocidad = 0; }
+    if(posicionBloque > 280) { posicionBloque = 280; velocidad = 0; }
+  }
+  dibujarPlanoPrincipal();
+  dibujarDCL_M1();
+  dibujarDCL_M2();
+}
+
+function dibujarPlanoPrincipal() {
+  if(!sistemaActual) return;
+  const { thetaRad, a } = sistemaActual;
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  const gradient = ctx.createLinearGradient(0,0,0,canvas.height);
+  gradient.addColorStop(0,'#ffffff');
+  gradient.addColorStop(1,'#e2e8f0');
+  ctx.fillStyle = gradient;
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+  const x0 = 180, y0 = 360;
+  const L = 450;
+  const xp = x0 + L * Math.cos(thetaRad);
+  const yp = y0 - L * Math.sin(thetaRad);
+  ctx.lineWidth = 3;
+  ctx.strokeStyle = "#333";
+  ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(xp, yp); ctx.stroke();
+  ctx.fillStyle = "#a855f7";
+  ctx.beginPath(); ctx.arc(x0, y0, 45, 0, -thetaRad, true); ctx.stroke();
+  ctx.fillStyle = "#a855f7"; ctx.font = "bold 18px Arial";
+  ctx.fillText(`${Math.round(thetaRad*180/Math.PI)}°`, x0+55, y0-15);
+  ctx.strokeStyle = "#555";
+  for(let i=0;i<18;i++) {
+    ctx.beginPath();
+    ctx.moveTo(x0 + i*25*Math.cos(thetaRad), y0 - i*25*Math.sin(thetaRad));
+    ctx.lineTo(x0 + i*25*Math.cos(thetaRad) + 12*Math.sin(thetaRad), y0 - i*25*Math.sin(thetaRad) + 12*Math.cos(thetaRad));
+    ctx.stroke();
+  }
+  const pulleyGradient = ctx.createRadialGradient(xp,yp,5,xp,yp,22);
+  pulleyGradient.addColorStop(0,'#e2e8f0');
+  pulleyGradient.addColorStop(1,'#475569');
+  ctx.fillStyle = pulleyGradient;
+  ctx.beginPath();
+  ctx.arc(xp, yp, 20, 0, 2*Math.PI);
+  ctx.fill();
+  ctx.lineWidth = 3;
+  ctx.strokeStyle = '#0f172a';
+  ctx.stroke();
+  const xm = x0 + posicionBloque * Math.cos(thetaRad);
+  const ym = y0 - posicionBloque * Math.sin(thetaRad);
+  const blockGrad = ctx.createLinearGradient(xm-25,ym-25,xm+25,ym+25);
+  blockGrad.addColorStop(0,'#60a5fa');
+  blockGrad.addColorStop(1,'#1d4ed8');
+  ctx.fillStyle = blockGrad;
+  ctx.shadowColor='rgba(59,130,246,.4)';
+  ctx.shadowBlur=18;
+  ctx.fillRect(xm-25, ym-25, 50, 50);
+  ctx.shadowBlur=0;
+  ctx.fillStyle = "white"; ctx.font = "bold 20px Arial";
+  ctx.fillText("m₁", xm-10, ym+5);
+  const y2 = yp + 40 + posicionBloque;
+  ctx.fillStyle = "#f97316";
+  ctx.fillRect(xp-20, y2, 40, 50);
+  ctx.fillStyle = "black"; ctx.fillText("m₂", xp-10, y2+30);
+  ctx.beginPath(); ctx.moveTo(xm, ym); ctx.lineTo(xp, yp); ctx.lineTo(xp, y2); ctx.stroke();
+  
+  const dir = (a >= 0) ? 1 : -1;
+  const arrowLen = 60 + Math.min(80, Math.abs(a)*15);
+  const endX = xm + dir * arrowLen * Math.cos(thetaRad);
+  const endY = ym - dir * arrowLen * Math.sin(thetaRad);
+  ctx.strokeStyle = "#0ea5e9";
+  ctx.fillStyle = "#0ea5e9";
+  drawArrow(ctx, xm, ym, endX, endY);
+  
+  ctx.font = "bold 14px Arial";
+  ctx.fillStyle = "#0ea5e9";
+  const labelX = xm;
+  const labelY = ym - 55;
+  ctx.fillText(`a = ${a.toFixed(2)} m/s²`, labelX - 40, labelY);
+}
+
+function dibujarDCL_M1() {
+  if(!sistemaActual) return;
+  const { thetaRad, thetaDeg, W1, N, friccion, T } = sistemaActual;
+  dcl1Ctx.clearRect(0,0,dcl1Canvas.width, dcl1Canvas.height);
+  const cx = 350, cy = 150;
+  dcl1Ctx.save();
+  dcl1Ctx.strokeStyle = "#aaa"; dcl1Ctx.fillStyle = "#aaa";
+  drawArrow(dcl1Ctx, cx-120, cy, cx+120, cy);
+  drawArrow(dcl1Ctx, cx, cy+120, cx, cy-120);
+  dcl1Ctx.fillText("x", cx+130, cy); dcl1Ctx.fillText("y", cx, cy-130);
+  dcl1Ctx.strokeStyle = "black"; dcl1Ctx.fillStyle = "black";
+  drawArrow(dcl1Ctx, cx-90*Math.cos(thetaRad), cy+90*Math.sin(thetaRad), cx+90*Math.cos(thetaRad), cy-90*Math.sin(thetaRad));
+  drawArrow(dcl1Ctx, cx-90*Math.sin(thetaRad), cy-90*Math.cos(thetaRad), cx+90*Math.sin(thetaRad), cy+90*Math.cos(thetaRad));
+  dcl1Ctx.fillText("t", cx+110*Math.cos(thetaRad), cy-110*Math.sin(thetaRad));
+  dcl1Ctx.fillText("n", cx-110*Math.sin(thetaRad), cy-110*Math.cos(thetaRad));
+  dcl1Ctx.beginPath(); dcl1Ctx.arc(cx, cy, 45, 0, -thetaRad, true); dcl1Ctx.stroke();
+  dcl1Ctx.fillStyle = "#a855f7"; dcl1Ctx.fillText(`${thetaDeg}°`, cx+55, cy-15);
+  const escala = (f) => escalaFuerza(f);
+  const lenT = escala(T);
+  dcl1Ctx.strokeStyle = "#2563eb"; dcl1Ctx.fillStyle = "#2563eb";
+  drawArrow(dcl1Ctx, cx, cy, cx + lenT*Math.cos(thetaRad), cy - lenT*Math.sin(thetaRad));
+  dcl1Ctx.fillText(`T = ${T.toFixed(1)} N`, cx + lenT+10, cy - lenT-5);
+  const lenW = escala(W1);
+  dcl1Ctx.strokeStyle = "#22c55e"; dcl1Ctx.fillStyle = "#22c55e";
+  drawArrow(dcl1Ctx, cx, cy, cx, cy + lenW);
+  dcl1Ctx.fillText(`W₁ = ${W1.toFixed(1)} N`, cx+10, cy+lenW+10);
+  const lenN = escala(N);
+  dcl1Ctx.strokeStyle = "#facc15"; dcl1Ctx.fillStyle = "#facc15";
+  drawArrow(dcl1Ctx, cx, cy, cx - lenN*Math.sin(thetaRad), cy - lenN*Math.cos(thetaRad));
+  dcl1Ctx.fillText(`N = ${N.toFixed(1)} N`, cx - lenN-30, cy - lenN-10);
+  const sentidoFric = (sistemaActual.a >= 0) ? -1 : 1;
+  const lenF = escala(friccion);
+  dcl1Ctx.strokeStyle = "#ef4444"; dcl1Ctx.fillStyle = "#ef4444";
+  drawArrow(dcl1Ctx, cx, cy, cx + sentidoFric*lenF*Math.cos(thetaRad), cy - sentidoFric*lenF*Math.sin(thetaRad));
+  dcl1Ctx.fillText(`f = ${friccion.toFixed(1)} N`, cx + sentidoFric*lenF+10, cy - sentidoFric*lenF-5);
+  dcl1Ctx.restore();
+}
+
+function dibujarDCL_M2() {
+  if(!sistemaActual) return;
+  const { T, W2 } = sistemaActual;
+  dcl2Ctx.clearRect(0,0,dcl2Canvas.width, dcl2Canvas.height);
+  const cx = 350, cy = 150;
+  dcl2Ctx.save();
+  dcl2Ctx.strokeStyle = "#aaa"; dcl2Ctx.fillStyle = "#aaa";
+  drawArrow(dcl2Ctx, cx-120, cy, cx+120, cy);
+  drawArrow(dcl2Ctx, cx, cy+120, cx, cy-120);
+  dcl2Ctx.fillText("x", cx+130, cy); dcl2Ctx.fillText("y", cx, cy-130);
+  const escala = (f) => escalaFuerza(f);
+  const lenT = escala(T);
+  dcl2Ctx.strokeStyle = "#2563eb"; dcl2Ctx.fillStyle = "#2563eb";
+  drawArrow(dcl2Ctx, cx, cy, cx, cy - lenT);
+  dcl2Ctx.fillText(`T = ${T.toFixed(1)} N`, cx+15, cy - lenT-10);
+  const lenW = escala(W2);
+  dcl2Ctx.strokeStyle = "#f97316"; dcl2Ctx.fillStyle = "#f97316";
+  drawArrow(dcl2Ctx, cx, cy, cx, cy + lenW);
+  dcl2Ctx.fillText(`W₂ = ${W2.toFixed(1)} N`, cx+15, cy+lenW+10);
+  dcl2Ctx.fillStyle = "black";
+  dcl2Ctx.font = "bold 18px Arial";
+  dcl2Ctx.fillText("m₂", cx-10, cy+5);
+  dcl2Ctx.restore();
+}
+
+// ==================== MOTOR PEDAGÓGICO (KaTeX) ====================
+function renderEcuacion(container, latex, displayMode = true) {
+  if (!container) return;
+  try {
+    katex.render(latex, container, { displayMode: displayMode, throwOnError: false });
+  } catch(e) {
+    container.innerText = latex;
+    console.warn("Error KaTeX:", e);
+  }
+}
+
+function actualizarPedagogia() {
+  const s = sistemaActual;
+  if (!s) return;
+  const { m1, m2, thetaDeg, mu, g, W1, W2, N, friccion, a, T } = s;
+  const thetaRad = thetaDeg * Math.PI/180;
+  const W1par = W1 * Math.sin(thetaRad);
+  
+  const container = document.getElementById('pedagogiaContainer');
+  container.innerHTML = '';
+  
+  // 1. Tarjeta biográfica de Newton
+  const cardNewton = document.createElement('div');
+  cardNewton.className = 'pedagogia-card card-blue';
+  cardNewton.innerHTML = `
+    <h3>📜 Sir Isaac Newton (1643-1727)</h3>
+    <p>Nació en Woolsthorpe, Inglaterra. Fue un físico, matemático, astrónomo, filósofo y teólogo inglés, considerado uno de los científicos más influyentes de la historia.</p>
+    <p>En 1687 publicó su obra magna <strong>Philosophiæ Naturalis Principia Mathematica</strong>, donde formuló las tres leyes del movimiento y la ley de gravitación universal. La <strong>Segunda Ley</strong> establece que la fuerza neta aplicada sobre un cuerpo es igual al producto de su masa por la aceleración producida:</p>
+    <div id="newton-law" style="margin: 15px 0;"></div>
+    <p>Newton también desarrolló el cálculo infinitesimal, sentó las bases de la óptica moderna y estudió la naturaleza de la luz. Su legado es fundamental para la física y la ingeniería.</p>
+  `;
+  container.appendChild(cardNewton);
+  renderEcuacion(cardNewton.querySelector('#newton-law'), `\\sum \\vec{F} = m\\vec{a}`, true);
+  
+  // 2. Tarjeta de datos de entrada
+  const cardDatos = document.createElement('div');
+  cardDatos.className = 'pedagogia-card card-green';
+  cardDatos.innerHTML = `<h3>📥 Datos de entrada</h3><div id="datos-latex"></div>`;
+  container.appendChild(cardDatos);
+  const datosLatex = cardDatos.querySelector('#datos-latex');
+  const datosEq = document.createElement('div');
+  datosEq.style.margin = '10px 0';
+  datosLatex.appendChild(datosEq);
+  renderEcuacion(datosEq, `m_1 = ${m1}\\,\\text{kg}, \\quad m_2 = ${m2}\\,\\text{kg}, \\quad \\theta = ${thetaDeg}^\\circ, \\quad \\mu = ${mu}, \\quad g = ${g}\\,\\text{m/s}^2`, false);
+  
+  // 3. Tarjeta de desarrollo matemático
+  const cardMath = document.createElement('div');
+  cardMath.className = 'pedagogia-card card-orange';
+  cardMath.innerHTML = `<h3>⚙️ Desarrollo matemático paso a paso</h3><div id="pasos-latex"></div>`;
+  container.appendChild(cardMath);
+  const pasosDiv = cardMath.querySelector('#pasos-latex');
+  
+  const pasos = [
+    { label: "1. Fuerza normal", latex: `N = m_1 g \\cos\\theta = (${m1})(${g}) \\cos(${thetaDeg}^\\circ) = ${N.toFixed(2)}\\,\\text{N}` },
+    { label: "2. Fricción cinética", latex: `f = \\mu N = (${mu})(${N.toFixed(2)}) = ${friccion.toFixed(2)}\\,\\text{N}` },
+    { label: "3. Componente del peso paralela al plano", latex: `W_{1\\parallel} = m_1 g \\sin\\theta = (${m1})(${g}) \\sin(${thetaDeg}^\\circ) = ${W1par.toFixed(2)}\\,\\text{N}` },
+    { label: "4. Aplicación de la Segunda Ley a cada masa", latex: `\\begin{cases} T - W_{1\\parallel} - f = m_1 a \\\\ m_2 g - T = m_2 a \\end{cases}` },
+    { label: "5. Sumando ambas ecuaciones", latex: `m_2 g - W_{1\\parallel} - f = (m_1 + m_2) a` },
+    { label: "6. Aceleración del sistema", latex: `a = \\frac{ ${W2.toFixed(2)} - ${W1par.toFixed(2)} - ${friccion.toFixed(2)} }{ ${m1+m2} } = ${a.toFixed(4)}\\,\\text{m/s}^2` },
+    { label: "7. Tensión en la cuerda", latex: `T = m_2(g - a) = ${m2}(${g} - ${a.toFixed(4)}) = ${T.toFixed(2)}\\,\\text{N}` }
+  ];
+  
+  pasos.forEach(p => {
+    const stepDiv = document.createElement('div');
+    stepDiv.style.marginBottom = '20px';
+    stepDiv.innerHTML = `<strong>${p.label}</strong><div class="latex-block"></div>`;
+    pasosDiv.appendChild(stepDiv);
+    const eqDiv = stepDiv.querySelector('.latex-block');
+    renderEcuacion(eqDiv, p.latex, true);
+  });
+  
+  // 4. Tarjeta de resultados finales
+  const cardResultados = document.createElement('div');
+  cardResultados.className = 'pedagogia-card card-purple';
+  cardResultados.innerHTML = `<h3>📊 Resultados finales</h3><div id="resultados-latex"></div>`;
+  container.appendChild(cardResultados);
+  const resDiv = cardResultados.querySelector('#resultados-latex');
+  const resEq = document.createElement('div');
+  resEq.style.margin = '10px 0';
+  resDiv.appendChild(resEq);
+  renderEcuacion(resEq, `\\boxed{a = ${a.toFixed(4)}\\,\\text{m/s}^2} \\qquad \\boxed{T = ${T.toFixed(2)}\\,\\text{N}}`, true);
+  
+  // 5. Tarjeta de interpretación inteligente
+  const cardInterp = document.createElement('div');
+  cardInterp.className = 'pedagogia-card card-gold';
+  
+  let movimientoTexto = '';
+  let comparacionFuerzas = '';
+  let signoA = '';
+  if (Math.abs(a) < 0.01) {
+    movimientoTexto = 'equilibrio (aceleración nula)';
+    signoA = '≈ 0';
+    comparacionFuerzas = `$m_2 g \\approx m_1 g \\sin\\theta + f$ ⇒ $${W2.toFixed(2)} \\approx ${(W1par+friccion).toFixed(2)}$`;
+  } else if (a > 0) {
+    movimientoTexto = 'ascendente (m₁ sube por el plano)';
+    signoA = 'positiva';
+    comparacionFuerzas = `$m_2 g > m_1 g \\sin\\theta + f$ ⇒ $${W2.toFixed(2)} > ${(W1par+friccion).toFixed(2)}$`;
+  } else {
+    movimientoTexto = 'descendente (m₁ baja por el plano)';
+    signoA = 'negativa';
+    comparacionFuerzas = `$m_2 g < m_1 g \\sin\\theta + f$ ⇒ $${W2.toFixed(2)} < ${(W1par+friccion).toFixed(2)}$`;
+  }
+  
+  cardInterp.innerHTML = `
+    <h3>🧠 Interpretación física inteligente</h3>
+    <div style="background: var(--code-bg); padding: 15px; border-radius: 16px; margin-bottom: 20px;">
+      <p><strong>📌 ¿Por qué la aceleración es ${signoA}?</strong></p>
+      <p>La aceleración del sistema viene dada por la Segunda Ley de Newton aplicada al conjunto:</p>
+      <div id="ec-aceleracion" style="margin: 10px 0;"></div>
+      <p>Sustituyendo los valores actuales:</p>
+      <div id="ec-aceleracion-numerica" style="margin: 10px 0;"></div>
+      <p>El signo de $a$ indica el sentido del movimiento:</p>
+      <ul style="margin-left: 20px;">
+        <li>🔹 Si $a > 0$ → $m_2$ tira con más fuerza que la componente del peso de $m_1$ más la fricción → $m_1$ <strong>asciende</strong>.</li>
+        <li>🔹 Si $a < 0$ → $m_2$ no es suficiente para vencer la componente del peso de $m_1$ y la fricción → $m_1$ <strong>desciende</strong>.</li>
+        <li>🔹 Si $a \\approx 0$ → el sistema está en equilibrio o muy cerca.</li>
+      </ul>
+      <p>En este caso: ${comparacionFuerzas}, por lo tanto el movimiento es <strong>${movimientoTexto}</strong>.</p>
+    </div>
+    <div style="background: var(--code-bg); padding: 15px; border-radius: 16px; margin-bottom: 20px;">
+      <p><strong>📌 Análisis de la tensión en la cuerda</strong></p>
+      <p>Para la masa colgante $m_2$ se cumple: $m_2 g - T = m_2 a$ ⇒ $T = m_2 (g - a)$.</p>
+      <div id="ec-tension" style="margin: 10px 0;"></div>
+      <p>Observamos que $T$ es ${T < W2 ? 'menor' : (T > W2 ? 'mayor' : 'igual')} que el peso de $m_2$ (${W2.toFixed(2)} N), lo cual es consistente con una aceleración ${a > 0 ? 'hacia abajo de $m_2$' : (a < 0 ? 'hacia arriba de $m_2$' : 'nula')}.</p>
+    </div>
+    <div style="margin-top: 20px; text-align: center; border-top: 1px solid var(--border-light); padding-top: 20px;">
+      <p>🌟 <strong>Hijos de Newton: ¡Tú puedes ser el siguiente!</strong> 🌟</p>
+      <p>Así como Newton transformó nuestra comprensión del universo con sus leyes y el cálculo, tú hoy estás aplicando esos mismos principios para simular y predecir el movimiento. Cada gran científico comenzó con curiosidad y práctica. Sigue explorando, cuestionando y construyendo. ¡El próximo gran descubrimiento podría ser tuyo!</p>
+      <p style="font-style: italic;">✨ "Lo que sabemos es una gota; lo que ignoramos es un océano." — Isaac Newton ✨</p>
+    </div>
+  `;
+  container.appendChild(cardInterp);
+  
+  renderEcuacion(cardInterp.querySelector('#ec-aceleracion'), `a = \\frac{m_2 g - m_1 g \\sin\\theta - f}{m_1 + m_2}`, true);
+  renderEcuacion(cardInterp.querySelector('#ec-aceleracion-numerica'), `a = \\frac{${W2.toFixed(2)} - ${W1par.toFixed(2)} - ${friccion.toFixed(2)}}{${m1+m2}} = ${a.toFixed(4)}\\,\\text{m/s}^2`, true);
+  renderEcuacion(cardInterp.querySelector('#ec-tension'), `T = ${m2} (${g} - ${a.toFixed(4)}) = ${T.toFixed(2)}\\,\\text{N}`, true);
+  
+  if (window.MathJax) {
+    MathJax.typesetPromise().catch(err => console.log(err));
+  }
+}
+
+// ==================== SISTEMA DE EVALUACIÓN ====================
+const preguntas = [
+  { q: "En un plano inclinado ideal sin fricción, la aceleración de un bloque depende de:", opts: ["solo la masa", "solo el ángulo y la gravedad", "la masa y la gravedad", "la tensión"], r: "B" },
+  { q: "Si aumenta el coeficiente de fricción $\\mu$ en el plano inclinado, ¿cómo cambia la aceleración del sistema?", opts: ["aumenta", "disminuye", "permanece igual", "se vuelve negativa"], r: "B" },
+  { q: "La fuerza normal sobre el bloque $m_1$ en el plano inclinado es igual a:", opts: ["$m_1 g$", "$m_1 g \\cos\\theta$", "$m_1 g \\sin\\theta$", "$m_1 g / \\cos\\theta$"], r: "B" },
+  { q: "En el diagrama de cuerpo libre de $m_2$ (masa colgante), ¿qué fuerzas actúan?", opts: ["Peso y tensión", "Peso y normal", "Solo peso", "Tensión y fricción"], r: "A" },
+  { q: "Si la masa $m_2$ es mucho mayor que $m_1$, el valor de la aceleración tiende a:", opts: ["$g$", "$0$", "$-g$", "depende del ángulo"], r: "A" },
+  { q: "¿Cuándo la tensión en la cuerda es menor que el peso de $m_2$?", opts: ["Cuando el sistema acelera hacia abajo de $m_2$", "Cuando el sistema está en reposo", "Cuando $m_1$ es cero", "Cuando no hay fricción"], r: "A" },
+  { q: "La fuerza de fricción cinética sobre $m_1$ se opone al movimiento relativo. ¿De qué depende su magnitud?", opts: ["Solo de la masa $m_1$", "De la normal y de $\\mu$", "Del ángulo exclusivamente", "De la aceleración del sistema"], r: "B" },
+  { q: "Si el ángulo del plano inclinado es $0^\\circ$, el sistema se comporta como:", opts: ["Dos masas conectadas horizontalmente", "Caída libre", "Péndulo", "Plano vertical"], r: "A" },
+  { q: "La Segunda Ley de Newton se expresa matemáticamente como:", opts: ["$\\sum \\vec{F} = m\\vec{a}$", "$F = m v$", "$E = mc^2$", "$a = F m$"], r: "A" },
+  { q: "En el DCL de $m_1$, la componente del peso perpendicular al plano es equilibrada por:", opts: ["La tensión", "La fricción", "La normal", "La fuerza aplicada"], r: "C" },
+  { q: "Si se duplica la masa $m_1$ (manteniendo $m_2$, $\\theta$ y $\\mu$ constantes), la aceleración del sistema:", opts: ["aumenta", "disminuye", "no cambia", "se duplica"], r: "B" },
+  { q: "¿Cuál es la función principal de la polea ideal en este sistema?", opts: ["Cambiar la dirección de la tensión", "Aumentar la fuerza", "Reducir la fricción", "Almacenar energía"], r: "A" },
+  { q: "La fuerza neta sobre el sistema $(m_1 + m_2)$ es:", opts: ["$W_2 - W_1\\sin\\theta - f$", "$W_1 + W_2$", "$T - W_1$", "$N - f$"], r: "A" },
+  { q: "Cuando el sistema se mueve con velocidad constante, ¿cuál es el valor de la aceleración?", opts: ["$0$", "positiva", "negativa", "$g$"], r: "A" },
+  { q: "La fricción cinética es directamente proporcional a:", opts: ["La normal", "La masa", "La velocidad", "El área de contacto"], r: "A" },
+  { q: "Si $\\mu = 0$, ¿para qué ángulo se obtiene la máxima aceleración posible del sistema?", opts: ["$0^\\circ$", "$90^\\circ$", "$45^\\circ$", "$30^\\circ$"], r: "B" },
+  { q: "¿Cuál es el propósito principal de un Diagrama de Cuerpo Libre (DCL)?", opts: ["Mostrar solo la fuerza aplicada", "Representar todas las fuerzas externas sobre un cuerpo", "Calcular la energía cinética", "Dibujar el contorno del objeto"], r: "B" },
+  { q: "En el simulador, ¿qué indica el signo de la aceleración que se muestra en el canvas?", opts: ["El sentido del movimiento de $m_1$", "El color del bloque", "La posición de la polea", "El valor de la masa colgante"], r: "A" },
+  { q: "Si la fricción es muy alta pero la masa colgante es pequeña, ¿qué ocurre con el sistema?", opts: ["Permanece en reposo o se mueve muy lentamente", "Acelera hacia arriba", "La tensión se hace cero", "La normal se anula"], r: "A" },
+  { q: "¿En qué siglo Isaac Newton publicó sus leyes del movimiento?", opts: ["XVII", "XVI", "XVIII", "XIX"], r: "A" }
+];
+
+function obtenerNivelSTEM(nota) {
+  if (nota >= 5) return "🚀 LEGENDARIO";
+  if (nota >= 4.5) return "🧠 HIJO DE NEWTON";
+  if (nota >= 4) return "⚡ DISCÍPULO DE EINSTEIN";
+  if (nota >= 3.5) return "🔧 APRENDIZ DE HOOKE";
+  if (nota >= 3) return "⚙️ POTENCIAL TESLA";
+  if (nota >= 2.5) return "🌌 GALILEO EN FORMACIÓN";
+  if (nota >= 2) return "🛰️ FARADAY DETERMINADO";
+  if (nota >= 1) return "🔬 EDISON PERSISTENTE";
+  return "🌠 PRINCIPIANTE ESTELAR";
+}
+
+function obtenerMensajeMotivacional(nota) {
+  if (nota >= 5) return "🚀 LEGENDARIO. Newton y Einstein estarían orgullosos de ti. Tu comprensión de la dinámica es sobresaliente.";
+  if (nota >= 4.5) return "🧠 ¡ERES EL HIJO DE NEWTON! Dominas las fuerzas, el movimiento y el razonamiento físico como un verdadero científico.";
+  if (nota >= 4) return "⚡ Einstein estaría orgulloso de ti. Tu pensamiento científico demuestra gran capacidad analítica.";
+  if (nota >= 3.5) return "🔧 Hooke está apoyándote… aunque quizá aún discute con Newton sobre tus cálculos. ¡Vas muy bien!";
+  if (nota >= 3) return "⚙️ Tesla piensa que tienes potencial científico. Sigue practicando y mejorarás rápidamente.";
+  if (nota >= 2.5) return "🌌 Galileo quiere ponerse en contacto contigo. Hay buenas bases, pero aún puedes fortalecer tu análisis físico.";
+  if (nota >= 2) return "🛰️ Faraday te recuerda que cada experimento es una oportunidad para aprender. No te rindas.";
+  if (nota >= 1) return "🔬 Edison dice: ‘No fracasaste, solo descubriste otra forma de aprender’. Sigue intentándolo.";
+  return "🌠 Todo gran científico comenzó equivocándose. Hoy es el inicio de tu camino científico.";
+}
+
+function cargarEvaluacion() {
+  const cont = document.getElementById('evaluacionContainer');
+  let html = '';
+  preguntas.forEach((p, idx) => {
+    html += `<div class="pregunta" id="preg-${idx}"><b>Pregunta ${idx+1}</b><br>${p.q}<div class="opciones" id="opts-${idx}">`;
+    p.opts.forEach((opt, optIdx) => {
+      const letra = String.fromCharCode(65+optIdx);
+      html += `<div class="option-btn" data-preg="${idx}" data-opt="${letra}" onclick="seleccionarRespuesta(${idx}, '${letra}')">
+        <span class="option-letter">${letra}.</span> ${opt}
+      </div>`;
+    });
+    html += `</div></div>`;
+  });
+  cont.innerHTML = html;
+  for(let i=0; i<20; i++) {
+    if(respuestasAlumno[i]) {
+      const btn = document.querySelector(`#opts-${i} .option-btn[data-opt="${respuestasAlumno[i]}"]`);
+      if(btn) btn.classList.add('selected');
+    }
+  }
+  if(window.MathJax) MathJax.typesetPromise();
+}
+
+window.seleccionarRespuesta = function(pregIdx, letra) {
+  const container = document.querySelector(`#opts-${pregIdx}`);
+  container.querySelectorAll('.option-btn').forEach(btn => btn.classList.remove('selected'));
+  const seleccionado = container.querySelector(`.option-btn[data-opt="${letra}"]`);
+  if(seleccionado) seleccionado.classList.add('selected');
+  respuestasAlumno[pregIdx] = letra;
+};
+
+function verificarPreguntasRespondidas() {
+  const faltantes = [];
+  for (let i = 0; i < respuestasAlumno.length; i++) {
+    if (respuestasAlumno[i] === null) faltantes.push(i + 1);
+  }
+  return faltantes;
+}
+
+function calificarEvaluacion() {
+  const faltantes = verificarPreguntasRespondidas();
+  if (faltantes.length > 0) {
+    alert(`⚠️ Faltan responder las preguntas: ${faltantes.join(", ")}. Por favor, responde todas antes de calificar.`);
+    return;
+  }
+  if(intentosRestantes <= 0) { alert("⛔ No quedan intentos."); return; }
+  const nombre = document.getElementById('nombreEstudiante').value.trim();
+  if(nombre === "") { alert("❌ Ingresa el nombre completo."); return; }
+  
+  let correctas = 0;
+  preguntas.forEach((p, i) => {
+    if(respuestasAlumno[i] && respuestasAlumno[i] === p.r) correctas++;
+  });
+  
+  const nota = (correctas/20)*5;
+  const notaFixed = nota.toFixed(2);
+  const porcentaje = (correctas/20)*100;
+  const nivel = obtenerNivelSTEM(nota);
+  const mensaje = obtenerMensajeMotivacional(nota);
+  
+  intentosRestantes--;
+  document.getElementById('intentosQuedan').innerText = intentosRestantes;
+  
+  let tablaHTML = `<div style="overflow-x:auto; margin-top:20px;"><table style="width:100%; border-collapse:collapse;">
+    <thead><tr><th>Pregunta</th><th>Tu respuesta</th><th>Correcta</th><th>Estado</th></tr></thead><tbody>`;
+  for(let i=0; i<preguntas.length; i++) {
+    const user = respuestasAlumno[i] || "—";
+    const correcta = preguntas[i].r;
+    const estado = (user === correcta) ? "✅" : "❌";
+    tablaHTML += `<tr>
+      <td style="padding:8px;">${i+1}</td>
+      <td style="padding:8px;">${user}</td>
+      <td style="padding:8px;">${correcta}</td>
+      <td style="padding:8px;">${estado}</td>
+    </tr>`;
+  }
+  tablaHTML += `</tbody>}</div>`;
+  
+  const colorBarra = nota >= 4 ? "#22c55e" : (nota >= 3 ? "#facc15" : "#ef4444");
+  const resultDiv = document.getElementById('resultadoEvaluacion');
+  resultDiv.style.display = "block";
+  resultDiv.innerHTML = `
+    <div style="background: var(--card-bg-alt); border-radius:24px; padding:20px;">
+      <div style="font-size:1.8rem; font-weight:bold; text-align:center;">📋 Resultado - ${nombre}</div>
+      <div style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:15px; margin:20px 0;">
+        <div><strong>🎓 Nota:</strong> ${notaFixed} / 5.0</div>
+        <div><strong>📊 Porcentaje:</strong> ${porcentaje.toFixed(1)}%</div>
+        <div><strong>✅ Aciertos:</strong> ${correctas} / 20</div>
+        <div><strong>🏆 Nivel STEM:</strong> ${nivel}</div>
+      </div>
+      <div style="background: var(--border-light); border-radius:20px; padding:10px; margin:15px 0;">
+        <div style="height:12px; background: var(--input-border); border-radius:10px; overflow:hidden;">
+          <div style="width:${porcentaje}%; height:100%; background:${colorBarra}; transition:width 0.5s;"></div>
+        </div>
+      </div>
+      <div style="background: var(--code-bg); padding:15px; border-radius:16px; margin:15px 0;">
+        <p style="font-size:1.1rem;">✨ ${mensaje}</p>
+      </div>
+      ${tablaHTML}
+    </div>
+  `;
+  historialEvaluaciones.push({nombre, fecha: new Date().toLocaleString(), nota: parseFloat(notaFixed), correctas, nivel, mensaje, respuestas: [...respuestasAlumno], porcentaje: porcentaje.toFixed(1)});
+  if(intentosRestantes === 0) document.getElementById('calificarBtn').disabled = true;
+}
+
+function exportarPDF() {
+  if(historialEvaluaciones.length===0) { alert("No hay evaluaciones previas."); return; }
+  const ult = historialEvaluaciones[historialEvaluaciones.length-1];
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+  doc.setFontSize(18);
+  doc.text("Rural STEAM Lab – Reporte de Evaluación", 20, 20);
+  doc.setFontSize(12);
+  doc.text(`Estudiante: ${ult.nombre}`, 20, 40);
+  doc.text(`Fecha: ${ult.fecha}`, 20, 50);
+  doc.text(`Nota: ${ult.nota} / 5.0  (${ult.porcentaje}%)`, 20, 60);
+  doc.text(`Nivel STEM: ${ult.nivel}`, 20, 70);
+  doc.text("Mensaje motivacional:", 20, 85);
+  const lines = doc.splitTextToSize(ult.mensaje, 170);
+  doc.text(lines, 20, 95);
+  doc.text("Detalle de respuestas:", 20, 110);
+  let y = 120;
+  doc.text("Preg | Tu Resp | Correcta | Estado", 20, y);
+  y += 8;
+  for(let i=0; i<20; i++) {
+    const user = ult.respuestas[i] || "—";
+    const correcta = preguntas[i].r;
+    const estado = (user === correcta) ? "✅" : "❌";
+    doc.text(`${i+1}    |    ${user}    |    ${correcta}    |    ${estado}`, 20, y);
+    y += 7;
+    if(y > 270) { doc.addPage(); y = 20; }
+  }
+  doc.setFontSize(10);
+  doc.text("Designed by Eng. Medina H. A. | Light / Dark Premium STEM Edition", 20, 280);
+  doc.save(`Evaluacion_${ult.nombre.replace(/\s/g,"_")}.pdf`);
+}
+
+function exportarExcel() {
+  if(historialEvaluaciones.length===0) { alert("Ninguna evaluación guardada."); return; }
+  const ult = historialEvaluaciones[historialEvaluaciones.length-1];
+  let csv = "Pregunta,Respuesta estudiante,Correcta,Estado,Nota final,Porcentaje,Nivel STEM,Mensaje motivacional\n";
+  for(let i=0; i<20; i++) {
+    const user = ult.respuestas[i] || "—";
+    const correcta = preguntas[i].r;
+    const estado = (user === correcta) ? "✔️" : "❌";
+    csv += `${i+1},"${user}","${correcta}","${estado}",${ult.nota},${ult.porcentaje},"${ult.nivel}","${ult.mensaje}"\n`;
+  }
+  const blob = new Blob([csv], {type:"text/csv;charset=utf-8;"});
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = `evaluacion_${ult.nombre.replace(/\s/g,"_")}.csv`;
+  link.click();
+  URL.revokeObjectURL(blob);
+}
+
+function descargarAppOffline() {
+  const htmlContent = document.documentElement.outerHTML;
+  const blob = new Blob([htmlContent], {type: 'text/html'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'plano_inclinado_light_dark.html';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+// ==================== BOTONES CON FEEDBACK VISUAL ====================
+function aplicarEfectoBoton(btn, colorFlash) {
+  const originalBg = btn.style.background;
+  btn.style.transition = 'background 0.15s';
+  btn.style.background = colorFlash;
+  setTimeout(() => {
+    btn.style.background = originalBg;
+  }, 300);
+}
+
+const btnPlay = document.getElementById('btnPlay');
+const btnPause = document.getElementById('btnPause');
+const btnReset = document.getElementById('btnReset');
+
+btnPlay.addEventListener('click', () => {
+  aplicarEfectoBoton(btnPlay, '#22c55e');
+  simRunning = true;
+});
+btnPause.addEventListener('click', () => {
+  aplicarEfectoBoton(btnPause, '#fbbf24');
+  simRunning = false;
+});
+btnReset.addEventListener('click', () => {
+  aplicarEfectoBoton(btnReset, '#f87171');
+  posicionBloque = 120;
+  velocidad = 0;
+  simRunning = false;
+  actualizarSimulacion();
+});
+
+document.getElementById('calificarBtn').onclick = calificarEvaluacion;
+document.getElementById('exportPDFBtn').onclick = exportarPDF;
+document.getElementById('exportExcelBtn').onclick = exportarExcel;
+document.getElementById('descargarAppBtn').onclick = descargarAppOffline;
+
+// ==================== SELECTOR DE TEMA (LIGHT / DARK) ====================
+const themeToggle = document.getElementById('themeToggleBtn');
+function setTheme(theme) {
+  if (theme === 'dark') {
+    document.body.classList.add('dark');
+    themeToggle.textContent = '🌙 Dark';
+  } else {
+    document.body.classList.remove('dark');
+    themeToggle.textContent = '☀️ Light';
+  }
+  localStorage.setItem('selectedTheme', theme);
+}
+themeToggle.addEventListener('click', () => {
+  const isDark = document.body.classList.contains('dark');
+  setTheme(isDark ? 'light' : 'dark');
+});
+// Cargar tema guardado (por defecto light)
+const savedTheme = localStorage.getItem('selectedTheme');
+if (savedTheme === 'dark') setTheme('dark');
+else setTheme('light');
+
+// Lógica del botón Quiz
+const quizSection = document.getElementById('quizSection');
+const quizBtn = document.getElementById('quizBtn');
+quizBtn.addEventListener('click', () => {
+  if (quizSection.style.display === 'none' || quizSection.style.display === '') {
+    quizSection.style.display = 'block';
+    quizBtn.textContent = '📋 Ocultar Quiz';
+    if(window.MathJax) MathJax.typesetPromise();
+  } else {
+    quizSection.style.display = 'none';
+    quizBtn.textContent = '📋 Presentar Quiz';
+  }
+});
+
+function actualizarSliders() {
+  const m1 = m1Slider.value;
+  const m2 = m2Slider.value;
+  const ang = angSlider.value;
+  const mu = muSlider.value;
+  const g = gravedadInput.value;
+  m1ValFloat.innerText = m1;
+  m2ValFloat.innerText = m2;
+  angValFloat.innerText = ang;
+  muValFloat.innerText = parseFloat(mu).toFixed(2);
+  gValFloat.innerText = g;
+  sistemaActual = calcularSistema();
+  actualizarSimulacion();
+  actualizarPedagogia();
+}
+
+m1Slider.oninput = actualizarSliders;
+m2Slider.oninput = actualizarSliders;
+angSlider.oninput = actualizarSliders;
+muSlider.oninput = actualizarSliders;
+gravedadInput.oninput = actualizarSliders;
+
+function animLoop() {
+  if (simRunning) {
+    actualizarSimulacion();
+  }
+  requestAnimationFrame(animLoop);
+}
+
+cargarEvaluacion();
+actualizarSliders();
+animLoop();
+</script>
+</body>
+</html>
