@@ -3,825 +3,579 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>Coulomb Law's — Motor Pedagógico + Quiz ICFES</title>
+    <title>Coulomb's Law | STEM Simulator + Pedagogy + Quiz ICFES</title>
     <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
     <style>
-        /* ---------- ESTILOS BASE ---------- */
         * {
-            box-sizing: border-box;
-            font-family: 'Segoe UI', system-ui, -apple-system, 'Roboto', sans-serif;
-        }
-        body {
             margin: 0;
-            background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+            background: #f1f5f9;
             color: #0f172a;
+            transition: background 0.3s ease, color 0.2s ease;
             overflow-x: hidden;
         }
-        header {
-            background: linear-gradient(90deg, #0f172a, #1e293b);
-            color: white;
-            padding: 16px 12px;
-            text-align: center;
-            font-size: 28px;
-            font-weight: 700;
-            border-bottom: 4px solid #38bdf8;
-            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.2);
+
+        /* ========= LIGHT THEME (default) ========= */
+        :root {
+            --bg-body: #f1f5f9;
+            --surface: rgba(255, 255, 255, 0.92);
+            --surface-solid: #ffffff;
+            --border-light: rgba(148, 163, 184, 0.2);
+            --text-primary: #0f172a;
+            --text-secondary: #334155;
+            --accent: #0ea5e9;
+            --accent-glow: rgba(14, 165, 233, 0.2);
+            --card-shadow: 0 12px 30px rgba(0, 0, 0, 0.05);
+            --canvas-bg: #ffffff;
+            --quiz-option-bg: #f8fafc;
+            --quiz-selected-bg: #0ea5e9;
+            --footer-bg: #f8fafc;
         }
-        .author {
-            margin-top: 6px;
-            font-size: 12px;
-            color: #7dd3fc;
-            letter-spacing: 1px;
+
+        body.dark-premium {
+            --bg-body: #030712;
+            --surface: rgba(17, 24, 39, 0.85);
+            --surface-solid: #0f172a;
+            --border-light: rgba(255, 255, 255, 0.12);
+            --text-primary: #eef2ff;
+            --text-secondary: #cbd5e1;
+            --accent: #38bdf8;
+            --accent-glow: rgba(56, 189, 248, 0.25);
+            --card-shadow: 0 20px 35px rgba(0, 0, 0, 0.6);
+            --canvas-bg: #0b1120;
+            --quiz-option-bg: #1e293b;
+            --quiz-selected-bg: #22c55e;
+            --footer-bg: #0f172a;
         }
-        .container {
-            display: flex;
-            flex-direction: column;
-            gap: 18px;
-            padding: 16px;
-            max-width: 1400px;
-            margin: 0 auto;
+
+        body {
+            background: var(--bg-body);
         }
-        .row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 18px;
-            align-items: stretch; /* Asegura misma altura entre paneles */
-        }
-        .panel {
-            background: rgba(255, 255, 255, 0.96);
-            backdrop-filter: blur(8px);
-            border-radius: 28px;
-            padding: 18px 16px;
-            box-shadow: 0 8px 24px rgba(15, 23, 42, 0.1);
-            flex: 1;
-            min-width: 280px;
-            display: flex;
-            flex-direction: column; /* Para que el contenido interno pueda expandirse */
-        }
-        h2 {
-            color: #0284c7;
-            border-left: 6px solid #38bdf8;
-            padding-left: 12px;
-            font-size: 1.45rem;
-            margin-top: 0;
-            margin-bottom: 1rem;
-        }
-        label {
-            display: block;
-            margin-top: 14px;
-            font-weight: 600;
-            font-size: 0.9rem;
-        }
-        input, select {
-            width: 100%;
-            padding: 12px 14px;
-            margin-top: 6px;
-            border-radius: 16px;
-            border: 1px solid #cbd5e1;
-            font-size: 16px;
-            background: white;
-        }
-        input:focus, select:focus {
-            border-color: #38bdf8;
-            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.25);
-            outline: none;
-        }
-        .chargeCard {
-            margin-top: 20px;
-            padding: 16px;
-            border-radius: 24px;
-            background: linear-gradient(145deg, #ffffff, #f1f5f9);
-            border: 1px solid #cbd5e1;
-            position: relative;
-        }
-        .chargeCard::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 6px;
-            background: linear-gradient(90deg, #38bdf8, #0ea5e9);
-            border-radius: 24px 24px 0 0;
-        }
-        .chargeTitle {
-            font-size: 1.2rem;
-            font-weight: 700;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .mainBtn {
-            width: 100%;
-            margin-top: 24px;
-            padding: 14px;
+
+        /* Botones premium con glow en dark */
+        .premium-action-btn {
             border: none;
+            padding: 8px 22px;
             border-radius: 40px;
-            background: linear-gradient(90deg, #0ea5e9, #0284c7);
-            color: white;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: transform 0.1s;
-            box-shadow: 0 4px 10px rgba(2, 132, 199, 0.3);
-        }
-        .mainBtn:active { transform: scale(0.97); }
-        .toolbar {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 18px;
-            justify-content: center;
-        }
-        .toolBtn {
-            flex: 1 1 auto;
-            min-width: 70px;
-            padding: 12px 8px;
-            border: none;
-            border-radius: 60px;
-            background: white;
             font-weight: 700;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             cursor: pointer;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            transition: all 0.25s ease;
+            background: var(--surface-solid);
+            color: var(--text-primary);
+            border: 1px solid var(--border-light);
+            backdrop-filter: blur(4px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+        body.dark-premium .premium-action-btn {
+            box-shadow: 0 0 12px rgba(56, 189, 248, 0.3);
+            border-color: rgba(56, 189, 248, 0.4);
+        }
+        .premium-quiz-btn {
+            background: linear-gradient(135deg, #8b5cf6, #0ea5e9) !important;
+            color: white !important;
+            box-shadow: 0 8px 20px rgba(14, 165, 233, 0.25), 0 0 18px rgba(139, 92, 246, 0.18);
+        }
+        body.dark-premium .premium-quiz-btn {
+            box-shadow: 0 0 18px rgba(56, 189, 248, 0.5), 0 0 8px rgba(139, 92, 246, 0.5);
+        }
+        .premium-theme-btn {
+            background: linear-gradient(135deg, #0f172a, #334155) !important;
+            color: white !important;
+            box-shadow: 0 8px 20px rgba(15, 23, 42, 0.35);
+        }
+        body.dark-premium .premium-theme-btn {
+            background: linear-gradient(135deg, #f8fafc, #cbd5e1) !important;
+            color: #0f172a !important;
+            box-shadow: 0 0 12px rgba(255,255,255,0.3);
         }
         .toolBtn.active {
-            background: linear-gradient(90deg, #16a34a, #22c55e);
+            background: var(--accent);
             color: white;
+            box-shadow: 0 0 12px var(--accent);
         }
-        .canvas-wrapper {
-            overflow-x: auto;
-            border-radius: 28px;
-            background: white;
-            border: 2px solid #cbd5e1;
-            -webkit-overflow-scrolling: touch;
+        body.dark-premium .toolBtn.active {
+            box-shadow: 0 0 14px var(--accent);
         }
-        canvas {
-            display: block;
-            width: auto;
-            height: auto;
-            background: white;
-            border-radius: 26px;
-            margin: 0 auto;
-        }
-        .latex-panel {
-            background: linear-gradient(180deg, #f8fafc, #eef2f6);
-            padding: 16px;
-            border-radius: 24px;
-            line-height: 1.65;
-            font-size: 0.95rem;
-            flex: 1;               /* Ocupa todo el espacio restante */
-            overflow-y: auto;      /* Scroll solo aquí si el contenido excede */
-            margin-top: 12px;
-        }
-        .formula {
-            text-align: center;
-            font-size: 1.2rem;
-            color: #d97706;
-            margin: 18px 0;
-            overflow-x: auto;
-            padding: 6px 0;
-        }
-        .tag {
-            background: #cbd5e1;
-            padding: 6px 14px;
-            border-radius: 40px;
-            display: inline-block;
-            margin: 5px 6px;
-            font-weight: 600;
-            font-size: 0.85rem;
-        }
-        hr { margin: 20px 0; border-color: #cbd5e1; }
-        @media (max-width: 768px) {
-            .container { padding: 12px; gap: 14px; }
-            .panel { padding: 14px; }
-            h2 { font-size: 1.3rem; }
-            .toolBtn { padding: 10px 6px; font-size: 0.8rem; }
-            .formula { font-size: 1rem; }
-            .row { flex-direction: column; }
-        }
-        button, .toolBtn, .mainBtn { touch-action: manipulation; }
 
-        /* Botón y modal del quiz */
-        .quiz-launch-btn {
-            margin: 20px 16px 24px 16px;
-            padding: 16px;
-            background: linear-gradient(95deg, #8b5cf6, #6d28d9);
-            border: none;
-            border-radius: 60px;
-            color: white;
-            font-weight: 800;
-            font-size: 1.2rem;
-            letter-spacing: 1px;
-            cursor: pointer;
-            box-shadow: 0 8px 20px rgba(107, 70, 193, 0.5);
-            transition: all 0.2s ease;
-            text-align: center;
-            width: calc(100% - 32px);
-            display: block;
-        }
-        .quiz-launch-btn:active { transform: scale(0.97); }
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.85);
+        /* Footer mejorado */
+        .premium-footer {
+            margin-top: 2rem;
+            background: var(--footer-bg);
             backdrop-filter: blur(12px);
-            z-index: 2000;
-            display: none;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            box-sizing: border-box;
-        }
-        .modal-container {
-            background: #f8fafc;
-            width: 100%;
-            max-width: 1100px;
-            height: 90vh;
-            border-radius: 2rem;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
-        }
-        .modal-header {
-            background: linear-gradient(90deg, #0f172a, #1e293b);
-            padding: 14px 24px;
+            border-top: 1px solid var(--border-light);
+            padding: 1rem 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            color: white;
+            flex-wrap: wrap;
+            gap: 1rem;
+            border-radius: 2rem 2rem 0 0;
         }
-        .modal-header h3 { margin: 0; font-size: 1.4rem; font-weight: 700; }
-        .close-modal {
-            background: #ef4444;
-            border: none;
-            font-size: 1.4rem;
-            font-weight: bold;
-            color: white;
-            width: 40px;
-            height: 40px;
+        body.dark-premium .premium-footer {
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(16px);
+            border-top: 1px solid rgba(56, 189, 248, 0.4);
+        }
+        .footer-text {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        body.dark-premium .footer-text {
+            color: #cbd5e1;
+            text-shadow: 0 0 4px rgba(56,189,248,0.3);
+        }
+        .footer-badge {
+            background: var(--accent-glow);
             border-radius: 40px;
+            padding: 4px 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            border: 1px solid var(--border-light);
+        }
+        body.dark-premium .footer-badge {
+            box-shadow: 0 0 8px rgba(56,189,248,0.3);
+        }
+
+        /* Estilos generales */
+        header {
+            backdrop-filter: blur(12px);
+            background: var(--surface);
+            border-bottom: 1px solid var(--border-light);
+            padding: 0.9rem 1.8rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 20;
+        }
+        .logo-area h1 {
+            font-size: 1.7rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent), #a855f7);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            letter-spacing: -0.3px;
+        }
+        .logo-area p {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+        .badge-container {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .science-badge {
+            background: rgba(56, 189, 248, 0.12);
+            backdrop-filter: blur(4px);
+            padding: 4px 12px;
+            border-radius: 40px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--accent);
+            border: 1px solid var(--border-light);
+        }
+        .top-actions { display: flex; gap: 12px; }
+        .container {
+            max-width: 1600px;
+            margin: 1.5rem auto;
+            padding: 0 1.2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.8rem;
+        }
+        .main-lab-layout {
+            position: relative;
+            background: var(--surface);
+            backdrop-filter: blur(2px);
+            border-radius: 2rem;
+            border: 1px solid var(--border-light);
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+        }
+        .floating-controls {
+            position: absolute;
+            top: 1.2rem;
+            left: 1.2rem;
+            width: 280px;
+            max-height: calc(100% - 2.4rem);
+            overflow-y: auto;
+            z-index: 30;
+            background: var(--surface);
+            backdrop-filter: blur(20px);
+            border-radius: 1.5rem;
+            padding: 1.2rem;
+            border: 1px solid var(--border-light);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+        .floating-controls h3 { font-size: 1rem; font-weight: 600; margin-bottom: 1rem; color: var(--accent); }
+        .smart-charge-card {
+            margin-bottom: 1rem;
+            padding: 0.8rem;
+            background: var(--surface-solid);
+            border-radius: 1.2rem;
+            border: 1px solid var(--border-light);
+            transition: 0.2s;
+        }
+        .charge-header { display: flex; justify-content: space-between; margin-bottom: 8px; }
+        .slider-group { margin: 10px 0; }
+        .slider-label { display: flex; justify-content: space-between; font-size: 0.7rem; font-weight: 500; color: var(--text-secondary); }
+        .smart-slider { width: 100%; height: 5px; border-radius: 10px; background: #cbd5e1; appearance: none; }
+        .smart-slider.red { background: linear-gradient(90deg, #ef4444, #b91c1c); }
+        .smart-slider.blue { background: linear-gradient(90deg, #3b82f6, #1e3a8a); }
+        .smart-slider::-webkit-slider-thumb { width: 16px; height: 16px; background: white; border-radius: 50%; border: 2px solid var(--accent); cursor: pointer; box-shadow: 0 1px 4px rgba(0,0,0,0.2); }
+        .mini-coords { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+        .mini-input { background: var(--surface); border-radius: 12px; padding: 6px; text-align: center; border: 1px solid var(--border-light); }
+        .mini-input input { width: 100%; background: transparent; border: none; text-align: center; font-weight: 600; color: var(--text-primary); }
+        .toolbar {
+            position: absolute;
+            top: 1.2rem;
+            right: 1.2rem;
+            z-index: 30;
+            background: var(--surface);
+            backdrop-filter: blur(16px);
+            border-radius: 60px;
+            padding: 0.5rem 1rem;
+            display: flex;
+            gap: 0.5rem;
+            border: 1px solid var(--border-light);
+        }
+        .toolBtn {
+            background: transparent;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .canvas-stage {
+            padding: 1.8rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 680px;
+            background: radial-gradient(circle at 30% 20%, rgba(56,189,248,0.03), transparent 60%);
+        }
+        .canvas-wrapper {
+            background: var(--canvas-bg);
+            border-radius: 2rem;
+            overflow: auto;
+            border: 1px solid var(--border-light);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            transition: background 0.2s;
+            max-width: 100%;
+        }
+        canvas { display: block; width: auto; height: auto; background: var(--canvas-bg); cursor: pointer; }
+        .pedagogical-panel {
+            background: var(--surface);
+            backdrop-filter: blur(12px);
+            border-radius: 1.8rem;
+            border: 1px solid var(--border-light);
+            padding: 1.6rem;
+            box-shadow: var(--card-shadow);
+        }
+        .pedagogical-panel h2 { font-size: 1.3rem; font-weight: 600; margin-bottom: 1rem; color: var(--accent); letter-spacing: -0.2px; }
+        .latex-panel { line-height: 1.6; font-size: 0.95rem; color: var(--text-primary); }
+        .latex-panel .formula { text-align: center; margin: 1rem 0; padding: 0.5rem; background: var(--surface-solid); border-radius: 1rem; }
+        .tag { background: var(--accent-glow); display: inline-block; padding: 0.2rem 1rem; border-radius: 30px; margin: 0.2rem; font-size: 0.75rem; font-weight: 500; }
+        .quiz-section {
+            background: var(--surface);
+            border-radius: 1.8rem;
+            border: 1px solid var(--border-light);
+            padding: 1.6rem;
+            box-shadow: var(--card-shadow);
+        }
+        .quiz-section h2 { font-size: 1.3rem; font-weight: 600; margin-bottom: 1rem; color: var(--accent); }
+        
+        /* Estilos específicos para el quiz en modo oscuro (legibilidad) */
+        .quiz-radio-option {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 18px;
+            border-radius: 18px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            background: var(--quiz-option-bg);
+            border: 1px solid var(--border-light);
+            transition: 0.2s;
+            user-select: none;
+            color: var(--text-primary);
+        }
+        body.dark-premium .quiz-radio-option {
+            color: #f1f5f9 !important;
+            background: #1e293b;
+        }
+        .quiz-radio-option.selected {
+            background: var(--quiz-selected-bg) !important;
+            color: white !important;
+            border-color: white !important;
+        }
+        .quiz-dot { width: 18px; height: 18px; border-radius: 50%; border: 2px solid currentColor; }
+        .quiz-radio-option.selected .quiz-dot { background: white; }
+        .question-text {
+            color: var(--text-primary);
+            margin: 12px 0;
+            font-weight: 500;
+        }
+        body.dark-premium .question-text {
+            color: #eef2ff;
+        }
+        .quiz-card {
+            background: var(--surface-solid);
+            border-radius: 1.2rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border: 1px solid var(--border-light);
+        }
+        .quiz-btn-action {
+            background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+            border: none;
+            padding: 10px 28px;
+            border-radius: 40px;
+            color: white;
+            font-weight: bold;
+            margin: 0 8px;
+            cursor: pointer;
+            transition: 0.2s;
+            box-shadow: 0 4px 12px rgba(109,40,217,0.3);
+        }
+        body.dark-premium .quiz-btn-action { box-shadow: 0 0 16px rgba(139,92,246,0.6); }
+        .quiz-secondary-btn {
+            background: var(--surface-solid);
+            border: 1px solid var(--border-light);
+            padding: 10px 28px;
+            border-radius: 40px;
+            color: var(--text-primary);
+            font-weight: bold;
             cursor: pointer;
         }
-        .quiz-iframe { flex: 1; width: 100%; border: none; background: #fff; }
-        @media (max-width: 700px) {
-            .modal-container { height: 95vh; width: 98%; }
-            .quiz-launch-btn { font-size: 1rem; padding: 14px; }
+        .results-table { width: 100%; border-collapse: collapse; margin-top: 1rem; font-size: 0.85rem; }
+        .results-table th, .results-table td { border: 1px solid var(--border-light); padding: 8px; text-align: left; color: var(--text-primary); }
+        .results-table th { background: var(--accent-glow); }
+        .progress-container { width: 100%; height: 24px; background: rgba(148,163,184,0.2); border-radius: 40px; overflow: hidden; margin: 18px 0; border: 1px solid var(--border-light); }
+        .progress-bar { height: 100%; width: 0%; display: flex; align-items: center; justify-content: center; font-weight: 700; color: white; background: linear-gradient(90deg, #22c55e, #0ea5e9, #8b5cf6); transition: width 0.6s ease; }
+        .scientific-badge-box { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-top: 12px; }
+        .scientific-badge { padding: 8px 16px; border-radius: 40px; font-size: 0.8rem; font-weight: 700; background: var(--accent-glow); border: 1px solid var(--border-light); color: var(--text-primary); }
+        body.dark-premium .scientific-badge { color: #ffffff; box-shadow: 0 0 8px rgba(56,189,248,0.3); }
+        @media (max-width: 780px) {
+            .floating-controls { position: relative; width: 100%; top: 0; left: 0; margin-bottom: 0.5rem; }
+            .toolbar { position: relative; top: auto; right: auto; justify-content: center; margin-top: 0.5rem; }
+            .canvas-stage { padding: 0.8rem; }
+            header { flex-direction: column; text-align: center; }
+            .badge-container { justify-content: center; }
         }
     </style>
 </head>
 <body>
 <header>
-    ⚡ Coulomb Law's — Motor Pedagógico + Simulador Gráfico ⚡
-    <div class="author">Ing. Medina H. A. | Aprendizaje activo con simulación</div>
-</header>
-
-<div class="container">
-    <div class="row">
-        <!-- Panel izquierdo: modelo pedagógico mejorado (con scroll interno) -->
-        <div class="panel" style="flex: 1.2;">
-            <h2>📖 Modelo Pedagógico</h2>
-            <div class="latex-panel" id="modeloPedagogico">
-                Cargando...
-            </div>
+    <div class="logo-area">
+        <h1>⚡ Coulomb's Law</h1>
+        <p>STEM interactive · vectorial field · premium pedagogy</p>
+        <div class="badge-container" style="margin-top: 6px;">
+            <span class="science-badge">⚡ Ley de Coulomb</span>
+            <span class="science-badge">🧪 Científico STEM</span>
+            <span class="science-badge">🔭 Explorador Eléctrico</span>
         </div>
-
-        <!-- Panel derecho: simulador con gráficos originales -->
-        <div class="panel" style="flex: 2;">
-            <h2>⚙ Simulador interactivo</h2>
-            <label>Número de cargas</label>
-            <select id="numCargas">
-                <option value="2" selected>2 cargas</option>
-                <option value="3">3 cargas</option>
+    </div>
+    <div class="top-actions">
+        <button class="premium-action-btn premium-quiz-btn" id="toggleQuizBtn">📚 Quiz STEM</button>
+        <button class="premium-action-btn premium-theme-btn" id="themeToggleBtn">🌙 Dark Elegance</button>
+    </div>
+</header>
+<div class="container">
+    <div class="main-lab-layout">
+        <div class="floating-controls">
+            <h3>⚙️ control panel</h3>
+            <label style="font-size:0.8rem; font-weight:600;">Number of charges</label>
+            <select id="numCargas" style="width:100%; padding: 8px; border-radius: 40px; margin-bottom: 12px;">
+                <option value="2">2 charges</option>
+                <option value="3">3 charges</option>
             </select>
             <div id="inputs"></div>
-            <button class="mainBtn" onclick="simular()">▶ Ejecutar simulación</button>
-
-            <h2>📈 Plano Cartesiano y Campo Eléctrico</h2>
-            <div class="toolbar">
-                <button class="toolBtn active" onclick="toggleFuerzas(this)">⚡ Fuerzas</button>
-                <button class="toolBtn active" onclick="toggleCampo(this)">🧭 Campo</button>
-                <button class="toolBtn active" onclick="toggleFlujo(this)">🌊 Flujo</button>
-                <button class="toolBtn active" onclick="toggleEjes(this)">📐 Ejes</button>
-            <button class="toolBtn" id="btnAjustarVista" onclick="ajustarVista(this)">🔍 Ajustar Vista</button>
-            </div>
+        </div>
+        <div class="toolbar">
+            <button class="toolBtn active" onclick="toggleFuerzas(this)">⚡ Forces</button>
+            <button class="toolBtn active" onclick="toggleCampo(this)">🧭 Field</button>
+            <button class="toolBtn active" onclick="toggleFlujo(this)">🌊 Flux</button>
+            <button class="toolBtn active" onclick="toggleEjes(this)">📐 Axes</button>
+            <button class="toolBtn" id="btnAjustarVista" onclick="ajustarVista(this)">🔍 Auto arrange</button>
+        </div>
+        <div class="canvas-stage">
             <div class="canvas-wrapper">
-                <canvas id="canvas" width="1000" height="650" style="min-width: 360px; width: 100%; height: auto; max-width: 1000px; aspect-ratio: 1000/650;"></canvas>
+                <canvas id="canvas" width="1100" height="680" style="width:100%; height:auto; aspect-ratio:1100/680;"></canvas>
             </div>
         </div>
     </div>
-</div>
-
-<button class="quiz-launch-btn" id="openQuizBtn">📋 EVALUACIÓN ICFES · LEY DE COULOMB 📋</button>
-
-<!-- Modal del quiz -->
-<div id="quizModal" class="modal-overlay">
-    <div class="modal-container">
-        <div class="modal-header">
-            <h3>⚡ Desafío ICFES - Ley de Coulomb ⚡</h3>
-            <button class="close-modal" id="closeQuizModalBtn">✕</button>
+    <div class="pedagogical-panel">
+        <h2>📖 STEM pedagogical model</h2>
+        <div class="latex-panel" id="modeloPedagogico">Loading interactive lesson...</div>
+    </div>
+    <div class="quiz-section" id="quizSection">
+        <div class="badge-container" style="margin-bottom: 12px;">
+            <span class="science-badge">📚 ICFES Prep</span>
+            <span class="science-badge">⚡ Electrostatics</span>
+            <span class="science-badge">🧠 Pensamiento científico</span>
         </div>
-        <iframe id="quizIframe" class="quiz-iframe" title="Quiz Coulomb ICFES" sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-modals"></iframe>
+        <h2>📋 ICFES Style Quiz · Ley de Coulomb</h2>
+        <div id="quizContainer"></div>
     </div>
 </div>
-
-<template id="quizFullTemplate">
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Quiz ICFES · Ley de Coulomb | PDF funcional</title>
-    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', 'Inter', system-ui, sans-serif; }
-        body { background: linear-gradient(145deg, #f0f9ff 0%, #e6f0fa 100%); padding: 2rem 1.5rem; min-height: 100vh; }
-        .container { max-width: 900px; margin: 0 auto; }
-        .hero { text-align: center; margin-bottom: 2rem; }
-        .hero h1 { font-size: 2.2rem; background: linear-gradient(135deg, #0f2b3d, #1e4a6e); background-clip: text; -webkit-background-clip: text; color: transparent; }
-        .hero p { color: #2c3e4e; margin-top: 6px; font-weight: 500; }
-        .motivation-badge { display: inline-block; background: #fff3e0; border-radius: 40px; padding: 6px 20px; font-size: 0.85rem; font-weight: 600; color: #c45100; margin-top: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.05); border-left: 4px solid #f39c12; }
-        .student-card { background: white; border-radius: 2rem; padding: 1.2rem 1.8rem; margin-bottom: 2rem; display: flex; flex-wrap: wrap; gap: 20px; justify-content: space-between; align-items: center; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05); border: 1px solid #cbdde9; }
-        .student-field { flex: 2; min-width: 200px; }
-        .student-field label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: #1e6f9f; }
-        .student-field input { width: 100%; background: #f9fbfd; border: 1px solid #bdd4e2; border-radius: 1.5rem; padding: 12px 18px; font-size: 0.9rem; color: #0f2b3d; transition: 0.2s; }
-        .student-field input:focus { outline: none; border-color: #2c7cb6; box-shadow: 0 0 0 3px rgba(44,124,182,0.2); }
-        .attempt-info { background: #eef3fa; padding: 8px 22px; border-radius: 2rem; font-weight: bold; font-size: 0.8rem; color: #1f5e8c; border-left: 4px solid #2c7cb6; }
-        .quiz-card { background: white; border-radius: 1.8rem; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); border: 1px solid #cfdfea; }
-        .question-header { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
-        .q-num { background: #2c7cb6; border-radius: 2rem; padding: 4px 16px; font-weight: bold; font-size: 0.75rem; color: white; }
-        .competencia { background: #e2edf5; border-radius: 2rem; padding: 4px 14px; font-size: 0.7rem; font-weight: 600; color: #155f8a; }
-        .question-text { font-size: 1rem; font-weight: 500; margin: 12px 0 18px; color: #1a2c38; line-height: 1.45; }
-        .options { display: flex; flex-direction: column; gap: 12px; }
-        .option { background: #f9fbfd; padding: 12px 18px; border-radius: 1.2rem; border: 1px solid #cbdde9; cursor: pointer; transition: all 0.2s; font-size: 0.85rem; color: #1f3b47; }
-        .option.selected { background: #2e7d32; border-color: #4caf50; color: white; box-shadow: 0 2px 8px rgba(46,125,50,0.3); }
-        .option.incorrect-highlight { background: #c62828; border-color: #ef5350; color: white; }
-        .option.correct-highlight { background: #2e7d32; border-color: #81c784; color: white; }
-        .action-buttons { display: flex; gap: 18px; justify-content: center; margin: 30px 0 25px; flex-wrap: wrap; }
-        .btn { border: none; padding: 12px 28px; border-radius: 3rem; font-weight: bold; font-size: 0.9rem; cursor: pointer; transition: 0.2s; background: #2c7cb6; color: white; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .btn-pdf { background: #1f6e43; }
-        .btn-warning { background: #e67e22; }
-        .btn-danger { background: #c0392b; }
-        .btn:disabled { opacity: 0.6; cursor: not-allowed; }
-        .score-board { background: #ffffffdd; backdrop-filter: blur(8px); border-radius: 2rem; padding: 1.5rem; text-align: center; border: 1px solid #2c7cb6; margin-top: 1rem; box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
-        .interpretation { margin: 15px 0 0; background: #eef3fa; border-radius: 1.5rem; padding: 16px; font-size: 1rem; color: #1f5e8c; }
-        hr { margin: 16px 0; border-color: #cbdde9; }
-        footer { text-align: center; margin-top: 2rem; padding: 1rem; border-top: 1px solid #bdd4e2; font-size: 0.75rem; color: #4a6f88; }
-        @media (max-width: 680px) { body { padding: 1rem; } .student-card { flex-direction: column; align-items: stretch; } .btn { width: 100%; } }
-    </style>
-</head>
-<body>
-<div class="container">
-    <div class="hero">
-        <h1>⚡ Ley de Coulomb · Desafío ICFES ⚡</h1>
-        <p>15 preguntas | Competencias científicas | Coherencia matemática total</p>
-        <div class="motivation-badge" id="motivationPhrase"></div>
-    </div>
-
-    <div class="student-card">
-        <div class="student-field">
-            <label>📝 Nombre completo (obligatorio)</label>
-            <input type="text" id="studentName" placeholder="Ej: Marie Curie" autocomplete="off">
-        </div>
-        <div class="attempt-info" id="attemptDisplay">Intentos restantes: --</div>
-    </div>
-
-    <div id="dynamicQuiz"></div>
-
-    <div class="action-buttons">
-        <button class="btn" id="submitQuizBtn">✨ Calificar intento ✨</button>
-        <button class="btn btn-pdf" id="downloadPDFBtn" disabled>📄 Certificado PDF</button>
-    </div>
-
-    <div id="resultPanel" class="score-board" style="display: none;"></div>
-    <footer>Designed by Eng. Medina H. A.</footer>
-</div>
-
+<footer class="premium-footer">
+    <div><div class="footer-text" style="font-weight:700;">✨ Eng. Medina H. A., MSc. ✨</div><div class="footer-text" style="font-size:0.7rem;">Rural STEM Scientific League · offline simulation</div></div>
+    <div style="display:flex; gap:10px;"><div class="footer-badge">⚡ Electromagnetism</div><div class="footer-badge">🧠 Adaptive pedagogy</div></div>
+</footer>
 <script>
-    // FRASES MOTIVADORAS (parte motivadora del quiz)
-    const motivationalQuotes = [
-        "🚀 ¡Eres el próximo Tesla! Electriza este quiz con tu conocimiento.",
-        "🧠 Pídele ayuda a tu amigo Einstein… pero sabemos que no la necesitas.",
-        "⚡ ¿Qué diría Ampère de ti? Seguro que: '¡Impresionante!'",
-        "🌟 Coulomb estaría orgulloso. Demuestra que dominas su ley.",
-        "🔋 Maxwell te observa: concéntrate y brilla.",
-        "💡 Un pequeño paso para ti, un gran salto para la electrostática.",
-        "🎯 ¡Tú puedes! Hasta Faraday confía en tu potencial.",
-        "🏆 Este es tu momento: conviértete en leyenda de la física.",
-        "📚 Cada respuesta correcta te acerca a ser el próximo genio de la ciencia."
-    ];
-    function updateMotivationPhrase() {
-        const randomIndex = Math.floor(Math.random() * motivationalQuotes.length);
-        document.getElementById('motivationPhrase').innerHTML = motivationalQuotes[randomIndex];
-    }
-
-    const questionsBank = [
-        { text: "Dos cargas puntuales \\(q_1 = +3\\,\\mu C\\) y \\(q_2 = -2\\,\\mu C\\) separadas \\(0.1\\,m\\). La fuerza electrostática (módulo) es:", options: ["\\(5.4\\, N\\) (atracción)", "\\(5.4\\, N\\) (repulsión)", "\\(2.7\\, N\\) (atracción)", "\\(10.8\\, N\\) (atracción)"], correct: 0, competencia: "Uso comprensivo" },
-        { text: "En un simulador de Coulomb, la opción 'Campo eléctrico' representa:", options: ["Líneas equipotenciales", "Vectores de campo en cada punto", "Fuerzas entre cargas", "Trayectorias"], correct: 1, competencia: "Indagación" },
-        { text: "Fuerza entre \\(4\\,\\mu C\\) y \\(6\\,\\mu C\\) a \\(0.5\\,m\\) (\\(k=9\\times10^9\\)):", options: ["\\(0.864\\, N\\)", "\\(0.432\\, N\\)", "\\(1.728\\, N\\)", "\\(0.216\\, N\\)"], correct: 0, competencia: "Uso comprensivo" },
-        { text: "Si la distancia se triplica, la fuerza se reduce:", options: ["9 veces", "3 veces", "6 veces", "no cambia"], correct: 0, competencia: "Explicación" },
-        { text: "Campo eléctrico en el punto medio entre \\(+Q\\) y \\(-Q\\), cuando la separación TOTAL entre cargas es \\(d\\):", options: ["\\(\\frac{8kQ}{d^2}\\) hacia la negativa", "Cero", "\\(\\frac{4kQ}{d^2}\\) hacia la positiva", "\\(\\frac{2kQ}{d^2}\\)"], correct: 0, competencia: "Indagación" },
-        { text: "Color típico de carga negativa en simuladores:", options: ["Rojo", "Azul", "Verde", "Amarillo"], correct: 1, competencia: "Indagación" },
-        { text: "Carga \\(+2\\mu C\\) ejerce \\(0.5 N\\) a \\(0.2 m\\). Hallar la otra carga:", options: ["\\(1.11\\mu C\\)", "\\(2.22\\mu C\\)", "\\(0.55\\mu C\\)", "\\(3.33\\mu C\\)"], correct: 0, competencia: "Uso comprensivo" },
-        { text: "Líneas de flujo eléctrico muestran:", options: ["Dirección del campo", "Trayectorias de cargas", "Fuerza neta", "Energía potencial"], correct: 0, competencia: "Explicación" },
-        { text: "Duplicando cargas y reduciendo distancia a la mitad, la fuerza se multiplica por:", options: ["16", "8", "4", "2"], correct: 0, competencia: "Uso comprensivo" },
-        { text: "Flechas verdes en el simulador representan:", options: ["Campo eléctrico", "Fuerza entre cargas", "Velocidad", "Flujo"], correct: 1, competencia: "Indagación" },
-        { text: "Dos cargas \\(+5\\mu C\\) separadas \\(0.3 m\\). El módulo de la fuerza sobre una carga es:", options: ["\\(2.5 N\\) repulsión", "\\(2.5 N\\) atracción", "\\(5 N\\) repulsión", "\\(1.25 N\\) repulsión"], correct: 0, competencia: "Uso comprensivo" },
-        { text: "Constante de Coulomb en el vacío:", options: ["\\(9\\times10^9\\)", "\\(8.85\\times10^{-12}\\)", "\\(1.6\\times10^{-19}\\)", "\\(6.67\\times10^{-11}\\)"], correct: 0, competencia: "Uso comprensivo" },
-        { text: "Para tres cargas, la fuerza total sobre una es:", options: ["Suma vectorial", "Producto escalar", "Solo la más cercana", "Promedio"], correct: 0, competencia: "Explicación" },
-        { text: "Un electrón se sitúa en una región con campo eléctrico uniforme \\(E = 2\\times10^4\\,\\text{N/C}\\). La fuerza sobre el electrón (\\(e=1.6\\times10^{-19}C\\)) es:", options: ["\\(3.2\\times10^{-15}\\,\\text{N}\\) opuesta al campo", "\\(1.6\\times10^{-19}\\,\\text{N}\\) en la dirección del campo", "\\(2\\times10^4\\,\\text{N}\\)", "Cero"], correct: 0, competencia: "Indagación" },
-        { text: "Gráfica de E vs r para carga puntual:", options: ["Proporcional a \\(1/r^2\\)", "Proporcional a r", "Lineal decreciente", "Constante"], correct: 0, competencia: "Indagación" }
-    ];
-
-    let currentQuizQuestions = [], userAnswers = [], attempts = 0, MAX_ATTEMPTS = 3, quizLocked = false, currentScore = null, currentGrade = null, lastStudentName = "", lastSelections = [];
-
-    function shuffleArray(arr) { for (let i = arr.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [arr[i], arr[j]] = [arr[j], arr[i]]; } return arr; }
-    function buildQuizQuestions() { return questionsBank.map((q, idx) => { const shuffledOpts = shuffleArray([...q.options]); const originalCorrectText = q.options[q.correct]; const newCorrectIdx = shuffledOpts.findIndex(opt => opt === originalCorrectText); return { id: idx, text: q.text, shuffledOptions: shuffledOpts, correctIndex: newCorrectIdx, competencia: q.competencia }; }); }
-    function renderQuiz() {
-        currentQuizQuestions = buildQuizQuestions();
-        userAnswers = new Array(currentQuizQuestions.length).fill(null);
-        const container = document.getElementById('dynamicQuiz');
-        container.innerHTML = '';
-        currentQuizQuestions.forEach((q, idx) => {
-            const card = document.createElement('div'); card.className = 'quiz-card';
-            card.innerHTML = `<div class="question-header"><span class="q-num">Pregunta ${idx+1}</span><span class="competencia">🏷️ ${q.competencia}</span></div><div class="question-text">${q.text}</div><div class="options" id="opts-${idx}"></div>`;
-            container.appendChild(card);
-            const optsDiv = document.getElementById(`opts-${idx}`);
-            q.shuffledOptions.forEach((opt, optIdx) => {
-                const optDiv = document.createElement('div'); optDiv.className = 'option'; optDiv.innerHTML = opt;
-                optDiv.addEventListener('click', () => { if (quizLocked) return; optsDiv.querySelectorAll('.option').forEach(o => o.classList.remove('selected')); optDiv.classList.add('selected'); userAnswers[idx] = optIdx; });
-                optsDiv.appendChild(optDiv);
-            });
-        });
-        document.getElementById('resultPanel').style.display = 'none';
-        quizLocked = false;
-        if (window.MathJax) MathJax.typesetPromise().catch(console.error);
-        updateMotivationPhrase();
-    }
-    function loadAttempts() { const stored = localStorage.getItem("coulombQuizClaro"); attempts = stored !== null ? parseInt(stored) : 0; const remaining = MAX_ATTEMPTS - attempts; document.getElementById('attemptDisplay').innerHTML = remaining <= 0 ? "🚫 Intentos agotados (máximo 3)" : `📊 Intentos usados: ${attempts} / ${MAX_ATTEMPTS} · Restantes: ${remaining}`; if (attempts >= MAX_ATTEMPTS) quizLocked = true; }
-    function saveAttempts() { localStorage.setItem("coulombQuizClaro", attempts); const remaining = MAX_ATTEMPTS - attempts; document.getElementById('attemptDisplay').innerHTML = remaining <= 0 ? "🚫 Intentos agotados (máximo 3)" : `📊 Intentos usados: ${attempts} / ${MAX_ATTEMPTS} · Restantes: ${remaining}`; if (attempts >= MAX_ATTEMPTS) quizLocked = true; }
-    function getMotivationalMessage(grade, studentName) { const name = studentName || "valiente estudiante"; if (grade >= 4.8) return `✨ ¡${name}, pareces la hija o hijo de Marie Curie! ✨<br>Einstein estaría orgullosísimo de ti.`; if (grade >= 4.0) return `🌟 ¡${name}, eres una estrella de la electrostática! 🌟<br>Maxwell diría: "Este talento no se ve todos los días".`; if (grade >= 3.0) return `📘 ¡Buen trabajo, ${name}! Coulomb cuenta contigo.<br>Un repaso a la ley cuadrática y serás imparable.`; if (grade >= 2.0) return `⚡ Ánimo, ${name}. Ampère cree en tu potencial. Cada error te acerca al acierto.`; return `🔋 ¡No te rindas, ${name}! Hasta Faraday tuvo que ensayar. ¡Tú puedes!`; }
-    function evaluateQuiz() {
-        const studentName = document.getElementById('studentName').value.trim().toUpperCase();
-        if (studentName === "") { alert("Ingresa tu nombre completo."); return; }
-        if (userAnswers.includes(null)) { alert("Faltan preguntas por responder."); return; }
-        if (attempts >= MAX_ATTEMPTS) { alert("Sin intentos restantes."); return; }
-        let correctCount = 0;
-        for (let i = 0; i < currentQuizQuestions.length; i++) if (userAnswers[i] === currentQuizQuestions[i].correctIndex) correctCount++;
-        const grade = (correctCount / currentQuizQuestions.length) * 5;
-        currentScore = correctCount; currentGrade = grade; lastStudentName = studentName; lastSelections = [...userAnswers];
-        attempts++; saveAttempts(); quizLocked = true;
-        const resultDiv = document.getElementById('resultPanel');
-        resultDiv.style.display = 'block';
-        resultDiv.innerHTML = `<h3 style="color:#1f6e43;">📋 Resultados · ${studentName}</h3><p>✅ Aciertos: <strong>${correctCount} / 15</strong></p><p>🎓 Calificación: ${grade.toFixed(2)} / 5.0</p><div class="interpretation">${getMotivationalMessage(grade, studentName)}</div><hr><p>📊 Intento ${attempts} de ${MAX_ATTEMPTS}</p><div id="extraButtons" style="display: flex; gap: 12px; justify-content: center; margin-top: 15px;"></div>`;
-        const extraDiv = document.getElementById('extraButtons');
-        if (attempts < MAX_ATTEMPTS) { const retryBtn = document.createElement('button'); retryBtn.innerText = "🔄 Nuevo intento"; retryBtn.className = "btn btn-warning"; retryBtn.onclick = () => { renderQuiz(); quizLocked = false; document.getElementById('resultPanel').style.display = 'none'; userAnswers.fill(null); document.getElementById('downloadPDFBtn').disabled = false; }; extraDiv.appendChild(retryBtn); }
-        else { const revealBtn = document.createElement('button'); revealBtn.innerText = "📚 Ver respuestas correctas (rojo=error, verde=correcta)"; revealBtn.className = "btn btn-danger"; revealBtn.onclick = () => { for (let i = 0; i < currentQuizQuestions.length; i++) { const userIdx = lastSelections[i]; const correctIdx = currentQuizQuestions[i].correctIndex; const optsDiv = document.getElementById(`opts-${i}`); if (optsDiv) { const allOpts = optsDiv.querySelectorAll('.option'); allOpts.forEach(opt => opt.classList.remove('incorrect-highlight', 'correct-highlight')); if (userIdx !== undefined && userIdx !== correctIdx) { if (allOpts[userIdx]) allOpts[userIdx].classList.add('incorrect-highlight'); if (allOpts[correctIdx]) allOpts[correctIdx].classList.add('correct-highlight'); } else if (userIdx === correctIdx && allOpts[correctIdx]) allOpts[correctIdx].classList.add('correct-highlight'); } } }; extraDiv.appendChild(revealBtn); }
-        document.getElementById('downloadPDFBtn').disabled = false;
-        if (window.MathJax) MathJax.typesetPromise();
-    }
-    async function downloadPDF() {
-        if (currentScore === null) { alert("Primero califica el quiz."); return; }
-        const { jsPDF } = window.jspdf; const doc = new jsPDF();
-        doc.setFontSize(16); doc.text("Certificado Oficial - Ley de Coulomb", 15, 20);
-        doc.setFontSize(12); doc.text(`Estudiante: ${lastStudentName}`, 15, 32);
-        doc.text(`Fecha: ${new Date().toLocaleString()}`, 15, 40);
-        const nota = (currentScore/15)*5;
-        doc.text(`Aciertos: ${currentScore}/15 → Nota: ${nota.toFixed(2)}/5.0`, 15, 48);
-        let compUso = 0, compInd = 0, compExp = 0;
-        for (let i = 0; i < currentQuizQuestions.length; i++) {
-            const comp = currentQuizQuestions[i].competencia;
-            if (lastSelections[i] === currentQuizQuestions[i].correctIndex) {
-                if (comp.includes("Uso")) compUso++; else if (comp.includes("Indagación")) compInd++; else if (comp.includes("Explicación")) compExp++;
-            }
-        }
-        doc.text(`Competencias: Uso comprensivo ${compUso}/5 · Indagación ${compInd}/5 · Explicación ${compExp}/5`, 15, 58);
-        doc.text("Recomendación: " + (nota >= 4 ? "Excelente dominio de la ley de Coulomb." : nota >= 3 ? "Buen desempeño, repasa superposición." : "Estudia la relación cuadrática inversa."), 15, 68);
-        doc.save(`Certificado_Coulomb_${lastStudentName.replace(/\s/g, "_")}.pdf`);
-    }
-    document.getElementById('submitQuizBtn').addEventListener('click', evaluateQuiz);
-    document.getElementById('downloadPDFBtn').addEventListener('click', downloadPDF);
-    renderQuiz(); loadAttempts();
-</script>
-</body>
-</html>
-</template>
-
-<script>
-    // ---------- SIMULADOR CON GRÁFICOS ORIGINALES Y MOTOR PEDAGÓGICO MEJORADO ----------
-    if (!CanvasRenderingContext2D.prototype.roundRect) {
-        CanvasRenderingContext2D.prototype.roundRect = function(x, y, w, h, r) {
-            if (w < 2 * r) r = w / 2;
-            if (h < 2 * r) r = h / 2;
-            this.moveTo(x+r, y);
-            this.lineTo(x+w-r, y);
-            this.quadraticCurveTo(x+w, y, x+w, y+r);
-            this.lineTo(x+w, y+h-r);
-            this.quadraticCurveTo(x+w, y+h, x+w-r, y+h);
-            this.lineTo(x+r, y+h);
-            this.quadraticCurveTo(x, y+h, x, y+h-r);
-            this.lineTo(x, y+r);
-            this.quadraticCurveTo(x, y, x+r, y);
-            return this;
-        };
-    }
-
     const k = 9e9;
     let escala = 40;
-    let ajusteManualActivo = false;
+    let ajusteManualActivo = true;
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
-
-    let mostrarFuerzas = true;
-    let mostrarCampo = true;
-    let mostrarFlujo = true;
-    let mostrarEjes = true;
-
-    window.toggleFuerzas = function(btn) { mostrarFuerzas = !mostrarFuerzas; btn.classList.toggle('active'); simular(); };
-    window.toggleCampo = function(btn) { mostrarCampo = !mostrarCampo; btn.classList.toggle('active'); simular(); };
-    window.toggleFlujo = function(btn) { mostrarFlujo = !mostrarFlujo; btn.classList.toggle('active'); simular(); };
-    window.toggleEjes = function(btn) { mostrarEjes = !mostrarEjes; btn.classList.toggle('active'); simular(); };
-
+    let mostrarFuerzas = true, mostrarCampo = true, mostrarFlujo = true, mostrarEjes = true;
+    window.toggleFuerzas = (btn) => { mostrarFuerzas = !mostrarFuerzas; btn.classList.toggle('active'); simular(); };
+    window.toggleCampo = (btn) => { mostrarCampo = !mostrarCampo; btn.classList.toggle('active'); simular(); };
+    window.toggleFlujo = (btn) => { mostrarFlujo = !mostrarFlujo; btn.classList.toggle('active'); simular(); };
+    window.toggleEjes = (btn) => { mostrarEjes = !mostrarEjes; btn.classList.toggle('active'); simular(); };
+    function isDark() { return document.body.classList.contains('dark-premium'); }
+    function transformar(x, y) { return { x: canvas.width/2 + x*escala, y: canvas.height/2 - y*escala }; }
     
-window.ajustarVista = function(btn) {
-
-        // Detectar cargas muy cercanas y separarlas inteligentemente
-        const n = parseInt(document.getElementById('numCargas').value);
-
-        let cargas = [];
-
-        for (let i = 1; i <= n; i++) {
-
-            let x = parseFloat(document.getElementById(`x${i}`).value) || 0;
-            let y = parseFloat(document.getElementById(`y${i}`).value) || 0;
-
-            cargas.push({x, y});
-        }
-
-        const distanciaMinima = 28; // cm
-
-        for (let i = 0; i < cargas.length; i++) {
-
-            for (let j = i + 1; j < cargas.length; j++) {
-
-                let dx = cargas[j].x - cargas[i].x;
-                let dy = cargas[j].y - cargas[i].y;
-
-                let d = Math.hypot(dx, dy);
-
-                // Si están prácticamente encima
-                if (d < distanciaMinima) {
-
-                    // Dirección inteligente
-                    let angulo = Math.atan2(dy, dx);
-
-                    // Si exactamente iguales
-                    if (d < 0.001) {
-                        angulo = (Math.PI * 2 * j) / cargas.length;
-                    }
-
-                    const separacion = (distanciaMinima - d) / 2 + 10;
-
-                    const ux = Math.cos(angulo);
-                    const uy = Math.sin(angulo);
-
-                    cargas[i].x -= ux * separacion;
-                    cargas[i].y -= uy * separacion;
-
-                    cargas[j].x += ux * separacion;
-                    cargas[j].y += uy * separacion;
-                }
-            }
-        }
-
-        // Reescribir inputs ya separados
-        for (let i = 1; i <= n; i++) {
-
-            document.getElementById(`x${i}`).value =
-                Number(cargas[i-1].x.toFixed(1));
-
-            document.getElementById(`y${i}`).value =
-                Number(cargas[i-1].y.toFixed(1));
-        }
-
-        ajusteManualActivo = true;
-
-        btn.classList.add('active');
-
-        simular();
-    };
-
-
-
-
-    
-    
-function actualizarEscalaDinamica(cargas) {
-
-        if (!ajusteManualActivo) return;
-
-        if (!cargas || cargas.length === 0) {
-            escala = 40;
-            return;
-        }
-
-        let minX = Infinity;
-        let maxX = -Infinity;
-        let minY = Infinity;
-        let maxY = -Infinity;
-
-        cargas.forEach(c => {
-            minX = Math.min(minX, c.x);
-            maxX = Math.max(maxX, c.x);
-
-            minY = Math.min(minY, c.y);
-            maxY = Math.max(maxY, c.y);
-        });
-
-        // Tamaño real ocupado
-        let ancho = Math.max(0.1, maxX - minX);
-        let alto = Math.max(0.1, maxY - minY);
-
-        // Márgenes pequeños para ocupar gran parte del canvas
-        ancho *= 1.15;
-        alto *= 1.15;
-
-        const escalaX = (canvas.width * 0.82) / ancho;
-        const escalaY = (canvas.height * 0.82) / alto;
-
-        escala = Math.min(escalaX, escalaY);
-
-        // Límites inteligentes
-        escala = Math.max(35, Math.min(escala, 420));
-    }
-
-
-function transformar(x, y) {
-        return { x: canvas.width / 2 + x * escala, y: canvas.height / 2 - y * escala };
-    }
-
-    // --- FUNCIONES DE DIBUJO ORIGINALES ---
     function drawGrid() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = 'white';
+        ctx.fillStyle = isDark() ? '#0b1120' : '#ffffff';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
-        const step = Math.max(25, escala);
-        ctx.strokeStyle = '#e2e8f0';
-        ctx.lineWidth = 1;
-        for (let x = 0; x < canvas.width; x += step) {
-            ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
-        }
-        for (let y = 0; y < canvas.height; y += step) {
-            ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
-        }
+        const step = Math.max(28, escala);
+        ctx.strokeStyle = isDark() ? '#2d3a4e' : '#e2e8f0';
+        ctx.lineWidth = 0.8;
+        for (let x = 0; x < canvas.width; x += step) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,canvas.height); ctx.stroke(); }
+        for (let y = 0; y < canvas.height; y += step) { ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(canvas.width,y); ctx.stroke(); }
         if (mostrarEjes) {
-            const cx = canvas.width / 2;
-            const cy = canvas.height / 2;
-            ctx.strokeStyle = '#16a34a';
-            ctx.lineWidth = 3;
-            ctx.beginPath(); ctx.moveTo(0, cy); ctx.lineTo(canvas.width, cy); ctx.stroke();
-            ctx.beginPath(); ctx.moveTo(cx, 0); ctx.lineTo(cx, canvas.height); ctx.stroke();
-            ctx.fillStyle = '#334155';
-            ctx.font = '500 14px "Segoe UI"';
-            for (let i = 1; i <= 10; i++) {
-                ctx.fillText(i, cx + i * step - 6, cy + 22);
-                ctx.fillText(-i, cx - i * step - 12, cy + 22);
-            }
-            for (let i = 1; i <= 7; i++) {
-                ctx.fillText(i, cx + 12, cy - i * step + 5);
-                ctx.fillText(-i, cx + 12, cy + i * step + 5);
-            }
-            ctx.fillStyle = '#16a34a';
-            ctx.font = 'bold 24px "Segoe UI"';
-            ctx.fillText('X', canvas.width - 36, cy - 10);
-            ctx.fillText('Y', cx + 18, 35);
+            const cx = canvas.width/2, cy = canvas.height/2;
+            ctx.strokeStyle = isDark() ? '#38bdf8' : '#16a34a';
+            ctx.lineWidth = 2;
+            ctx.beginPath(); ctx.moveTo(0,cy); ctx.lineTo(canvas.width,cy); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(cx,0); ctx.lineTo(cx,canvas.height); ctx.stroke();
+            ctx.fillStyle = isDark() ? '#94a3b8' : '#334155';
+            ctx.font = '12px "Segoe UI"';
+            for(let i=1;i<=8;i++) { ctx.fillText(i, cx+i*step-4, cy+18); ctx.fillText(-i, cx-i*step-10, cy+18); }
+            for(let i=1;i<=6;i++) { ctx.fillText(i, cx+12, cy-i*step+5); ctx.fillText(-i, cx+12, cy+i*step+5); }
         }
     }
-
+    
     function drawElectricField(cargas) {
-        for (let px = 40; px < canvas.width; px += 42) {
-            for (let py = 40; py < canvas.height; py += 42) {
-                let Ex = 0, Ey = 0;
-                cargas.forEach(c => {
-                    const cp = transformar(c.x, c.y);
-                    const dx = px - cp.x;
-                    const dy = py - cp.y;
-                    let r2 = dx * dx + dy * dy;
-                    r2 = Math.max(r2, 250);
-                    const r = Math.sqrt(r2);
-                    const E = k * c.q / r2;
-                    Ex += E * (dx / r);
-                    Ey += E * (dy / r);
-                });
-                const mag = Math.hypot(Ex, Ey);
-                if (mag === 0) continue;
-                const ux = Ex / mag;
-                const uy = Ey / mag;
-                const len = 16;
-                const x2 = px + ux * len;
-                const y2 = py + uy * len;
-                ctx.strokeStyle = '#111827';
-                ctx.fillStyle = '#111827';
-                ctx.lineWidth = 1.8;
-                ctx.beginPath();
-                ctx.moveTo(px, py);
-                ctx.lineTo(x2, y2);
-                ctx.stroke();
-                const angle = Math.atan2(y2 - py, x2 - px);
-                const head = 6;
-                ctx.beginPath();
-                ctx.moveTo(x2, y2);
-                ctx.lineTo(x2 - head * Math.cos(angle - Math.PI/6), y2 - head * Math.sin(angle - Math.PI/6));
-                ctx.lineTo(x2 - head * Math.cos(angle + Math.PI/6), y2 - head * Math.sin(angle + Math.PI/6));
-                ctx.fill();
+        if(!mostrarCampo) return;
+        for (let px = 40; px < canvas.width; px += 44) {
+            for (let py = 40; py < canvas.height; py += 44) {
+                let Ex=0,Ey=0;
+                cargas.forEach(c => { let p=transformar(c.x,c.y); let dx=px-p.x, dy=py-p.y; let r2=dx*dx+dy*dy; r2=Math.max(r2,250); let r=Math.sqrt(r2); let E=k*c.q/r2; Ex+=E*(dx/r); Ey+=E*(dy/r); });
+                let mag=Math.hypot(Ex,Ey); if(mag===0) continue;
+                let ux=Ex/mag, uy=Ey/mag; let len=16;
+                let x2=px+ux*len, y2=py+uy*len;
+                ctx.strokeStyle= isDark() ? '#cbd5e1' : '#1e293b';
+                ctx.fillStyle=isDark() ? '#cbd5e1' : '#1e293b';
+                ctx.beginPath(); ctx.moveTo(px,py); ctx.lineTo(x2,y2); ctx.stroke();
+                let angle=Math.atan2(y2-py,x2-px); let head=6;
+                ctx.beginPath(); ctx.moveTo(x2,y2); ctx.lineTo(x2-head*Math.cos(angle-Math.PI/6), y2-head*Math.sin(angle-Math.PI/6)); ctx.lineTo(x2-head*Math.cos(angle+Math.PI/6), y2-head*Math.sin(angle+Math.PI/6)); ctx.fill();
             }
         }
     }
-
+    
     function drawForceVectors(cargas) {
-        if (cargas.length < 2) return;
-        for (let i = 0; i < cargas.length; i++) {
-            const c1 = cargas[i];
-            const p1 = transformar(c1.x, c1.y);
-            for (let j = 0; j < cargas.length; j++) {
-                if (i === j) continue;
-                const c2 = cargas[j];
-                const p2 = transformar(c2.x, c2.y);
-                let dx = p2.x - p1.x;
-                let dy = p2.y - p1.y;
-                const dist = Math.hypot(dx, dy);
-                if (dist < 0.01) continue;
-                let ux = dx / dist;
-                let uy = dy / dist;
-                if (c1.q * c2.q > 0) { ux *= -1; uy *= -1; }
-                const len = 70;
-                const offset = 28;
-                const x1 = p1.x + ux * offset;
-                const y1 = p1.y + uy * offset;
-                const x2 = x1 + ux * len;
-                const y2 = y1 + uy * len;
-                ctx.shadowColor = '#22c55e';
-                ctx.shadowBlur = 12;
+        if(!mostrarFuerzas || cargas.length < 2) return;
+        for(let i = 0; i < cargas.length; i++){
+            let p1 = transformar(cargas[i].x, cargas[i].y);
+            for(let j = 0; j < cargas.length; j++){
+                if(i === j) continue;
+                let p2 = transformar(cargas[j].x, cargas[j].y);
+                let dx = p2.x - p1.x, dy = p2.y - p1.y;
+                let dist = Math.hypot(dx, dy);
+                if(dist < 0.01) continue;
+                let ux = dx / dist, uy = dy / dist;
+                if(cargas[i].q * cargas[j].q > 0){ ux *= -1; uy *= -1; }
+                let len = 70, offset = 34;
+                let x1 = p1.x + ux * offset, y1 = p1.y + uy * offset;
+                let x2 = x1 + ux * len, y2 = y1 + uy * len;
                 const grad = ctx.createLinearGradient(x1, y1, x2, y2);
-                grad.addColorStop(0, 'rgba(34,197,94,0.3)');
-                grad.addColorStop(0.6, '#16a34a');
-                ctx.strokeStyle = grad;
-                ctx.lineWidth = 4;
-                ctx.beginPath();
-                ctx.moveTo(x1, y1);
-                ctx.lineTo(x2, y2);
-                ctx.stroke();
-                const angle = Math.atan2(y2 - y1, x2 - x1);
-                ctx.fillStyle = '#15803d';
-                ctx.beginPath();
-                ctx.moveTo(x2, y2);
-                ctx.lineTo(x2 - 14 * Math.cos(angle - Math.PI/7), y2 - 14 * Math.sin(angle - Math.PI/7));
-                ctx.lineTo(x2 - 7 * Math.cos(angle), y2 - 7 * Math.sin(angle));
-                ctx.lineTo(x2 - 14 * Math.cos(angle + Math.PI/7), y2 - 14 * Math.sin(angle + Math.PI/7));
-                ctx.fill();
-                ctx.font = 'bold 13px "Segoe UI"';
-                ctx.fillStyle = '#0c4a34';
-                ctx.shadowBlur = 0;
-                ctx.fillText(`F${i+1}${j+1}`, x2 + 6, y2 - 6);
+                if(isDark()){ grad.addColorStop(0, '#22c55e'); grad.addColorStop(1, '#86efac'); }
+                else{ grad.addColorStop(0, '#16a34a'); grad.addColorStop(1, '#4ade80'); }
+                ctx.strokeStyle = grad; ctx.lineWidth = 4; ctx.lineCap = 'round';
+                ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+                let angle = Math.atan2(y2 - y1, x2 - x1);
+                ctx.fillStyle = isDark() ? '#bbf7d0' : '#15803d';
+                ctx.beginPath(); ctx.moveTo(x2, y2); ctx.lineTo(x2 - 14 * Math.cos(angle - Math.PI / 7), y2 - 14 * Math.sin(angle - Math.PI / 7)); ctx.lineTo(x2 - 7 * Math.cos(angle), y2 - 7 * Math.sin(angle)); ctx.lineTo(x2 - 14 * Math.cos(angle + Math.PI / 7), y2 - 14 * Math.sin(angle + Math.PI / 7)); ctx.closePath(); ctx.fill();
+                const labelX = x2 + 12 * Math.cos(angle), labelY = y2 + 12 * Math.sin(angle);
+                ctx.save(); ctx.font = 'bold 13px Segoe UI'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+                if(isDark()){ ctx.fillStyle = '#dcfce7'; ctx.shadowColor = 'rgba(34,197,94,0.7)'; ctx.shadowBlur = 10; }
+                else{ ctx.fillStyle = '#166534'; ctx.shadowBlur = 0; }
+                ctx.fillText(`F${i+1}${j+1}`, labelX, labelY); ctx.restore();
             }
         }
-        ctx.shadowBlur = 0;
     }
-
-    // Líneas de flujo originales con degradado multicolor
+    
+    // Función mejorada de líneas de flujo: robusta para cargas negativas y positivas
     function drawFieldLines(cargas) {
+        if (!mostrarFlujo) return;
+        const step = 2.8;
+        const maxSteps = 240;
         cargas.forEach(c => {
-            const cp = transformar(c.x, c.y);
-            for (let a = 0; a < Math.PI * 2; a += Math.PI / 10) {
-                ctx.beginPath();
+            let cp = transformar(c.x, c.y);
+            for (let a = 0; a < Math.PI * 2; a += Math.PI / 7) {  // más líneas
                 let x = cp.x + 26 * Math.cos(a);
                 let y = cp.y + 26 * Math.sin(a);
+                ctx.beginPath();
                 ctx.moveTo(x, y);
-                for (let step = 0; step < 110; step++) {
+                let prevX = x, prevY = y;
+                let stuck = 0;
+                for (let stepCount = 0; stepCount < maxSteps; stepCount++) {
                     let Ex = 0, Ey = 0;
                     cargas.forEach(c2 => {
                         const p2 = transformar(c2.x, c2.y);
                         const dx = x - p2.x;
                         const dy = y - p2.y;
-                        let r2 = dx * dx + dy * dy;
-                        r2 = Math.max(r2, 80);
+                        let r2 = dx*dx + dy*dy;
+                        r2 = Math.max(r2, 70);
                         const r = Math.sqrt(r2);
                         const E = k * c2.q / r2;
                         Ex += E * (dx / r);
                         Ey += E * (dy / r);
                     });
                     const mag = Math.hypot(Ex, Ey);
-                    if (mag === 0) break;
-                    x += (Ex / mag) * 4.2;
-                    y += (Ey / mag) * 4.2;
-                    ctx.lineTo(x, y);
-                    if (x < 0 || x > canvas.width || y < 0 || y > canvas.height) break;
+                    if (mag < 1e-8) break;
+                    const ux = Ex / mag;
+                    const uy = Ey / mag;
+                    let nx = x + ux * step;
+                    let ny = y + uy * step;
+                    // Evitar acercarse demasiado a otras cargas
+                    let tooClose = false;
+                    for (let c2 of cargas) {
+                        const p2 = transformar(c2.x, c2.y);
+                        const d2 = (nx - p2.x)**2 + (ny - p2.y)**2;
+                        if (d2 < 360) { tooClose = true; break; }
+                    }
+                    if (tooClose) break;
+                    if (nx < 5 || nx > canvas.width-5 || ny < 5 || ny > canvas.height-5) break;
+                    // Evitar bucles pequeños
+                    if (Math.hypot(nx - prevX, ny - prevY) < 0.8) stuck++;
+                    else stuck = 0;
+                    if (stuck > 8) break;
+                    ctx.lineTo(nx, ny);
+                    x = nx; y = ny;
+                    prevX = nx; prevY = ny;
                 }
                 const grad = ctx.createLinearGradient(cp.x, cp.y, x, y);
                 grad.addColorStop(0, '#3b82f6');
@@ -833,216 +587,245 @@ function transformar(x, y) {
             }
         });
     }
-
-    function drawCharges(cargas) {
-        cargas.forEach(c => {
-            const p = transformar(c.x, c.y);
-            ctx.beginPath();
-            ctx.arc(p.x, p.y, 24, 0, Math.PI * 2);
-            const grad = ctx.createRadialGradient(p.x - 6, p.y - 6, 5, p.x, p.y, 26);
-            if (c.q > 0) { grad.addColorStop(0, '#ffd4d4'); grad.addColorStop(1, '#dc2626'); } 
-            else { grad.addColorStop(0, '#dbeafe'); grad.addColorStop(1, '#2563eb'); }
-            ctx.fillStyle = grad;
-            ctx.fill();
-            ctx.lineWidth = 3;
-            ctx.strokeStyle = 'white';
-            ctx.stroke();
-            ctx.fillStyle = 'white';
-            ctx.font = 'bold 28px "Segoe UI"';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.fillText(c.q > 0 ? '+' : '−', p.x, p.y);
-            ctx.fillStyle = '#0f172a';
-            ctx.font = 'bold 14px "Segoe UI"';
-            ctx.fillText(c.nombre, p.x, p.y + 42);
-            if (mostrarEjes) {
-                const etiqueta = `(${c.x_cm} cm, ${c.y_cm} cm)`;
+    
+    function drawCharges(cargas){
+        cargas.forEach(c=>{
+            let p=transformar(c.x,c.y);
+            ctx.beginPath(); ctx.arc(p.x,p.y,22,0,Math.PI*2);
+            let grad=ctx.createRadialGradient(p.x-6,p.y-6,5,p.x,p.y,24);
+            if(c.q>0){ grad.addColorStop(0,'#ffb3b3'); grad.addColorStop(1,'#dc2626'); }
+            else{ grad.addColorStop(0,'#b3d9ff'); grad.addColorStop(1,'#2563eb'); }
+            ctx.fillStyle=grad; ctx.fill(); ctx.strokeStyle='white'; ctx.lineWidth=2.5; ctx.stroke();
+            ctx.fillStyle='white'; ctx.font='bold 26px "Segoe UI"'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText(c.q>0?'+':'−',p.x,p.y);
+            ctx.fillStyle=isDark()?'#e2e8f0':'#0f172a'; ctx.font='12px "Segoe UI"'; ctx.fillText(c.nombre, p.x, p.y+34);
+            if(mostrarEjes){
+                if(isDark()){ ctx.fillStyle = '#e2e8f0'; ctx.font = 'bold 13px "Segoe UI"'; ctx.shadowColor = 'rgba(56,189,248,0.55)'; ctx.shadowBlur = 8; }
+                else{ ctx.fillStyle = '#475569'; ctx.font = 'bold 11px "Segoe UI"'; ctx.shadowBlur = 0; }
+                let labelOffsetX = 42, labelOffsetY = -28;
+                if(c.x > 0) labelOffsetX = -55;
+                if(c.y > 0) labelOffsetY = 34;
+                ctx.save();
                 ctx.beginPath();
-                ctx.roundRect(p.x + 30, p.y - 20, 140, 32, 12);
-                ctx.fillStyle = c.q > 0 ? 'rgba(220,38,38,0.12)' : 'rgba(37,99,235,0.12)';
+                ctx.roundRect(p.x + labelOffsetX - 8, p.y + labelOffsetY - 14, 86, 24, 10);
+                ctx.fillStyle = isDark() ? 'rgba(15,23,42,0.82)' : 'rgba(255,255,255,0.88)';
                 ctx.fill();
-                ctx.lineWidth = 1.5;
-                ctx.strokeStyle = c.q > 0 ? '#dc2626' : '#2563eb';
-                ctx.stroke();
-                ctx.fillStyle = c.q > 0 ? '#b91c1c' : '#1e3a8a';
-                ctx.font = 'bold 13px "Segoe UI"';
-                ctx.textAlign = 'left';
-                ctx.fillText(etiqueta, p.x + 44, p.y - 2);
+                ctx.fillStyle = isDark() ? '#e2e8f0' : '#0f172a';
+                ctx.fillText(`(${c.x_cm}cm, ${c.y_cm}cm)`, p.x + labelOffsetX + 34, p.y + labelOffsetY);
+                ctx.restore();
+                ctx.shadowBlur = 0;
             }
         });
     }
-
-    // --- MODELO PEDAGÓGICO MEJORADO (biografía, desarrollo paso a paso, fuerza por carga) ---
-    function actualizarModeloPedagogico(cargas, fuerzasPorCarga) {
-        let html = `
-            
-            <p>La Ley de Coulomb fue formulada por el físico francés <strong>Charles-Augustin de Coulomb</strong> (1736-1806), nacido en Angulema, Francia. Coulomb estudió la interacción entre cargas eléctricas y estableció que la fuerza eléctrica depende directamente del producto de las cargas e inversamente proporcional al cuadrado de la distancia.</p>
-            <div class="formula">\\[ \\boxed{ F = k \\frac{|q_1 q_2|}{r^2} } \\]</div>
-            <p>donde \\( k = 9\\times10^9 \\; \\text{N·m}^2/\\text{C}^2 \\) es la constante de Coulomb en el vacío. La fuerza es de <strong>atracción</strong> si las cargas tienen signos opuestos, y de <strong>repulsión</strong> si son del mismo signo.</p>
-            <hr>
-            <h3>📥 Datos de entrada</h3>
-        `;
-        cargas.forEach(c => {
-            html += `<div class="tag">${c.nombre} = ${(c.q*1e6).toFixed(2)} μC</div>
-                     <div class="tag">(${c.x_cm} cm, ${c.y_cm} cm)</div>`;
-        });
-        if(cargas.length >= 2) {
-            html += `
-            <div style="background:#fff7ed; padding:12px; border-radius:1rem; margin-top:12px; border-left:6px solid #f59e0b;">
-                📏 <strong>Conversión de unidades:</strong> las posiciones ingresadas en centímetros (cm) se convierten automáticamente a metros (m) antes de aplicar la Ley de Coulomb, garantizando coherencia con el Sistema Internacional de Unidades.
-            </div>
-
-<hr><h3>🧮 Desarrollo matemático paso a paso</h3>`;
-            for(let i=0; i<cargas.length; i++) {
-                for(let j=i+1; j<cargas.length; j++) {
-                    const c1 = cargas[i], c2 = cargas[j];
-                    const dx = c2.x - c1.x, dy = c2.y - c1.y;
-                    const r = Math.hypot(dx, dy);
-                    const F = k * Math.abs(c1.q * c2.q) / (r*r);
-                    const tipo = (c1.q * c2.q > 0) ? "repulsión" : "atracción";
-                    html += `
-                        <div style="background:#eef2ff; border-radius:1rem; padding:12px; margin:12px 0;">
-                            <strong>Interacción entre ${c1.nombre} y ${c2.nombre}</strong><br>
-                            Distancia: \\( r = \\sqrt{(${c2.x} - ${c1.x})^2 + (${c2.y} - ${c1.y})^2} = ${r.toFixed(4)} \\; m \\)<br>
-                            Módulo de la fuerza: \\( F = 9\\times10^9 \\cdot \\frac{|${c1.q.toExponential(2)} · ${c2.q.toExponential(2)}|}{${r.toFixed(4)}^2} = ${F.toFixed(4)} \\; N \\)<br>
-                            <span style="color:${tipo==='atracción'?'#2563eb':'#dc2626'}">🔘 ${tipo.toUpperCase()}</span>
-                        </div>
-                    `;
-                }
-            }
-            html += `<hr><h3>📊 Resultado final</h3>`;
-            if(cargas.length === 2) {
-                const f = fuerzasPorCarga[0];
-                html += `<div class="formula">Magnitud de la fuerza mutua entre las cargas = ${f.FR.toFixed(4)} N</div>`;
-                html += `<div class="formula">Dirección: ${f.angulo.toFixed(2)}° respecto al eje X</div>`;
-            } else {
-                for(let idx=0; idx<cargas.length; idx++) {
-                    const f = fuerzasPorCarga[idx];
-                    html += `<div class="chargeCard" style="margin-bottom:12px;">
-                                <strong>${cargas[idx].nombre}</strong><br>
-                                \\( \\displaystyle \\sum F_x = ${f.Fx.toFixed(4)} \\; N \\), 
-                                \\( \\displaystyle \\sum F_y = ${f.Fy.toFixed(4)} \\; N \\)<br>
-                                \\( F_R = \\sqrt{(${f.Fx.toFixed(4)})^2 + (${f.Fy.toFixed(4)})^2} = ${f.FR.toFixed(4)} \\; N \\)<br>
-                                \\( \\theta = \\operatorname{atan2}\\left(${f.Fy.toFixed(4)},${f.Fx.toFixed(4)}\\right) = ${f.angulo.toFixed(2)}^\\circ \\)
-                            </div>`;
-                }
-            }
-            html += `<hr><h3>🎓 Interpretación pedagógica</h3>
-            <p>Este resultado permite comprender cómo interactúan las cargas eléctricas en el espacio. Cuando las cargas poseen el mismo signo, la interacción genera repulsión; cuando poseen signos opuestos, aparece atracción eléctrica. La magnitud de la fuerza aumenta cuando las cargas son grandes y disminuye rápidamente al aumentar la distancia entre ellas.</p>
-            <p>El plano cartesiano y los vectores permiten visualizar la dirección y sentido de la interacción, fortaleciendo la comprensión geométrica y física del fenómeno electrostático.</p>
-            <div style="background:#e6f7e6; padding:12px; border-radius:1rem; margin-top:16px;">
-                ✨ <strong>Reflexión motivacional</strong>: Como Coulomb, tú también puedes descubrir las leyes que rigen el universo con paciencia y método. ¡Sigue experimentando!
-            </div>`;
-        } else {
-            html += `<p>Se requiere al menos dos cargas para observar la interacción.</p>`;
-        }
-        document.getElementById('modeloPedagogico').innerHTML = html;
-        if(window.MathJax) {
-            MathJax.typesetPromise().catch(err => console.warn("MathJax error:", err));
-        }
-    }
-
-    // --- SIMULACIÓN PRINCIPAL ---
-    function simular() {
-        drawGrid();
+    
+    function actualizarEscalaDinamica(cargas) { if(!ajusteManualActivo || !cargas.length) return; let minX=Infinity,maxX=-Infinity,minY=Infinity,maxY=-Infinity; cargas.forEach(c=>{ minX=Math.min(minX,c.x); maxX=Math.max(maxX,c.x); minY=Math.min(minY,c.y); maxY=Math.max(maxY,c.y); }); let ancho=Math.max(0.1,maxX-minX)*1.2, alto=Math.max(0.1,maxY-minY)*1.2; let escalaX=(canvas.width*0.8)/ancho, escalaY=(canvas.height*0.8)/alto; escala=Math.min(escalaX,escalaY); escala=Math.max(35,Math.min(escala,380)); }
+    
+    window.ajustarVista = function(btn) {
+        ajusteManualActivo = true;
         const n = parseInt(document.getElementById('numCargas').value);
-        let cargas = [];
-        for (let i = 1; i <= n; i++) {
-            let qVal = parseFloat(document.getElementById(`q${i}`).value);
-            if (isNaN(qVal)) qVal = (i%2===0 ? -5 : 5);
-            const x_cm = parseFloat(document.getElementById(`x${i}`).value) || 0;
-            const y_cm = parseFloat(document.getElementById(`y${i}`).value) || 0;
-
-            cargas.push({
-                q: qVal * 1e-6,
-                x: x_cm / 100,
-                y: y_cm / 100,
-                x_cm: x_cm,
-                y_cm: y_cm,
-                nombre: `q${i}`
-            });
+        let cargasAjuste = [];
+        for(let i=1;i<=n;i++){ let x = parseFloat(document.getElementById(`x${i}`).value) || 0; let y = parseFloat(document.getElementById(`y${i}`).value) || 0; cargasAjuste.push({ x:x/100, y:y/100 }); }
+        for(let i=0;i<cargasAjuste.length;i++) for(let j=i+1;j<cargasAjuste.length;j++){ let dx = cargasAjuste[j].x - cargasAjuste[i].x, dy = cargasAjuste[j].y - cargasAjuste[i].y, d = Math.hypot(dx,dy); if(d < 0.35){ let ang = Math.atan2(dy,dx); if(d === 0) ang = Math.random() * Math.PI * 2; let sep = 0.22; cargasAjuste[i].x -= Math.cos(ang) * sep; cargasAjuste[i].y -= Math.sin(ang) * sep; cargasAjuste[j].x += Math.cos(ang) * sep; cargasAjuste[j].y += Math.sin(ang) * sep; } }
+        let avgX = 0, avgY = 0; cargasAjuste.forEach(c=>{ avgX += c.x; avgY += c.y; }); avgX /= cargasAjuste.length; avgY /= cargasAjuste.length; cargasAjuste.forEach(c=>{ c.x -= avgX; c.y -= avgY; });
+        for(let i=1;i<=n;i++){ document.getElementById(`x${i}`).value = (cargasAjuste[i-1].x * 100).toFixed(1); document.getElementById(`y${i}`).value = (cargasAjuste[i-1].y * 100).toFixed(1); }
+        let maxDist = 0; cargasAjuste.forEach(c=>{ maxDist = Math.max(maxDist, Math.abs(c.x), Math.abs(c.y)); }); escala = Math.max(55, Math.min(240, 240 / (maxDist + 0.2))); simular();
+    };
+    
+    function actualizarModeloPedagogico(cargas, fuerzas){
+        // BIOGRAFÍA AMPLIADA Y FORTALECIDA
+        let html = `<p><strong>⚛️ Charles-Augustin de Coulomb (1736–1806)</strong> fue un ingeniero y físico francés cuya pasión por la medición precisa lo llevó a formular la ley fundamental de la electrostática. Tras servir como ingeniero militar en Martinica, Coulomb regresó a Francia y dedicó sus investigaciones a la electricidad y el magnetismo. En 1785, utilizando su invento —la <strong>balanza de torsión</strong>— logró medir fuerzas eléctricas extremadamente débiles. Con ingenio experimental demostró que la fuerza entre dos cargas puntuales es <strong>directamente proporcional al producto de las cargas e inversamente proporcional al cuadrado de la distancia</strong>. Su trabajo, junto al de Cavendish y Poisson, sentó las bases del electromagnetismo clásico. La unidad de carga eléctrica, el <strong>Coulomb (C)</strong>, lleva su nombre en honor a su legado científico.</p>
+        <div class="formula">\\[ \\boxed{ F = k \\frac{|q_1 q_2|}{r^2} } \\]</div>
+        <p>donde \\( k = 9\\times10^9 \\; \\text{N·m}^2/\\text{C}^2 \\) en el vacío. La fuerza es <span style="color:#22c55e;">atractiva</span> si las cargas tienen signos opuestos y <span style="color:#f97316;">repulsiva</span> si son del mismo signo.</p>
+        <hr>
+        <h3>📥 Datos de entrada</h3>`;
+        cargas.forEach(c=>{ html+=`<span class="tag">${c.nombre} = ${(c.q*1e6).toFixed(2)} μC (${c.x_cm}cm, ${c.y_cm}cm)</span>`; });
+        if(cargas.length>=2){
+            html+=`<div style="background:var(--surface-solid); border-radius:1rem; padding:0.8rem; margin:12px 0; border-left:4px solid var(--accent);">📏 <strong>Conversión automática:</strong> posiciones en cm → metros (m) para coherencia SI.</div><hr><h3>🧮 Desarrollo matemático paso a paso</h3>`;
+            for(let i=0;i<cargas.length;i++) for(let j=i+1;j<cargas.length;j++){
+                let c1=cargas[i],c2=cargas[j];
+                let dx=c2.x-c1.x, dy=c2.y-c1.y; let r=Math.hypot(dx,dy);
+                let F=k*Math.abs(c1.q*c2.q)/(r*r);
+                let tipo=c1.q*c2.q>0?"repulsión ⬆️":"atracción ⬇️";
+                html+=`<div style="background:var(--surface-solid); border-radius:1rem; padding:0.8rem; margin:0.8rem 0;"><strong>Interacción ${c1.nombre} y ${c2.nombre}</strong><br>Distancia: \\( r = \\sqrt{(${c2.x.toFixed(2)} - ${c1.x.toFixed(2)})^2 + (${c2.y.toFixed(2)} - ${c1.y.toFixed(2)})^2} = ${r.toFixed(4)} \\; m \\)<br>Módulo: \\( F = 9\\times10^9 \\cdot \\frac{|${(c1.q*1e6).toFixed(2)}e-6 · ${(c2.q*1e6).toFixed(2)}e-6|}{${r.toFixed(4)}^2} = ${F.toFixed(4)} \\; N \\)<br><span style="color:${tipo.includes('atracción')?'#2563eb':'#dc2626'}">🔘 ${tipo}</span></div>`;
+            }
+            html+=`<hr><h3>📊 Resultado final: fuerza neta por carga</h3>`;
+            for(let idx=0;idx<cargas.length;idx++){ 
+                let f=fuerzas[idx];
+                html+=`<div style="background:var(--surface-solid); border-radius:1rem; padding:0.8rem; margin:0.5rem 0;">
+                            <strong>${cargas[idx].nombre}</strong><br>
+                            \\( \\sum F_x = ${f.Fx.toFixed(4)} \\, \\text{N} \\), 
+                            \\( \\sum F_y = ${f.Fy.toFixed(4)} \\, \\text{N} \\)<br>
+                            \\( F_R = \\sqrt{ (${f.Fx.toFixed(4)})^2 + (${f.Fy.toFixed(4)})^2 } = ${f.FR.toFixed(4)} \\, \\text{N} \\)<br>
+                            \\( \\theta = \\arctan\\left(\\frac{${f.Fy.toFixed(4)}}{${f.Fx.toFixed(4)}}\\right) = ${f.angulo.toFixed(2)}^\\circ \\)
+                        </div>`; 
+            }
+            // INTERPRETACIÓN PEDAGÓGICA AMPLIADA
+            html+=`<hr><h3>🎓 Interpretación pedagógica (STEM)</h3>
+            <p>La ley de Coulomb no solo describe interacciones electrostáticas, sino que introduce conceptos clave para la ciencia moderna:</p>
+            <ul style="margin-left:1.2rem;">
+                <li><strong>Ley de inversa del cuadrado:</strong> Al duplicar la distancia, la fuerza se reduce a la cuarta parte. Esta relación aparece también en la gravitación universal (Newton) y la intensidad de la luz, mostrando la unidad de las leyes físicas.</li>
+                <li><strong>Principio de superposición:</strong> En sistemas con tres o más cargas, la fuerza neta sobre cada carga es la suma vectorial de las contribuciones individuales. Esto permite modelar desde moléculas hasta plasmas espaciales.</li>
+                <li><strong>Naturaleza vectorial:</strong> La dirección de la fuerza depende del signo de las cargas, lo que permite visualizar campos eléctricos y líneas de flujo, base de la tecnología de condensadores, microscopios de fuerza atómica y sensores electrostáticos.</li>
+                <li><strong>Aplicaciones reales:</strong> Desde la tinta de impresoras láser hasta los precipitadores electrostáticos que reducen la contaminación, la ley de Coulomb está presente en innovaciones que mejoran nuestra calidad de vida.</li>
+            </ul>
+            <p>Comprender esta ley es el primer paso hacia el dominio del electromagnetismo, el análisis de circuitos y la física de partículas.</p>
+            <!-- REFLEXIÓN MOTIVACIONAL FORTALECIDA -->
+            <div style="background:var(--accent-glow); padding:1rem; border-radius:1.5rem; margin-top:1rem; text-align:center;">
+                ✨ <strong>🔬 REFLEXIÓN MOTIVACIONAL: EL ESPÍRITU CIENTÍFICO 🔭</strong> ✨<br><br>
+                “Cada interacción que visualizas en este simulador refleja un principio que gobierna el universo desde lo infinitamente pequeño hasta lo astronómicamente grande. <strong>Charles Coulomb</strong> no solo midió fuerzas invisibles; nos enseñó que con paciencia, método y creatividad podemos desentrañar los secretos de la naturaleza. Tú, al manipular cargas y observar vectores, estás repitiendo el mismo acto de descubrimiento. Cada pregunta que te haces, cada simulación que exploras, te convierte en un verdadero <strong>constructor de conocimiento STEM</strong>. ¡Sigue indagando, eres parte de la próxima generación de científicos e ingenieros que transformarán el mundo!”
+            </div>`;
+        }else html+="<p>Agrega al menos dos cargas para observar la interacción.</p>";
+        document.getElementById('modeloPedagogico').innerHTML=html; 
+        if(window.MathJax) MathJax.typesetPromise();
+    }
+    
+    function simular(){
+        drawGrid();
+        const n=parseInt(document.getElementById('numCargas').value);
+        let cargas=[];
+        for(let i=1;i<=n;i++){
+            let qVal=parseFloat(document.getElementById(`q${i}`).value)||(i%2?5:-5);
+            let x_cm=parseFloat(document.getElementById(`x${i}`).value)||0, y_cm=parseFloat(document.getElementById(`y${i}`).value)||0;
+            cargas.push({ q:qVal*1e-6, x:x_cm/100, y:y_cm/100, x_cm, y_cm, nombre:`q${i}` });
         }
         actualizarEscalaDinamica(cargas);
-
-        if (mostrarFlujo) drawFieldLines(cargas);
-        if (mostrarCampo) drawElectricField(cargas);
-        if (mostrarFuerzas) drawForceVectors(cargas);
+        drawFieldLines(cargas);
+        drawElectricField(cargas);
+        drawForceVectors(cargas);
         drawCharges(cargas);
-
-        // Cálculo de fuerza neta sobre cada carga (vectorial)
-        let fuerzasPorCarga = [];
-        for (let i = 0; i < cargas.length; i++) {
-            let Fx = 0, Fy = 0;
-            for (let j = 0; j < cargas.length; j++) {
-                if (i === j) continue;
-                const c1 = cargas[i], c2 = cargas[j];
-                const dx = c2.x - c1.x, dy = c2.y - c1.y;
-                const r = Math.hypot(dx, dy);
-                if (r === 0) continue;
-                const F = k * Math.abs(c1.q * c2.q) / (r * r);
-                let ux = dx / r, uy = dy / r;
-                if (c1.q * c2.q > 0) { ux *= -1; uy *= -1; }
-                Fx += F * ux;
-                Fy += F * uy;
+        let fuerzasPorCarga=[];
+        for(let i=0;i<cargas.length;i++){
+            let Fx=0,Fy=0;
+            for(let j=0;j<cargas.length;j++){ if(i===j) continue;
+                let dx=cargas[j].x-cargas[i].x, dy=cargas[j].y-cargas[i].y, r=Math.hypot(dx,dy); if(r===0) continue;
+                let F=k*Math.abs(cargas[i].q*cargas[j].q)/(r*r);
+                let ux=dx/r, uy=dy/r; if(cargas[i].q*cargas[j].q>0){ ux*=-1; uy*=-1; }
+                Fx+=F*ux; Fy+=F*uy;
             }
-            const FR = Math.hypot(Fx, Fy);
-            let angulo = Math.atan2(Fy, Fx) * 180 / Math.PI;
-            fuerzasPorCarga.push({ Fx, Fy, FR, angulo });
+            let FR=Math.hypot(Fx,Fy), ang=Math.atan2(Fy,Fx)*180/Math.PI;
+            fuerzasPorCarga.push({Fx,Fy,FR,angulo:ang});
         }
         actualizarModeloPedagogico(cargas, fuerzasPorCarga);
     }
-
-    function generarInputs() {
-        const n = parseInt(document.getElementById('numCargas').value);
-        const container = document.getElementById('inputs');
-        container.innerHTML = '';
-        for (let i = 1; i <= n; i++) {
-            const positiva = (i % 2 !== 0);
-            const defaultValue = positiva ? 5 : -5;
-            const defaultX = i * 2;
-            const defaultY = i;
-            container.innerHTML += `<div class="chargeCard"><div class="chargeTitle">${positiva ? '🔴' : '🔵'} Carga q${i}</div>
-                <label>Valor q${i} (μC)</label><input type="number" id="q${i}" value="${defaultValue}" step="0.5">
-                <label>Posición x${i} (cm)</label><input type="number" id="x${i}" value="${defaultX}" step="0.5">
-                <label>Posición y${i} (cm)</label><input type="number" id="y${i}" value="${defaultY}" step="0.5"></div>`;
+    
+    function generarInputs(){
+        const n=parseInt(document.getElementById('numCargas').value);
+        const container=document.getElementById('inputs'); container.innerHTML='';
+        for(let i=1;i<=n;i++){
+            let signo=(i%2===0)?-5:5;
+            let presets = [{x:-4, y:0},{x:4, y:0},{x:0, y:5}];
+            let defaultX = presets[i-1]?.x || i*2, defaultY = presets[i-1]?.y || i*2;
+            container.innerHTML+=`<div class="smart-charge-card"><div class="charge-header"><strong>q${i}</strong><span>μC</span></div><div class="slider-group"><div class="slider-label"><span>charge</span><span id="qVal${i}">${signo}</span></div><input type="range" min="-10" max="10" step="0.5" value="${signo}" id="q${i}" class="smart-slider ${signo>=0?'red':'blue'}" oninput="document.getElementById('qVal${i}').innerText=this.value; this.classList.remove('red','blue'); this.classList.add(parseFloat(this.value)>=0?'red':'blue'); simular();"></div><div class="mini-coords"><div class="mini-input"><label>X (cm)</label><input type="number" id="x${i}" value="${defaultX}" step="0.5" oninput="simular()"></div><div class="mini-input"><label>Y (cm)</label><input type="number" id="y${i}" value="${defaultY}" step="0.5" oninput="simular()"></div></div></div>`;
         }
         simular();
     }
-
-    document.getElementById('numCargas').addEventListener('change', () => generarInputs());
-    window.addEventListener('resize', () => simular());
+    
+    document.getElementById('numCargas').addEventListener('change', () => { generarInputs(); setTimeout(() => { ajustarVista(); }, 120); });
+    window.addEventListener('resize',()=>simular());
     generarInputs();
-
-    // Modal y carga del quiz
-    const modal = document.getElementById('quizModal');
-    const openBtn = document.getElementById('openQuizBtn');
-    const closeBtn = document.getElementById('closeQuizModalBtn');
-    const iframe = document.getElementById('quizIframe');
-    let quizLoaded = false;
-
-    function loadQuizIntoIframe() {
-        if (quizLoaded) return;
-        const templateContent = document.getElementById('quizFullTemplate').content.cloneNode(true);
-        const serializer = new XMLSerializer();
-        let htmlString = '';
-        templateContent.childNodes.forEach(node => {
-            if (node.nodeType === Node.ELEMENT_NODE) htmlString += node.outerHTML;
-            else if (node.nodeType === Node.TEXT_NODE) htmlString += node.textContent;
-        });
-        const blob = new Blob([htmlString], { type: 'text/html' });
-        const blobUrl = URL.createObjectURL(blob);
-        iframe.src = blobUrl;
-        iframe.onload = () => { URL.revokeObjectURL(blobUrl); quizLoaded = true; };
+    setTimeout(()=>{ ajustarVista(); },300);
+    
+    const themeBtn=document.getElementById('themeToggleBtn');
+    themeBtn.addEventListener('click',()=>{ document.body.classList.toggle('dark-premium'); simular(); renderQuiz(); themeBtn.innerHTML=document.body.classList.contains('dark-premium')?'☀️ Light Elegance':'🌙 Dark Elegance'; });
+    
+    // ---------- QUIZ COMPLETO (mismo funcional, con estilos mejorados para dark) ----------
+    const questionsBank = [
+        { text: "Dos cargas puntuales q1 = +3 μC y q2 = -2 μC separadas 0.1 m. La fuerza electrostática (módulo) es:", options: ["5.4 N (atracción)", "5.4 N (repulsión)", "2.7 N (atracción)", "10.8 N (atracción)"], correct: 0, competencia: "Uso comprensivo" },
+        { text: "En un simulador de Coulomb, la opción 'Campo eléctrico' representa:", options: ["Líneas equipotenciales", "Vectores de campo en cada punto", "Fuerzas entre cargas", "Trayectorias"], correct: 1, competencia: "Indagación" },
+        { text: "Fuerza entre 4 μC y 6 μC a 0.5 m:", options: ["0.864 N", "0.432 N", "1.728 N", "0.216 N"], correct: 0, competencia: "Uso comprensivo" },
+        { text: "Si la distancia se triplica, la fuerza se reduce:", options: ["9 veces", "3 veces", "6 veces", "no cambia"], correct: 0, competencia: "Explicación" },
+        { text: "Campo eléctrico en el punto medio entre +Q y -Q:", options: ["8kQ/d² hacia la negativa", "Cero", "4kQ/d² hacia la positiva", "2kQ/d²"], correct: 0, competencia: "Indagación" },
+        { text: "Color típico de carga negativa en simuladores:", options: ["Rojo", "Azul", "Verde", "Amarillo"], correct: 1, competencia: "Indagación" },
+        { text: "Carga +2 μC ejerce 0.5 N a 0.2 m. Hallar la otra carga:", options: ["1.11 μC", "2.22 μC", "0.55 μC", "3.33 μC"], correct: 0, competencia: "Uso comprensivo" },
+        { text: "Líneas de flujo eléctrico muestran:", options: ["Dirección del campo", "Trayectorias de cargas", "Fuerza neta", "Energía potencial"], correct: 0, competencia: "Explicación" },
+        { text: "Duplicando cargas y reduciendo distancia a la mitad, la fuerza se multiplica por:", options: ["16", "8", "4", "2"], correct: 0, competencia: "Uso comprensivo" },
+        { text: "Flechas verdes en el simulador representan:", options: ["Campo eléctrico", "Fuerza entre cargas", "Velocidad", "Flujo"], correct: 1, competencia: "Indagación" },
+        { text: "Dos cargas +5 μC separadas 0.3 m. El módulo de la fuerza es:", options: ["2.5 N repulsión", "2.5 N atracción", "5 N repulsión", "1.25 N repulsión"], correct: 0, competencia: "Uso comprensivo" },
+        { text: "Constante de Coulomb en el vacío:", options: ["9×10^9", "8.85×10^-12", "1.6×10^-19", "6.67×10^-11"], correct: 0, competencia: "Uso comprensivo" },
+        { text: "Para tres cargas, la fuerza total sobre una es:", options: ["Suma vectorial", "Producto escalar", "Solo la más cercana", "Promedio"], correct: 0, competencia: "Explicación" },
+        { text: "Un electrón se sitúa en región con campo E = 2×10^4 N/C. Fuerza sobre electrón:", options: ["3.2×10^-15 N opuesta al campo", "1.6×10^-19 N", "2×10^4 N", "Cero"], correct: 0, competencia: "Indagación" },
+        { text: "Gráfica de E vs r para carga puntual:", options: ["Proporcional a 1/r²", "Proporcional a r", "Lineal decreciente", "Constante"], correct: 0, competencia: "Indagación" }
+    ];
+    let currentQuestions = [], userAnswers = [], attempts = 0, MAX_ATTEMPTS = 3, quizLocked = false, lastScore = null, lastGrade = null, lastStudent = "", lastSelections = [];
+    function shuffleArray(arr) { for (let i = arr.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [arr[i], arr[j]] = [arr[j], arr[i]]; } return arr; }
+    function buildQuizQuestions() { return questionsBank.map((q, idx) => { const shuffledOpts = shuffleArray([...q.options]); const originalCorrectText = q.options[q.correct]; const newCorrectIdx = shuffledOpts.findIndex(opt => opt === originalCorrectText); return { id: idx, text: q.text, shuffledOptions: shuffledOpts, correctIndex: newCorrectIdx, competencia: q.competencia }; }); }
+    function getMotivationalMessage(grade, name) {
+        if (grade >= 5.0) return `👑⚡ ${name}, eres oficialmente el HIJO DE COULOMB. Dominas las fuerzas invisibles.`;
+        if (grade >= 4.5) return `⚡🔬 ${name}, Ampère estaría orgulloso de ti.`;
+        if (grade >= 4.0) return `🧠📘 Excelente trabajo, ${name}. Maxwell te reconoce.`;
+        if (grade >= 3.5) return `🔋✨ Muy bien, ${name}. Faraday admira tu capacidad.`;
+        if (grade >= 3.0) return `📚⚙️ Buen trabajo, ${name}. Tesla te anima.`;
+        if (grade >= 2.5) return `🧪🌩️ ${name}, vas por buen camino. Edison te recuerda que cada error es aprendizaje.`;
+        if (grade >= 2.0) return `🔍📖 ${name}, Newton recomienda reforzar el análisis matemático.`;
+        return `🚀📘 ${name}, Einstein decía que el error es una oportunidad. Sigue practicando.`;
     }
-
-    openBtn.addEventListener('click', () => {
-        modal.style.display = 'flex';
-        if (!quizLoaded) loadQuizIntoIframe();
-    });
-    function closeModal() { modal.style.display = 'none'; }
-    closeBtn.addEventListener('click', closeModal);
-    modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modal.style.display === 'flex') closeModal(); });
+    function renderQuiz() {
+        currentQuestions = buildQuizQuestions();
+        userAnswers = new Array(currentQuestions.length).fill(null);
+        quizLocked = false;
+        const container = document.getElementById('quizContainer');
+        container.innerHTML = '';
+        const headerDiv = document.createElement('div');
+        headerDiv.style.display = 'flex'; headerDiv.style.flexWrap = 'wrap'; headerDiv.style.gap = '1rem'; headerDiv.style.marginBottom = '1.5rem'; headerDiv.style.alignItems = 'center'; headerDiv.style.justifyContent = 'space-between';
+        headerDiv.innerHTML = `<input type="text" id="studentName" placeholder="Ej: Marie Curie" style="flex:2; padding: 10px; border-radius: 40px; border: 1px solid var(--border-light); background: var(--surface-solid); color: var(--text-primary);"><span id="attemptDisplay" style="background: var(--surface-solid); padding: 6px 14px; border-radius: 40px; font-size: 0.8rem; color: var(--text-secondary);"></span>`;
+        container.appendChild(headerDiv);
+        currentQuestions.forEach((q, idx) => {
+            const card = document.createElement('div');
+            card.className = 'quiz-card';
+            card.innerHTML = `<div><span style="background:var(--accent); padding:2px 12px; border-radius:30px; color:white;">${idx+1}</span> <span style="color:var(--text-secondary);">${q.competencia}</span></div><div class="question-text">${q.text}</div><div id="opts-${idx}"></div>`;
+            container.appendChild(card);
+            const optsDiv = document.getElementById(`opts-${idx}`);
+            q.shuffledOptions.forEach((opt, optIdx) => {
+                const option = document.createElement('div');
+                option.className = 'quiz-radio-option';
+                option.innerHTML = `<div class="quiz-dot"></div><span>${opt}</span>`;
+                option.style.cursor = 'pointer';
+                function selectOption(){ if(quizLocked) return; optsDiv.querySelectorAll('.quiz-radio-option').forEach(el => el.classList.remove('selected')); option.classList.add('selected'); userAnswers[idx] = optIdx; }
+                option.addEventListener('click', selectOption);
+                optsDiv.appendChild(option);
+            });
+        });
+        const actionDiv = document.createElement('div'); actionDiv.style.textAlign = 'center'; actionDiv.style.marginTop = '1.5rem';
+        actionDiv.innerHTML = `<button id="submitQuizBtn" class="quiz-btn-action">✨ Calificar intento ✨</button><button id="downloadPDFBtn" class="quiz-secondary-btn" disabled>📄 Certificado PDF</button><button id="downloadExcelBtn" class="quiz-secondary-btn" disabled>📊 Excel STEM</button>`;
+        container.appendChild(actionDiv);
+        const resultDiv = document.createElement('div'); resultDiv.id = 'resultPanel'; resultDiv.style.display = 'none'; resultDiv.style.background = 'var(--surface)'; resultDiv.style.borderRadius = '1.5rem'; resultDiv.style.padding = '1.2rem'; resultDiv.style.marginTop = '1rem'; resultDiv.style.textAlign = 'center';
+        container.appendChild(resultDiv);
+        loadAttempts();
+        document.getElementById('submitQuizBtn').onclick = evaluateQuiz;
+        document.getElementById('downloadPDFBtn').onclick = downloadPDF;
+        document.getElementById('downloadExcelBtn').onclick = downloadExcel;
+    }
+    function loadAttempts() { const stored = localStorage.getItem("coulombQuizClaro"); attempts = stored !== null ? parseInt(stored) : 0; const remaining = MAX_ATTEMPTS - attempts; const disp = document.getElementById('attemptDisplay'); if(disp) disp.innerHTML = remaining <= 0 ? "🚫 Intentos agotados (máx 3)" : `📊 Intentos usados: ${attempts} / ${MAX_ATTEMPTS}`; if (attempts >= MAX_ATTEMPTS) quizLocked = true; }
+    function saveAttempts() { localStorage.setItem("coulombQuizClaro", attempts); const remaining = MAX_ATTEMPTS - attempts; const disp = document.getElementById('attemptDisplay'); if(disp) disp.innerHTML = remaining <= 0 ? "🚫 Intentos agotados" : `📊 Intentos usados: ${attempts} / ${MAX_ATTEMPTS}`; if (attempts >= MAX_ATTEMPTS) quizLocked = true; }
+    function evaluateQuiz() {
+        const studentName = document.getElementById('studentName')?.value.trim();
+        if (!studentName) { alert("Ingresa tu nombre completo."); return; }
+        const unanswered = []; userAnswers.forEach((ans, idx)=>{ if(ans === null) unanswered.push(idx + 1); });
+        if(unanswered.length > 0){ alert("Preguntas sin responder: " + unanswered.join(", ")); return; }
+        if (attempts >= MAX_ATTEMPTS) { alert("Sin intentos restantes."); return; }
+        let correctCount = 0; const results = [];
+        for (let i = 0; i < currentQuestions.length; i++) { const isCorrect = (userAnswers[i] === currentQuestions[i].correctIndex); if (isCorrect) correctCount++; results.push({ num: i+1, competencia: currentQuestions[i].competencia, correct: isCorrect }); }
+        const grade = (correctCount / currentQuestions.length) * 5;
+        lastScore = correctCount; lastGrade = grade; lastStudent = studentName; lastSelections = [...userAnswers];
+        attempts++; saveAttempts(); quizLocked = true;
+        const resultDiv = document.getElementById('resultPanel'); resultDiv.style.display = 'block';
+        let tableHtml = `<table class="results-table"><thead><tr><th>#</th><th>Competencia</th><th>Resultado</th></tr></thead><tbody>`;
+        results.forEach(r => { tableHtml += `<tr class="${r.correct ? 'correct-row' : 'incorrect-row'}"><td>${r.num}</td><td>${r.competencia}</td><td>${r.correct ? '✅ Correcta' : '❌ Incorrecta'}</td></tr>`; });
+        tableHtml += `</tbody></table>`;
+        const motivationalMsg = getMotivationalMessage(grade, studentName);
+        let scientificBadge = (grade>=5)?"👑 HIJO DE COULOMB":(grade>=4.5)?"⚡ DISCÍPULO DE AMPÈRE":(grade>=4)?"🧠 GUARDIÁN DE MAXWELL":(grade>=3.5)?"🔬 EXPLORADOR FARADAY":(grade>=3)?"🚀 INVENTOR TESLA":"📘 ASPIRANTE EINSTEIN";
+        const progressPercent = (grade / 5) * 100;
+        resultDiv.innerHTML = `<h3 style="color:var(--accent);">${studentName} · Aciertos: ${correctCount}/15 (${grade.toFixed(2)}/5.0)</h3><div class="progress-container"><div class="progress-bar" style="width:${progressPercent}%;">${progressPercent.toFixed(0)}%</div></div><div class="scientific-badge-box"><div class="scientific-badge">${scientificBadge}</div></div><p style="margin-top:16px;"><strong>${motivationalMsg}</strong></p>${tableHtml}<div id="extraBtns"></div>`;
+        const extraDiv = document.getElementById('extraBtns');
+        if (attempts < MAX_ATTEMPTS) { const retryBtn = document.createElement('button'); retryBtn.innerText = "🔄 Nuevo intento"; retryBtn.className = "quiz-secondary-btn"; retryBtn.style.marginTop = '12px'; retryBtn.onclick = () => { renderQuiz(); quizLocked = false; document.getElementById('resultPanel').style.display = 'none'; userAnswers.fill(null); document.getElementById('downloadPDFBtn').disabled = false; document.getElementById('downloadExcelBtn').disabled = false; }; extraDiv.appendChild(retryBtn); }
+        else { const revealBtn = document.createElement('button'); revealBtn.innerText = "📚 Ver respuestas correctas"; revealBtn.className = "quiz-secondary-btn"; revealBtn.style.marginTop = '12px'; revealBtn.onclick = () => { for (let i = 0; i < currentQuestions.length; i++) { const userIdx = lastSelections[i]; const correctIdx = currentQuestions[i].correctIndex; const optsDiv = document.getElementById(`opts-${i}`); if (optsDiv) { const allOpts = optsDiv.querySelectorAll('.quiz-radio-option'); allOpts.forEach(opt => opt.classList.remove('correct-highlight', 'incorrect-highlight')); if (userIdx !== undefined && userIdx !== correctIdx && allOpts[userIdx]) allOpts[userIdx].classList.add('incorrect-highlight'); if (allOpts[correctIdx]) allOpts[correctIdx].classList.add('correct-highlight'); } } }; extraDiv.appendChild(revealBtn); }
+        document.getElementById('downloadPDFBtn').disabled = false; document.getElementById('downloadExcelBtn').disabled = false;
+    }
+    async function downloadPDF() { if (lastScore === null) { alert("Califica el quiz primero."); return; } const { jsPDF } = window.jspdf; const doc = new jsPDF(); doc.setFontSize(20); doc.text("CERTIFICADO STEM · LEY DE COULOMB", 15, 20); doc.setFontSize(13); doc.text(`Estudiante: ${lastStudent}`, 15, 40); doc.text(`Fecha: ${new Date().toLocaleString()}`, 15, 50); doc.text(`Resultado: ${lastScore}/15`, 15, 60); doc.text(`Nota final: ${lastGrade.toFixed(2)} / 5.0`, 15, 70); doc.text("Designed by Eng. Medina H. A., MSc.", 15, 150); doc.save(`Certificado_Coulomb_${lastStudent.replace(/\s/g, "_")}.pdf`); }
+    function downloadExcel(){ if(lastScore === null){ alert("Califica el quiz primero."); return; } const wb = XLSX.utils.book_new(); const resumenData = [["CERTIFICACIÓN STEM"],[],["Estudiante", lastStudent],["Fecha", new Date().toLocaleString()],["Aciertos", `${lastScore}/15`],["Nota", lastGrade.toFixed(2)]]; const wsResumen = XLSX.utils.aoa_to_sheet(resumenData); XLSX.utils.book_append_sheet(wb, wsResumen, "Resumen STEM"); XLSX.writeFile(wb, `Reporte_STEM_${lastStudent.replace(/\s/g,'_')}.xlsx`); }
+    const toggleQuizBtn = document.getElementById('toggleQuizBtn'); let quizVisible = true;
+    toggleQuizBtn.addEventListener('click',()=>{ const quizSection = document.getElementById('quizSection'); quizVisible = !quizVisible; if(quizVisible){ quizSection.style.display = 'block'; toggleQuizBtn.innerHTML = '📚 Quiz STEM'; }else{ quizSection.style.display = 'none'; toggleQuizBtn.innerHTML = '📖 Mostrar Quiz'; } });
+    renderQuiz();
+    if (!CanvasRenderingContext2D.prototype.roundRect) { CanvasRenderingContext2D.prototype.roundRect = function(x, y, w, h, r) { if (w < 2 * r) r = w / 2; if (h < 2 * r) r = h / 2; this.moveTo(x+r, y); this.lineTo(x+w-r, y); this.quadraticCurveTo(x+w, y, x+w, y+r); this.lineTo(x+w, y+h-r); this.quadraticCurveTo(x+w, y+h, x+w-r, y+h); this.lineTo(x+r, y+h); this.quadraticCurveTo(x, y+h, x, y+h-r); this.lineTo(x, y+r); this.quadraticCurveTo(x, y, x+r, y); return this; }; }
 </script>
 </body>
 </html>
