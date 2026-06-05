@@ -1,0 +1,1292 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>⚽ STEM League: Road to Glory | Rural STEAM Lab</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+            startup: { ready: () => { MathJax.startup.defaultReady(); } }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" id="MathJax-script" async></script>
+    <style>
+        /* ===== ESTILOS ORIGINALES ===== */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background: linear-gradient(135deg, #eef2f5 0%, #d9e2ec 100%);
+            font-family: 'Segoe UI', 'Inter', system-ui, sans-serif;
+            padding: 16px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+        }
+        .simulador-container {
+            max-width: 550px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.96);
+            border-radius: 48px;
+            box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.35);
+            overflow: hidden;
+            transition: all 0.2s ease;
+        }
+        .premium-header {
+            background: #0a1c2a;
+            padding: 16px 20px;
+            color: white;
+            border-bottom: 3px solid #ffb347;
+            text-align: center;
+        }
+        .premium-header h1 { font-size: 1.3rem; font-weight: 700; }
+        .premium-header .subtitle { font-size: 0.7rem; opacity: 0.9; margin-top: 4px; }
+        .premium-header .rural-brand {
+            font-size: 0.65rem;
+            margin-top: 8px;
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            border-top: 1px dashed #ffb34770;
+            padding-top: 8px;
+        }
+        .contenido-principal { padding: 16px; }
+        .canvas-wrapper {
+            position: relative;
+            margin-bottom: 16px;
+            cursor: grab;
+            touch-action: none;
+        }
+        canvas#main {
+            display: block;
+            width: 100%;
+            border-radius: 28px;
+            box-shadow: 0 12px 22px rgba(0,0,0,0.2);
+            background: #1b4d2e;
+        }
+        .top-sliders {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(10, 28, 32, 0.85);
+            backdrop-filter: blur(10px);
+            padding: 5px 10px;
+            border-radius: 40px;
+            display: flex;
+            gap: 12px;
+            z-index: 10;
+        }
+        .top-sliders .slider-item { display: flex; flex-direction: column; gap: 2px; min-width: 80px; }
+        .top-sliders .slider-item label { font-size: 0.55rem; color: #ffdd99; }
+        .top-sliders .slider-item input { width: 100%; height: 3px; background: #ffcc88; }
+        .top-sliders .slider-value { font-size: 0.55rem; color: white; text-align: right; font-family: monospace; }
+        .bottom-buttons {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(10, 28, 32, 0.85);
+            backdrop-filter: blur(10px);
+            padding: 4px 8px;
+            border-radius: 60px;
+            display: flex;
+            gap: 8px;
+            z-index: 10;
+        }
+        .bottom-buttons button {
+            background: #1f3a47;
+            border: none;
+            font-size: 0.9rem;
+            padding: 3px 10px;
+            border-radius: 40px;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 3px;
+        }
+        .drag-info {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.6);
+            color: #ffdd99;
+            font-size: 0.6rem;
+            padding: 3px 8px;
+            border-radius: 40px;
+            backdrop-filter: blur(4px);
+            pointer-events: none;
+            z-index: 10;
+        }
+        .tarjeta-acordeon {
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 28px;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            border: 1px solid rgba(255,180,70,0.3);
+            overflow: visible;
+        }
+        .tarjeta-header {
+            background: #1f3a47;
+            color: white;
+            padding: 12px 18px;
+            font-weight: bold;
+            font-size: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+        .tarjeta-header:hover { background: #2c5a6e; }
+        .flecha { font-size: 1.2rem; transition: transform 0.2s; }
+        .tarjeta-body {
+            max-height: 0;
+            overflow: hidden;
+            visibility: hidden;
+            padding: 0 18px;
+            transition: max-height 0.4s ease, padding 0.3s ease, visibility 0.3s;
+            background: #fffef7;
+        }
+        .tarjeta-body.abierto {
+            max-height: 5000px;
+            visibility: visible;
+            padding: 16px 18px;
+        }
+        .math-display { text-align: center; margin: 12px 0; }
+        .desafio-item {
+            background: #f0f0f0;
+            border-radius: 20px;
+            padding: 12px;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+        .quiz-pregunta {
+            background: white;
+            padding: 10px 12px;
+            margin-bottom: 15px;
+            border-radius: 24px;
+            border-left: 8px solid #ff914d;
+        }
+        .quiz-pregunta.no-respondida { border-left-color: #dc3545; background: #fff0f0; }
+        .quiz-opciones label {
+            display: block;
+            margin: 6px 0;
+            font-size: 0.8rem;
+            background: #f7f2e4;
+            padding: 6px 10px;
+            border-radius: 40px;
+            cursor: pointer;
+        }
+        .progress-bar-container {
+            background: #ddd;
+            border-radius: 40px;
+            height: 20px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+        .progress-fill {
+            width: 0%;
+            height: 100%;
+            background: #2b7a4b;
+            border-radius: 40px;
+            transition: width 0.3s;
+        }
+        .tabla-resultados {
+            background: white;
+            border-radius: 20px;
+            padding: 8px;
+            font-size: 0.7rem;
+            margin: 12px 0;
+            overflow-x: auto;
+        }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 6px 2px; border-bottom: 1px solid #ddd; }
+        .nivel-stem {
+            background: #1f3a47;
+            color: gold;
+            border-radius: 60px;
+            padding: 10px;
+            text-align: center;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        .btn-pdf, .btn-reset-quiz {
+            background: #d45a2b;
+            width: 100%;
+            padding: 12px;
+            border-radius: 60px;
+            font-weight: bold;
+            border: none;
+            margin-top: 10px;
+            color: white;
+            cursor: pointer;
+        }
+        .btn-reset-quiz { background: #2c3e50; margin-top: 6px; }
+        .quiz-header {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        .nombre-input {
+            background: white;
+            border: 1px solid #ccb38c;
+            border-radius: 80px;
+            padding: 10px 14px;
+            font-size: 0.9rem;
+            width: 100%;
+        }
+        .progress-text {
+            background: #2c3e50;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 60px;
+            font-weight: bold;
+            font-size: 0.75rem;
+            display: inline-block;
+        }
+        .intentos-badge {
+            background: #2c3e50;
+            padding: 4px 12px;
+            border-radius: 60px;
+            color: white;
+            font-weight: bold;
+            font-size: 0.7rem;
+        }
+        .mensaje-gol {
+            position: absolute;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-weight: bold;
+            padding: 8px;
+            border-radius: 40px;
+            margin: 0 auto;
+            width: 85%;
+            left: 7.5%;
+            z-index: 20;
+            backdrop-filter: blur(8px);
+            animation: fadeOutUp 4s forwards;
+            pointer-events: none;
+            bottom: 90px;
+            background: rgba(0,0,0,0.85);
+            color: #FFD966;
+            font-size: 1.2rem;
+        }
+        .mensaje-falta, .mensaje-rebote, .mensaje-fuera {
+            position: absolute;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-weight: bold;
+            padding: 8px;
+            border-radius: 40px;
+            margin: 0 auto;
+            width: 85%;
+            left: 7.5%;
+            z-index: 20;
+            backdrop-filter: blur(8px);
+            animation: fadeOutUp 2.5s forwards;
+            pointer-events: none;
+        }
+        .mensaje-falta { bottom: 120px; background: #ffc107; color: #0a1c2a; }
+        .mensaje-rebote { bottom: 70px; background: #1e3a8a; color: white; }
+        .mensaje-fuera { bottom: 70px; background: #8b0000; color: #ffcc00; }
+        @keyframes fadeOutUp {
+            0% { opacity: 1; transform: translateY(0); }
+            70% { opacity: 1; }
+            100% { opacity: 0; transform: translateY(-40px); visibility: hidden; }
+        }
+        footer {
+            text-align: center;
+            font-size: 0.7rem;
+            padding: 16px;
+            background: #eef2f0;
+            color: #2c5a6e;
+            border-top: 1px solid #ffb347;
+        }
+        .recompensa-mensaje {
+            background: #d4edda;
+            color: #155724;
+            border-radius: 28px;
+            padding: 12px;
+            margin: 12px 0;
+            text-align: center;
+            font-weight: bold;
+            border: 2px solid #28a745;
+        }
+        .hud-stem {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(10, 28, 32, 0.9);
+            backdrop-filter: blur(12px);
+            border-radius: 20px;
+            padding: 8px 16px;
+            color: white;
+            font-family: monospace;
+            font-weight: bold;
+            text-align: right;
+            border: 1px solid #ffb347;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            z-index: 25;
+            pointer-events: none;
+        }
+        .hud-stem p { margin: 4px 0; font-size: 0.8rem; }
+        .hud-stem .pts { color: #FFD966; }
+        .hud-stem .goles { color: #7ec8e0; }
+        .hud-stem .nivel { color: #f39c12; }
+        .logro-500 {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(10px);
+            border-radius: 60px;
+            padding: 20px 30px;
+            text-align: center;
+            z-index: 100;
+            border: 2px solid #FFD966;
+            box-shadow: 0 0 30px gold;
+            animation: fadeInOut 5s forwards;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+        .logro-500 h2 { color: #FFD966; font-size: 1.8rem; margin-bottom: 10px; }
+        .logro-500 p { color: white; font-size: 1rem; margin: 5px 0; }
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+            15% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+            85% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+            100% { opacity: 0; transform: translate(-50%, -50%) scale(1.2); visibility: hidden; }
+        }
+
+        /* ===== FULLSCREEN MODE ===== */
+        .fullscreen-mode .premium-header,
+        .fullscreen-mode footer {
+            display: none !important;
+        }
+        .fullscreen-mode .simulador-container {
+            max-width: 100%;
+            border-radius: 0;
+            background: transparent;
+            box-shadow: none;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .fullscreen-mode .contenido-principal {
+            padding: 0;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .fullscreen-mode .canvas-wrapper {
+            margin-bottom: 0;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .fullscreen-mode canvas#main {
+            border-radius: 0;
+            box-shadow: none;
+            width: 100%;
+            height: auto;
+            max-height: 100vh;
+            object-fit: contain;
+        }
+        .fullscreen-mode .top-sliders,
+        .fullscreen-mode .bottom-buttons,
+        .fullscreen-mode .drag-info,
+        .fullscreen-mode .hud-stem {
+            z-index: 30;
+        }
+        .fullscreen-mode .tarjeta-acordeon {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<div class="simulador-container">
+    <div class="premium-header">
+        <h1>⚽ STEM League: Road to Glory</h1>
+        <div class="subtitle">Interactive Physics Simulation • Pedagogical Analytics</div>
+        <div class="rural-brand">
+            <span>🌾 Rural STEAM Lab Colombia</span>
+            <span class="signature">✨ Eng. Medina H. A., MSc. ✨</span>
+        </div>
+    </div>
+    <div class="contenido-principal">
+        <div class="canvas-wrapper">
+            <canvas id="main" width="800" height="400"></canvas>
+            <div id="hudPanel" class="hud-stem" style="display: none;">
+                <p>⭐ PTS: <span id="hudPts">0</span></p>
+                <p>⚽ GOLES: <span id="hudGoles">0</span></p>
+                <p>🎯 NIVEL STEM: <span id="hudNivel">1</span></p>
+            </div>
+            <div class="top-sliders">
+                <div class="slider-item">
+                    <label>🚀 VELOCIDAD (m/s)</label>
+                    <input type="range" id="velSlider" min="0" max="40" step="0.5" value="20">
+                    <div class="slider-value" id="velSliderVal">20.0 m/s</div>
+                </div>
+                <div class="slider-item">
+                    <label>📐 ÁNGULO (°)</label>
+                    <input type="range" id="angSlider" min="1" max="90" step="1" value="45">
+                    <div class="slider-value" id="angSliderVal">45°</div>
+                </div>
+            </div>
+            <div class="bottom-buttons">
+                <button id="btnPlay">▶ Jugar</button>
+                <button id="btnFullscreen">⛶ Modo STEAM</button>
+                <button id="btnScore">⭐ Score</button>
+                <button id="btnResetTotal">⟲ Reiniciar todo</button>
+            </div>
+            <div class="drag-info">🖱️ Arrastra el JUGADOR</div>
+        </div>
+
+        <!-- Tarjetas expandibles -->
+        <div class="tarjeta-acordeon">
+            <div class="tarjeta-header" data-target="body-fisica">
+                <span>📐 SOLUCIÓN FÍSICA - MODELO MATEMÁTICO</span>
+                <span class="flecha">▼</span>
+            </div>
+            <div id="body-fisica" class="tarjeta-body"><p>Cargando...</p></div>
+        </div>
+        <div class="tarjeta-acordeon">
+            <div class="tarjeta-header" data-target="body-desafios">
+                <span>🏆 DESAFÍOS STEM - PUNTUACIONES</span>
+                <span class="flecha">▼</span>
+            </div>
+            <div id="body-desafios" class="tarjeta-body">
+                <div style="text-align:center; margin-bottom:12px;">
+                    <span style="background:#ffb347; padding:6px 12px; border-radius:60px;">⭐ PUNTOS: <span id="puntosTotales">0</span> ⭐</span>
+                </div>
+                <div id="listaDesafios"></div>
+                <div id="ultimoLogro" style="display:none;"></div>
+                <div id="mensajeBonus" style="display:none;"></div>
+                <div id="recompensaCardMensaje" style="display:none;"></div>
+            </div>
+        </div>
+        <div class="tarjeta-acordeon">
+            <div class="tarjeta-header" data-target="body-cinematica">
+                <span>📈 DIAGRAMA CINEMÁTICO - TRAYECTORIA Y VECTORES</span>
+                <span class="flecha">▼</span>
+            </div>
+            <div id="body-cinematica" class="tarjeta-body" style="padding:0;">
+                <canvas id="grafico" width="800" height="300" style="width:100%; border-radius:20px; background:#0f2125;"></canvas>
+            </div>
+        </div>
+        <div class="tarjeta-acordeon">
+            <div class="tarjeta-header" data-target="body-quiz">
+                <span>📝 EVALUACIÓN ICFES STEM</span>
+                <span class="flecha">▼</span>
+            </div>
+            <div id="body-quiz" class="tarjeta-body">
+                <div id="quizDynamicContainer"></div>
+            </div>
+        </div>
+    </div>
+    <footer>🌾 Rural STEAM Lab Colombia • www.ruralsteamlab.com • ✨ Eng. Medina H. A., MSc. ✨</footer>
+</div>
+
+<script>
+    // ========== FÍSICA Y CANVAS (SIN MODIFICACIONES) ==========
+    const canvas = document.getElementById("main");
+    const ctx = canvas.getContext("2d");
+    const gcanvas = document.getElementById("grafico");
+    const gctx = gcanvas.getContext("2d");
+    const velSlider = document.getElementById("velSlider");
+    const angSlider = document.getElementById("angSlider");
+    const velSliderVal = document.getElementById("velSliderVal");
+    const angSliderVal = document.getElementById("angSliderVal");
+
+    let tiempoActual = 0, animActiva = false;
+    const g = 9.81;
+    let fueraMostrado = false;
+    const LEFT_MARGIN = 20, RIGHT_MARGIN = 20, CANVAS_W = 800, CAMPO_M = 100;
+    const escalaPxPorMetro = (CANVAS_W - LEFT_MARGIN - RIGHT_MARGIN) / CAMPO_M;
+    const GOAL_X_M = 100, GOAL_X_PX = LEFT_MARGIN + GOAL_X_M * escalaPxPorMetro;
+    let lanzadorX_M = 15;
+    let puntosTotales = 0, golesTotales = 0;
+    let lastReportedGoal = false;
+    let golesRegistrados = new Set();
+    let bonusQuizOtorgado = false, logro500Mostrado = false;
+    let ultimoAlcance = null, ultimoAngulo = null, ultimaVelocidad = null;
+    let frameArquero = 0, arqueroAnimState = 0, arqueroTimer = 0;
+    let reboteActivo = false, reboteTimer = 0, vxRebote = 0, vyRebote = 0, xRebote = 0, yRebote = 0;
+
+    const desafios = [
+        { id: "penal", nombre: "⚡ PENAL (8-14 m)", rangoMin: 8, rangoMax: 14, puntos: 25, leyenda: "¡Luis Díaz! Gol de penal perfecto.", contexto: "⚡ **PENAL PERFECTO**\n\n🏆 +25 puntos\n\n¡Juegas igual que Lucho Diaz eres el orgullo de Colombia!\nHas ejecutado un penal con precisión profesional.\nLa física te ayudó a controlar la trayectoria." },
+        { id: "libre", nombre: "🎯 TIRO LIBRE (20-30 m)", rangoMin: 20, rangoMax: 30, puntos: 50, leyenda: "¡James Rodríguez! Gol de clase mundial.", contexto: "🎯 **TIRO LIBRE DE CLASE MUNDIAL**\n\n🏆 +50 puntos\n\n¡James Rodríguez!\nTu lanzamiento combina potencia, precisión y estrategia.\nHas demostrado una excelente comprensión de la relación entre velocidad y ángulo." },
+        { id: "mediocampo", nombre: "🌕 MEDIO CAMPO (45-55 m)", rangoMin: 45, rangoMax: 55, puntos: 100, leyenda: "Messi estaría orgulloso de ti.", contexto: "🌕 **GOL DE MEDIA CANCHA**\n\n🏆 +100 puntos\n\n¡Messi estaría orgulloso de ti!\nUn disparo desde esta distancia requiere visión, confianza y capacidad de análisis.\nHas utilizado la física para lograr una trayectoria extraordinaria." },
+        { id: "porteria", nombre: "🏟️ PORTERÍA A PORTERÍA (95-100 m)", rangoMin: 95, rangoMax: 100, puntos: 150, leyenda: "Tienes la misma potencia de CR7.", contexto: "🏟️ **GOL LEGENDARIO**\n\n🏆 +150 puntos\n\n¡Tienes la misma potencia de CR7!\nHas conseguido una anotación excepcional recorriendo prácticamente toda la cancha.\nEste lanzamiento demuestra una excelente combinación de matemáticas, física y precisión." }
+    ];
+
+    function obtenerDesafioPorDistancia(d) { return desafios.find(ds => d >= ds.rangoMin && d <= ds.rangoMax); }
+
+    function mostrarMensajeGol(puntos, texto) {
+        const div = document.createElement("div");
+        div.className = "mensaje-gol";
+        div.innerHTML = `⚽ ¡GOOOOL!<br>⭐ +${puntos} PTS<br>${texto}`;
+        document.querySelector(".canvas-wrapper").appendChild(div);
+        setTimeout(() => div.remove(), 4000);
+    }
+    function mostrarMensajeFalta() {
+        const div = document.createElement("div"); div.className = "mensaje-falta";
+        div.innerHTML = "⚠️ ¡FALTA AMARILLA! Ya hiciste este gol con la misma velocidad/ángulo. ¡Cambia la configuración para sumar más puntos! ⚠️";
+        document.querySelector(".canvas-wrapper").appendChild(div);
+        setTimeout(() => div.remove(), 2500);
+    }
+    function mostrarMensajeRebote() {
+        const div = document.createElement("div"); div.className = "mensaje-rebote";
+        div.innerHTML = "🧤 Higuita atrapó el balón. ¡Higuita es el mejor! 🧤";
+        document.querySelector(".canvas-wrapper").appendChild(div);
+        setTimeout(() => div.remove(), 2500);
+    }
+    function mostrarMensajeAfuera() {
+        if(fueraMostrado) return;
+        const div = document.createElement("div"); div.className = "mensaje-fuera";
+        div.innerHTML = "🧤 Higuita sabía que ese balón iba afuera.";
+        document.querySelector(".canvas-wrapper").appendChild(div);
+        setTimeout(() => div.remove(), 2500);
+        fueraMostrado = true;
+    }
+
+    function otorgarPuntosPorDistancia(distReal, v0, ang) {
+        let desafio = obtenerDesafioPorDistancia(distReal);
+        let puntos = 0, texto = "", clave = "";
+        if(desafio) {
+            clave = `${v0.toFixed(1)}|${ang}|${desafio.id}`;
+            if(golesRegistrados.has(clave)) { mostrarMensajeFalta(); return false; }
+            puntos = desafio.puntos;
+            texto = desafio.leyenda;
+            golesRegistrados.add(clave);
+            puntosTotales += puntos; golesTotales++;
+            mostrarMensajeGol(puntos, texto);
+            const logroDiv = document.getElementById("ultimoLogro");
+            logroDiv.style.display = "block";
+            logroDiv.innerHTML = `🎉 ¡LOGRO! ${desafio.nombre} +${puntos} pts. ${desafio.leyenda} 🎉`;
+            setTimeout(() => logroDiv.style.display = "none", 4000);
+        } else {
+            clave = `${v0.toFixed(1)}|${ang}|normal`;
+            if(golesRegistrados.has(clave)) { mostrarMensajeFalta(); return false; }
+            puntos = 5;
+            texto = "Buen disparo. Sigue acumulando puntos STEM.";
+            golesRegistrados.add(clave);
+            puntosTotales += puntos; golesTotales++;
+            mostrarMensajeGol(puntos, texto);
+        }
+        actualizarPuntosUI(); actualizarHUD();
+        actualizarPanelFisico();
+        if(puntosTotales >= 500 && !bonusQuizOtorgado) {
+            otorgarBonusQuiz();
+        }
+        return true;
+    }
+
+    function otorgarBonusQuiz() {
+        if (bonusQuizOtorgado) return;
+        bonusQuizOtorgado = true;
+        const div = document.getElementById("mensajeBonus");
+        div.style.display = "block";
+        div.innerHTML = "🎁 ¡RECOMPENSA DESBLOQUEADA! Has alcanzado 500 puntos STEM. Has ganado UNA UNIDAD COMPLETA (+1.0) para el Quiz STEM. 🎁";
+        setTimeout(() => div.style.display = "none", 5000);
+        
+        // Mostrar el mensaje grande y bonito en la cancha
+        mostrarAnimacionLogro500();
+        
+        // Si ya hay una nota mostrada (quiz ya calificado antes del bonus), la actualizamos con el bonus
+        if (typeof ultimaNota !== 'undefined' && ultimaNota !== null) {
+            ultimaNota = Math.min(5.0, ultimaNota + 1.0);
+            ultimoPorcentaje = Math.round((ultimaNota / 5) * 100);
+            actualizarResultadoQuizUI();
+        }
+    }
+
+    function actualizarPuntosUI() {
+        document.getElementById("puntosTotales").innerText = puntosTotales;
+        let html = "";
+        desafios.forEach(d => { html += `<div class="desafio-item"><strong>${d.nombre}</strong> 🏆 ${d.puntos} pts<br><span style="font-size:0.7rem;">${d.leyenda}</span></div>`; });
+        html += `<div class="puntos-destacado">💡 ¡Cada gol suma puntos solo la primera vez con esa velocidad/ángulo! Cambia parámetros para más puntos.</div>`;
+        document.getElementById("listaDesafios").innerHTML = html;
+        const recompensaDiv = document.getElementById("recompensaCardMensaje");
+        if(puntosTotales >= 500) recompensaDiv.innerHTML = `<div class="recompensa-mensaje">🎉 ¡FELICITACIONES! Has ganado UNA UNIDAD COMPLETA (+1.0) para el Quiz STEM. Revisa tu calificación en la tarjeta de Evaluación. 🎉</div>`;
+        else recompensaDiv.innerHTML = "";
+    }
+
+    function calcularNivelSTEM(p) {
+        if(p>=500) return 6; if(p>=400) return 5; if(p>=300) return 4;
+        if(p>=200) return 3; if(p>=100) return 2; return 1;
+    }
+
+    function actualizarHUD() {
+        document.getElementById("hudPts").innerText = puntosTotales;
+        document.getElementById("hudGoles").innerText = golesTotales;
+        document.getElementById("hudNivel").innerText = calcularNivelSTEM(puntosTotales);
+    }
+
+    function getV0() { return parseFloat(velSlider.value); }
+    function getAngDeg() { return parseInt(angSlider.value); }
+    function actualizarSlidersDisplay() {
+        velSliderVal.innerText = getV0().toFixed(1)+" m/s";
+        angSliderVal.innerText = getAngDeg()+"°";
+    }
+
+    async function actualizarPanelFisico() {
+        let v0 = getV0(), angDeg = getAngDeg(), angRad = angDeg*Math.PI/180;
+        let vx = v0*Math.cos(angRad), vy = v0*Math.sin(angRad);
+        let tvuelo = (2*vy)/g, alcance = (v0*v0*Math.sin(2*angRad))/g, alturaMax = (vy*vy)/(2*g);
+        let distanciaPorteria = GOAL_X_M - lanzadorX_M;
+        let esGolTeorico = (Math.abs(alcance - distanciaPorteria) <= 2.0) && distanciaPorteria>0;
+        
+        let resultadoTemp = "";
+        let interpretacionFisica = "";
+        let contextoFutbol = "";
+        let reflexionFinal = "";
+        let progresoHTML = "";
+        
+        if(esGolTeorico) {
+            resultadoTemp = "⚽ ¡GOOOOOL! ⚽";
+            interpretacionFisica = `<div style="background:#d4edda; padding:15px; border-radius:20px; margin:10px 0; text-align:center;">🏆 ¡FELICITACIONES! 🏆<br><br>Has logrado una trayectoria exitosa aplicando correctamente los principios del movimiento parabólico.<br>La combinación entre velocidad, ángulo y alcance permitió alcanzar la portería con precisión.<br><br>🌟 Eres un excelente jugador porque supiste tomar decisiones acertadas antes del lanzamiento.<br>🔬 También estás demostrando habilidades de científico, ya que analizaste variables, realizaste predicciones y verificaste resultados utilizando la física.<br><br>🚀 Hoy has jugado como un campeón y pensado como un futuro científico.</div>`;
+            let desafioActual = obtenerDesafioPorDistancia(distanciaPorteria);
+            if(desafioActual) {
+                contextoFutbol = `<div style="background:#fff3cd; padding:12px; border-radius:20px; margin-top:12px; text-align:center;">${desafioActual.contexto.replace(/\n/g, '<br>')}</div>`;
+            } else {
+                contextoFutbol = `<div style="background:#fff3cd; padding:12px; border-radius:20px; margin-top:12px; text-align:center;">🎯 ¡GOL VÁLIDO! Tu disparo ha sido efectivo. Sigue ajustando parámetros para alcanzar desafíos más lejanos.</div>`;
+            }
+            let puntosNecesarios = 500 - puntosTotales;
+            if(puntosNecesarios < 0) puntosNecesarios = 0;
+            progresoHTML = `<div style="background:#e2e3e8; padding:12px; border-radius:20px; margin-top:12px; text-align:center;">🎮 **PROGRESO STEM**<br>Puntos acumulados actuales: <strong>${puntosTotales}</strong><br>Puntos necesarios para recompensa: <strong>${puntosNecesarios}</strong></div>`;
+            reflexionFinal = `<div style="background:#cfe2ff; padding:12px; border-radius:20px; margin-top:12px; text-align:center;">🔭 **REFLEXIÓN STEM**<br><br>Detrás de este gol no hubo suerte.<br>Hubo observación, análisis, matemáticas y física.<br><br>Los científicos hacen exactamente lo mismo:<br>✓ observan;<br>✓ plantean hipótesis;<br>✓ prueban;<br>✓ corrigen;<br>✓ mejoran.<br><br>Cada lanzamiento exitoso te acerca a convertirte en un mejor estudiante, un mejor deportista y un futuro profesional capaz de transformar el mundo mediante el conocimiento.<br><br>✨ En Rural STEAM Lab aprendemos jugando, experimentando y pensando como científicos. ✨</div>`;
+        } else {
+            resultadoTemp = (alcance < distanciaPorteria) ? "❌ CORTO (teóricamente)" : "❌ LARGO (teóricamente)";
+            interpretacionFisica = (alcance < distanciaPorteria) ? "❌ **CORTO**: El balón no alcanza la portería porque la velocidad inicial no proporciona el alcance horizontal necesario. Intenta aumentar la velocidad o modificar el ángulo de lanzamiento para lograr mayor distancia." : "❌ **LARGO**: El alcance calculado supera la distancia a la portería. Una reducción moderada de la velocidad o un ajuste angular permitirían mayor precisión.";
+            contextoFutbol = "";
+            progresoHTML = "";
+            if(ultimoAlcance !== null && ultimoAngulo !== null && ultimaVelocidad !== null) {
+                let mejora = Math.abs(alcance - distanciaPorteria) < Math.abs(ultimoAlcance - distanciaPorteria);
+                if(mejora) reflexionFinal = "<div style='background:#cfe2ff; padding:10px; border-radius:20px; margin-top:12px;'>📈 **PROGRESO DETECTADO**: Tu nuevo lanzamiento es más eficiente que el anterior. Estás optimizando la relación entre velocidad y ángulo como lo haría un científico.</div>";
+                else reflexionFinal = "<div style='background:#f8d7da; padding:10px; border-radius:20px; margin-top:12px;'>📚 **ANÁLISIS DEL INTENTO**: Los errores también generan aprendizaje. Analiza los datos obtenidos y ajusta nuevamente los parámetros.</div>";
+            } else reflexionFinal = "<div style='background:#eef2f5; padding:10px; border-radius:20px; margin-top:12px;'>💡 **Consejo inicial**: Experimenta con diferentes valores de velocidad y ángulo para observar cómo cambian el alcance, la altura máxima y el tiempo de vuelo.</div>";
+        }
+        
+        ultimoAlcance = alcance;
+        ultimoAngulo = angDeg;
+        ultimaVelocidad = v0;
+        
+        let pasoMatematico = `<div class="fisica-detalle"><h3 style="color:#005f73;">📌 DATOS DE ENTRADA</h3><div class="math-display">\\( v_0 = ${v0.toFixed(2)} \\, m/s \\) &nbsp; \\( \\theta = ${angDeg}^\\circ \\) &nbsp; \\( g = 9.81 \\, m/s^2 \\)</div><div class="math-display">\\( x_{\\text{lanzador}} = ${lanzadorX_M.toFixed(1)} \\, m \\) &nbsp; Distancia a portería: \\( ${distanciaPorteria.toFixed(1)} \\, m \\)</div><h3>📐 DESCOMPOSICIÓN VECTORIAL</h3><div class="math-display">\\( V_x = v_0 \\cos\\theta = ${vx.toFixed(2)} \\, m/s \\)</div><div class="math-display">\\( V_y = v_0 \\sin\\theta = ${vy.toFixed(2)} \\, m/s \\)</div><h3>🧮 ECUACIONES DEL MOVIMIENTO</h3><div class="math-display">\\( x(t) = x_0 + V_x t \\) &nbsp; \\( y(t) = y_0 + V_y t - \\frac{1}{2} g t^2 \\)</div><div class="math-display">\\( t_{vuelo} = \\frac{2V_y}{g} = ${tvuelo.toFixed(2)} \\, s \\)</div><div class="math-display">\\( H_{max} = \\frac{V_y^2}{2g} = ${alturaMax.toFixed(2)} \\, m \\)</div><div class="math-display">\\( R = \\frac{v_0^2 \\sin(2\\theta)}{g} = ${alcance.toFixed(2)} \\, m \\)</div><h3>📊 INTERPRETACIÓN DEL RESULTADO</h3><p><b>${resultadoTemp}</b></p><p>${interpretacionFisica}</p>${contextoFutbol}${progresoHTML}${reflexionFinal}</div>`;
+        const body = document.getElementById("body-fisica");
+        body.innerHTML = pasoMatematico;
+        await MathJax.typesetPromise();
+        setTimeout(() => {
+            document.querySelectorAll(".tarjeta-body.abierto").forEach(bodyEl => {
+                bodyEl.style.maxHeight = bodyEl.scrollHeight + "px";
+            });
+        }, 50);
+    }
+
+    // ========== DIAGRAMA CINEMÁTICO ==========
+    let cacheVel=null, cacheAng=null, cachePos=null;
+    function actualizarGraficoCinematico() {
+        let v0=getV0(), angDeg=getAngDeg(), posLanzador=lanzadorX_M;
+        if(cacheVel===v0 && cacheAng===angDeg && cachePos===posLanzador) return;
+        cacheVel=v0; cacheAng=angDeg; cachePos=posLanzador;
+        let angRad=angDeg*Math.PI/180, vx=v0*Math.cos(angRad), vy=v0*Math.sin(angRad);
+        let tvuelo=(2*vy)/g, alcance=(v0*v0*Math.sin(2*angRad))/g, alturaMax=(vy*vy)/(2*g);
+        gctx.clearRect(0,0,800,300);
+        gctx.fillStyle="#0a1120"; gctx.fillRect(0,0,800,300);
+        gctx.fillStyle="#e2e8f0"; gctx.font="bold 14px 'Segoe UI'";
+        gctx.fillText("TRAYECTORIA TEÓRICA - Vector velocidad inicial",250,25);
+        let ox=60, oy=260, maxX=Math.max(alcance,10), maxY=Math.max(alturaMax,5);
+        let sx=(800-ox-50)/maxX, sy=(oy-40)/maxY;
+        gctx.strokeStyle="#475569"; gctx.lineWidth=1.5;
+        gctx.beginPath(); gctx.moveTo(ox,oy); gctx.lineTo(780,oy); gctx.stroke();
+        gctx.beginPath(); gctx.moveTo(ox,oy); gctx.lineTo(ox,30); gctx.stroke();
+        for(let i=0;i<=maxX;i+=Math.max(1,Math.floor(maxX/5))) {
+            let x=ox+i*sx; if(x<780){ gctx.fillText(i,x-5,oy+12); gctx.beginPath(); gctx.moveTo(x,oy-3); gctx.lineTo(x,oy+3); gctx.stroke(); }
+        }
+        for(let i=0;i<=maxY;i+=Math.max(1,Math.floor(maxY/4))) {
+            let y=oy-i*sy; if(y>30){ gctx.fillText(i,ox-20,y+3); gctx.beginPath(); gctx.moveTo(ox-3,y); gctx.lineTo(ox+3,y); gctx.stroke(); }
+        }
+        gctx.strokeStyle="#38bdf8"; gctx.lineWidth=2.5; gctx.beginPath();
+        let first=true;
+        for(let t=0;t<=tvuelo;t+=0.05){
+            let xr=vx*t, yr=vy*t-0.5*g*t*t; if(yr<0) yr=0;
+            let xx=ox+xr*sx, yy=oy-yr*sy; if(xx>780) break;
+            if(first){ gctx.moveTo(xx,yy); first=false; } else gctx.lineTo(xx,yy);
+        }
+        gctx.stroke();
+        let t_max=vy/g, x_max=vx*t_max, y_max=alturaMax;
+        let xp_max=ox+x_max*sx, yp_max=oy-y_max*sy;
+        gctx.fillStyle="#c084fc"; gctx.beginPath(); gctx.arc(xp_max,yp_max,7,0,2*Math.PI); gctx.fill();
+        gctx.fillStyle="#facc15"; gctx.fillText(`Hmax = ${alturaMax.toFixed(1)} m`, xp_max+8, yp_max-8);
+        let x_alc=ox+alcance*sx;
+        gctx.fillStyle="#3b82f6"; gctx.beginPath(); gctx.arc(x_alc,oy,7,0,2*Math.PI); gctx.fill();
+        gctx.fillStyle="#cbd5e1"; gctx.fillText(`Alcance = ${alcance.toFixed(1)} m`, x_alc-80, oy+22);
+        let mag=Math.hypot(vx,vy);
+        if(mag>0){
+            let ux_fis=vx/mag, uy_fis=vy/mag, ux_canvas=ux_fis, uy_canvas=-uy_fis, L=55;
+            let endX=ox+ux_canvas*L, endY=oy+uy_canvas*L;
+            gctx.strokeStyle="#0ea5e9"; gctx.lineWidth=3;
+            gctx.beginPath(); gctx.moveTo(ox,oy); gctx.lineTo(endX,endY); gctx.stroke();
+            let angle=Math.atan2(uy_canvas,ux_canvas);
+            let arrowSize=12;
+            let arrowX=endX-arrowSize*Math.cos(angle-Math.PI/6);
+            let arrowY=endY-arrowSize*Math.sin(angle-Math.PI/6);
+            gctx.beginPath(); gctx.moveTo(endX,endY); gctx.lineTo(arrowX,arrowY);
+            arrowX=endX-arrowSize*Math.cos(angle+Math.PI/6);
+            arrowY=endY-arrowSize*Math.sin(angle+Math.PI/6);
+            gctx.lineTo(arrowX,arrowY); gctx.fillStyle="#0ea5e9"; gctx.fill();
+            gctx.fillStyle="#bae6fd"; gctx.fillText(`v₀ = ${v0.toFixed(1)} m/s`, endX+8, endY-8);
+            let arcCenterX=ox+5, arcCenterY=oy, radius=48, startAngle=0, endAngle=angle, anticlockwise=false;
+            if(angle<0){ startAngle=angle; endAngle=0; anticlockwise=false; }
+            gctx.strokeStyle="#f97316"; gctx.lineWidth=2.5;
+            gctx.beginPath(); gctx.arc(arcCenterX,arcCenterY,radius,startAngle,endAngle,anticlockwise); gctx.stroke();
+            let labelX=arcCenterX+radius*0.85*Math.cos(angle/2);
+            let labelY=arcCenterY+radius*0.85*Math.sin(angle/2);
+            gctx.fillStyle="#f97316"; gctx.font="bold 14px monospace";
+            gctx.fillText(`θ = ${angDeg}°`, labelX+5, labelY-5);
+        }
+    }
+
+    // ========== DIBUJO DE LA CANCHA ==========
+    function dibujarCampo() {
+        ctx.fillStyle="#3a8c3f"; ctx.fillRect(0,0,800,400);
+        for(let i=0;i<800;i+=80) ctx.fillStyle=(Math.floor(i/80)%2===0?"rgba(255,255,255,0.1)":"rgba(0,0,0,0.08)"), ctx.fillRect(i,0,80,400);
+        ctx.strokeStyle="#ffffffcc"; ctx.lineWidth=2.5;
+        let centroX=LEFT_MARGIN+50*escalaPxPorMetro;
+        ctx.beginPath(); ctx.moveTo(centroX,0); ctx.lineTo(centroX,400); ctx.stroke();
+        ctx.beginPath(); ctx.arc(centroX,200,38,0,2*Math.PI); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(GOAL_X_PX,120); ctx.lineTo(GOAL_X_PX,280); ctx.stroke();
+        ctx.strokeStyle="#facc15"; ctx.strokeRect(GOAL_X_PX-15,130,15,140); ctx.strokeRect(GOAL_X_PX-25,150,10,100);
+        ctx.fillStyle="#fef08a30"; ctx.fillRect(GOAL_X_PX-15,130,15,140);
+        for(let m=0;m<=100;m+=20){ let x=LEFT_MARGIN+m*escalaPxPorMetro; ctx.fillStyle="#fff"; ctx.fillText(m+"m",x-6,380); }
+    }
+    function dibujarLanzador(xPx){
+        ctx.fillStyle="#1e293b"; ctx.fillRect(xPx-5,200-14,10,16);
+        ctx.beginPath(); ctx.arc(xPx,200-16,5,0,2*Math.PI); ctx.fill();
+        ctx.fillStyle="#facc15"; ctx.beginPath(); ctx.arc(xPx-2,200-18,1.5,0,2*Math.PI); ctx.arc(xPx+2,200-18,1.5,0,2*Math.PI); ctx.fill();
+        ctx.strokeStyle="#ffb347"; ctx.beginPath(); ctx.arc(xPx,200-16,7,0,2*Math.PI); ctx.stroke();
+    }
+    function dibujarArquero(xPx){
+        let offsetX=0, offsetY=0, brazoExtra=0;
+        if(arqueroAnimState===1){ let p=Math.min(1,arqueroTimer/0.3); offsetX=-15*p; offsetY=-10*p; brazoExtra=20*p; }
+        else if(arqueroAnimState===2){ let p=Math.min(1,arqueroTimer/0.3); offsetX=8*p; offsetY=-5*p; brazoExtra=20*p; }
+        else{ offsetX=Math.sin(frameArquero*0.1)*2; }
+        ctx.save(); ctx.translate(xPx+offsetX,200-18+offsetY);
+        ctx.fillStyle="#334155"; ctx.fillRect(-6,-14,12,20);
+        ctx.beginPath(); ctx.arc(0,-6,6,0,2*Math.PI); ctx.fill();
+        ctx.fillStyle="#94a3b8"; ctx.beginPath(); ctx.arc(-2,-8,1.5,0,2*Math.PI); ctx.fill(); ctx.beginPath(); ctx.arc(2,-8,1.5,0,2*Math.PI); ctx.fill();
+        ctx.fillStyle="#ef4444";
+        if(arqueroAnimState===1){ ctx.fillRect(6,-8,8+brazoExtra,6); ctx.fillRect(-14-brazoExtra,-8,8+brazoExtra,6); }
+        else if(arqueroAnimState===2){ ctx.fillRect(6,-8,8+brazoExtra,6); ctx.fillRect(-14-brazoExtra,-8,8+brazoExtra,6); }
+        else{ ctx.fillRect(6,-8,6,6); ctx.fillRect(-12,-8,6,6); }
+        ctx.fillStyle="#b91c1c"; ctx.fillRect(10,-8,4,8); ctx.fillRect(-14,-8,4,8);
+        ctx.restore();
+    }
+    function dibujarBalon(xPx,yPx,alt){
+        let tam=Math.max(4,7-Math.min(5,alt/18));
+        ctx.fillStyle="rgba(0,0,0,0.3)"; ctx.beginPath(); ctx.ellipse(xPx,200,tam,tam/2,0,0,2*Math.PI); ctx.fill();
+        ctx.fillStyle="#fef9c3"; ctx.beginPath(); ctx.arc(xPx,yPx,6,0,2*Math.PI); ctx.fill(); ctx.strokeStyle="#451a03"; ctx.stroke();
+        ctx.fillStyle="#000"; ctx.beginPath(); ctx.arc(xPx-2,yPx-1,1.2,0,2*Math.PI); ctx.arc(xPx+2,yPx-1,1.2,0,2*Math.PI); ctx.fill();
+    }
+
+    // ========== SONIDOS ==========
+    let audioCtx = null;
+    async function getAudioContext() {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') await audioCtx.resume();
+        return audioCtx;
+    }
+    async function playGoalSound() {
+        try {
+            const ctx = await getAudioContext();
+            const now = ctx.currentTime;
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.connect(gain); gain.connect(ctx.destination);
+            osc.type = 'sine';
+            gain.gain.setValueAtTime(0, now);
+            gain.gain.linearRampToValueAtTime(0.25, now + 0.05);
+            osc.frequency.setValueAtTime(880, now);
+            osc.frequency.exponentialRampToValueAtTime(1100, now + 0.6);
+            gain.gain.exponentialRampToValueAtTime(0.0001, now + 1.2);
+            osc.start(); osc.stop(now + 1.2);
+            const osc2 = ctx.createOscillator();
+            const gain2 = ctx.createGain();
+            osc2.connect(gain2); gain2.connect(ctx.destination);
+            osc2.type = 'triangle';
+            gain2.gain.setValueAtTime(0, now + 0.1);
+            gain2.gain.linearRampToValueAtTime(0.2, now + 0.15);
+            osc2.frequency.setValueAtTime(660, now + 0.1);
+            osc2.frequency.exponentialRampToValueAtTime(880, now + 0.7);
+            gain2.gain.exponentialRampToValueAtTime(0.0001, now + 1.3);
+            osc2.start(now + 0.1); osc2.stop(now + 1.3);
+        } catch(e) { console.log("Error sonido gol", e); }
+    }
+    async function playReboteSound() {
+        try {
+            const ctx = await getAudioContext();
+            const now = ctx.currentTime;
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.connect(gain); gain.connect(ctx.destination);
+            osc.type = 'square';
+            gain.gain.setValueAtTime(0, now);
+            gain.gain.linearRampToValueAtTime(0.2, now + 0.02);
+            osc.frequency.setValueAtTime(200, now);
+            osc.frequency.exponentialRampToValueAtTime(150, now + 0.2);
+            gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.3);
+            osc.start(); osc.stop(now + 0.3);
+        } catch(e) { console.log("Error sonido rebote", e); }
+    }
+
+    let particles = [], confettiActive = false;
+    function createConfetti() {
+        const colors = ['#ff0a54','#ff7096','#ffb3c6','#f9c74f','#90be6d','#577590'];
+        particles = [];
+        for (let i = 0; i < 130; i++) {
+            particles.push({
+                x: Math.random() * CANVAS_W,
+                y: Math.random() * 200,
+                vx: (Math.random() - 0.5) * 6,
+                vy: Math.random() * 4 + 2,
+                size: Math.random() * 5 + 3,
+                color: colors[Math.floor(Math.random() * colors.length)],
+                gravity: 0.15
+            });
+        }
+        confettiActive = true;
+        setTimeout(() => { particles = []; confettiActive = false; }, 4000);
+    }
+    function createConfettiExtra() { createConfetti(); }
+    function updateConfetti() {
+        if (!confettiActive && particles.length === 0) return;
+        for (let i = 0; i < particles.length; i++) {
+            let p = particles[i];
+            p.x += p.vx; p.y += p.vy; p.vy += p.gravity;
+            if (p.y > 400 || p.x < -50 || p.x > 850) { particles.splice(i,1); i--; }
+        }
+        if (particles.length === 0) confettiActive = false;
+        for (let p of particles) { ctx.fillStyle = p.color; ctx.fillRect(p.x, p.y, p.size, p.size * 0.7); }
+    }
+
+    function mostrarAnimacionLogro500() {
+        if (logro500Mostrado) return;
+        logro500Mostrado = true;
+        const wrapper = document.querySelector(".canvas-wrapper");
+        const div = document.createElement("div");
+        div.className = "logro-500";
+        div.innerHTML = "<h2>🏆 ¡MISIÓN COMPLETADA!</h2><p>🎁 Ganaste UNA UNIDAD COMPLETA (+1.0) en el Quiz STEM</p><p>🌟 Ahora eres Leyenda de Rural STEAM Lab</p>";
+        wrapper.appendChild(div);
+        createConfettiExtra();
+        playGoalSound();
+        setTimeout(() => div.remove(), 5000);
+    }
+
+    // ========== ACTUALIZACIÓN DE LA SIMULACIÓN ==========
+    function actualizarSimulacion() {
+        let v0 = getV0(), angDeg = getAngDeg(), angRad = angDeg * Math.PI / 180;
+        let vx = v0 * Math.cos(angRad), vy = v0 * Math.sin(angRad);
+        let tvuelo = (2 * vy) / g, alcance = (v0 * v0 * Math.sin(2 * angRad)) / g;
+        let distanciaPorteria = GOAL_X_M - lanzadorX_M;
+        let diferencia = alcance - distanciaPorteria;
+        let esGolTeorico = false, esAtrapada = false, esFuera = false;
+        if (Math.abs(diferencia) <= 2.0 && distanciaPorteria > 0) esGolTeorico = true;
+        else if (diferencia > 2.0 && diferencia <= 10.0) esAtrapada = true;
+        else esFuera = (diferencia > 10);
+
+        if (reboteActivo) {
+            let dt = 1 / 60;
+            xRebote += vxRebote * dt; yRebote += vyRebote * dt; vyRebote -= g * dt;
+            if (yRebote < 0) yRebote = 0;
+            reboteTimer -= dt;
+            if (reboteTimer <= 0 || xRebote > GOAL_X_M + 5 || yRebote > 3) { reboteActivo = false; animActiva = false; }
+        } else if (animActiva && !reboteActivo) {
+            if (vy * tiempoActual - 0.5 * g * tiempoActual * tiempoActual >= 0 && tiempoActual <= tvuelo + 0.05) tiempoActual += 0.05;
+            else animActiva = false;
+            if (tiempoActual > tvuelo) tiempoActual = tvuelo;
+        }
+
+        let llegadaAGol = false, atrapadaActivada = false, mostrarAfuera = false;
+        if (animActiva && !reboteActivo && tiempoActual > 0) {
+            let x_actual = lanzadorX_M + vx * tiempoActual;
+            if (x_actual >= GOAL_X_M - 0.8 && tiempoActual >= tvuelo - 0.1 && tvuelo > 0) {
+                if (esGolTeorico) llegadaAGol = true;
+                else if (esAtrapada) atrapadaActivada = true;
+                else if (esFuera) mostrarAfuera = true;
+            }
+        }
+        if (animActiva === false && !reboteActivo && !llegadaAGol && !atrapadaActivada && !lastReportedGoal && tiempoActual >= tvuelo && tvuelo > 0 && esFuera) mostrarAfuera = true;
+
+        if (llegadaAGol && !lastReportedGoal) {
+            arqueroAnimState = 1; arqueroTimer = 0; createConfetti(); playGoalSound();
+            otorgarPuntosPorDistancia(distanciaPorteria, v0, angDeg);
+            lastReportedGoal = true;
+        } else if (atrapadaActivada && !lastReportedGoal) {
+            arqueroAnimState = 2; arqueroTimer = 0; playReboteSound(); mostrarMensajeRebote();
+            xRebote = GOAL_X_M - 2.0; yRebote = 2.0; vxRebote = 0; vyRebote = 0; reboteActivo = true; reboteTimer = 0.8;
+            lastReportedGoal = true;
+        } else if (mostrarAfuera && !lastReportedGoal) {
+            mostrarMensajeAfuera();
+            lastReportedGoal = true;
+        } else if (!llegadaAGol && !atrapadaActivada && !reboteActivo) lastReportedGoal = false;
+
+        if (arqueroAnimState !== 0) { arqueroTimer += 1 / 60; if (arqueroTimer >= 0.5) arqueroAnimState = 0; }
+        frameArquero++;
+
+        let x_balon_m, y_balon_m;
+        if (reboteActivo) { x_balon_m = xRebote; y_balon_m = yRebote; }
+        else { x_balon_m = lanzadorX_M + vx * Math.min(tiempoActual, tvuelo); y_balon_m = vy * Math.min(tiempoActual, tvuelo) - 0.5 * g * Math.min(tiempoActual, tvuelo) * Math.min(tiempoActual, tvuelo); if (y_balon_m < 0) y_balon_m = 0; }
+        let x_px = LEFT_MARGIN + x_balon_m * escalaPxPorMetro, y_px = 200 - y_balon_m * escalaPxPorMetro * 0.65;
+        if (x_px > CANVAS_W) x_px = CANVAS_W; if (x_px < LEFT_MARGIN) x_px = LEFT_MARGIN; if (y_px > 200) y_px = 200;
+
+        ctx.clearRect(0, 0, 800, 400); dibujarCampo();
+        dibujarLanzador(LEFT_MARGIN + lanzadorX_M * escalaPxPorMetro);
+        dibujarArquero(GOAL_X_PX);
+        if (animActiva && !reboteActivo && tiempoActual > 0.01) {
+            ctx.beginPath(); ctx.setLineDash([8, 6]); ctx.strokeStyle = "#FFD966"; ctx.lineWidth = 2.8;
+            let first = true;
+            for (let t = 0; t <= tiempoActual; t += 0.04) {
+                let xr = lanzadorX_M + vx * t, yr = vy * t - 0.5 * g * t * t; if (yr < 0) yr = 0;
+                let px = LEFT_MARGIN + xr * escalaPxPorMetro, py = 200 - yr * escalaPxPorMetro * 0.65;
+                if (px > CANVAS_W) break;
+                if (first) { ctx.moveTo(px, py); first = false; } else ctx.lineTo(px, py);
+            }
+            ctx.stroke(); ctx.setLineDash([]);
+        }
+        dibujarBalon(x_px, y_px, y_balon_m);
+        if (confettiActive) updateConfetti();
+        if (llegadaAGol && confettiActive) {
+            ctx.font = "bold 30px 'Segoe UI'"; ctx.fillStyle = "#FFD966"; ctx.shadowBlur = 8;
+            ctx.fillText("⚽ ¡GOOOOL! ⚽", CANVAS_W / 2 - 100, 150);
+            ctx.shadowBlur = 0;
+        }
+    }
+
+    function reiniciarSimulacion() {
+        animActiva = false; tiempoActual = 0; lastReportedGoal = false;
+        reboteActivo = false; reboteTimer = 0; arqueroAnimState = 0; fueraMostrado = false;
+        actualizarSimulacion();
+        actualizarPanelFisico();
+    }
+
+    // ========== RESET TOTAL ==========
+    function resetTotal() {
+        lanzadorX_M = 15;
+        animActiva = false;
+        tiempoActual = 0;
+        lastReportedGoal = false;
+        reboteActivo = false;
+        fueraMostrado = false;
+        arqueroAnimState = 0;
+        ultimoAlcance = null;
+        ultimoAngulo = null;
+        ultimaVelocidad = null;
+        puntosTotales = 0; golesTotales = 0;
+        golesRegistrados.clear();
+        // NO reseteamos bonusQuizOtorgado para mantener el bonus ganado
+        logro500Mostrado = false;
+        velSlider.value = "20"; angSlider.value = "45";
+        actualizarSlidersDisplay();
+        actualizarPuntosUI(); actualizarHUD(); actualizarPanelFisico(); actualizarGraficoCinematico(); actualizarSimulacion();
+        nombreAlumnoGlobal = ""; localStorage.removeItem("nombreEstudiante");
+        intentosRestantes = 3; ultimaNota = null; tablaRespuestas = [];
+        mezclarPreguntas();
+        actualizarContenedorQuiz();
+        const msgs = document.querySelectorAll('.mensaje-gol, .mensaje-falta, .mensaje-rebote, .mensaje-fuera, .logro-500');
+        msgs.forEach(msg => msg.remove());
+    }
+
+    // Eventos
+    velSlider.addEventListener("input", () => { actualizarSlidersDisplay(); reiniciarSimulacion(); actualizarPanelFisico(); actualizarGraficoCinematico(); });
+    angSlider.addEventListener("input", () => { actualizarSlidersDisplay(); reiniciarSimulacion(); actualizarPanelFisico(); actualizarGraficoCinematico(); });
+    document.getElementById("btnPlay").addEventListener("click", async () => {
+        let vy_local = getV0() * Math.sin(getAngDeg() * Math.PI / 180);
+        let tv = (2 * vy_local) / 9.81;
+        if (tiempoActual >= tv - 0.05 && tv > 0) tiempoActual = 0;
+        animActiva = true; lastReportedGoal = false; reboteActivo = false; fueraMostrado = false;
+        if (audioCtx && audioCtx.state === 'suspended') await audioCtx.resume();
+        else if (!audioCtx) await getAudioContext();
+    });
+
+    // Manejo del botón fullscreen
+    const container = document.querySelector(".simulador-container");
+    const fullscreenBtn = document.getElementById("btnFullscreen");
+    
+    async function toggleFullscreen() {
+        if (!document.fullscreenElement) {
+            await container.requestFullscreen();
+            document.body.classList.add("fullscreen-mode");
+            if (screen.orientation && screen.orientation.lock) {
+                try { await screen.orientation.lock("landscape"); } catch(e) { console.log("orientación no soportada"); }
+            }
+            fullscreenBtn.innerHTML = "⛶ Salir STEAM";
+        } else {
+            await document.exitFullscreen();
+            document.body.classList.remove("fullscreen-mode");
+            if (screen.orientation && screen.orientation.unlock) screen.orientation.unlock();
+            fullscreenBtn.innerHTML = "⛶ Modo STEAM";
+        }
+    }
+    
+    fullscreenBtn.addEventListener("click", toggleFullscreen);
+    document.addEventListener("fullscreenchange", () => {
+        if (!document.fullscreenElement) {
+            document.body.classList.remove("fullscreen-mode");
+            fullscreenBtn.innerHTML = "⛶ Modo STEAM";
+            if (screen.orientation && screen.orientation.unlock) screen.orientation.unlock();
+        }
+    });
+
+    const hudPanel = document.getElementById("hudPanel");
+    document.getElementById("btnScore").addEventListener("click", () => { hudPanel.style.display = hudPanel.style.display === "none" ? "block" : "none"; });
+    document.getElementById("btnResetTotal").addEventListener("click", () => { resetTotal(); });
+
+    // Arrastre jugador
+    let dragging = false;
+    function startDrag(e) { e.preventDefault(); const rect = canvas.getBoundingClientRect(), scaleX = canvas.width / rect.width; let clientX = e.touches ? e.touches[0].clientX : e.clientX; let mouseX = (clientX - rect.left) * scaleX; let mouseM = (mouseX - LEFT_MARGIN) / escalaPxPorMetro; if (Math.abs(mouseM - lanzadorX_M) < 20 / escalaPxPorMetro) { dragging = true; canvas.style.cursor = "grabbing"; } }
+    function onDrag(e) { if (!dragging) return; e.preventDefault(); const rect = canvas.getBoundingClientRect(), scaleX = canvas.width / rect.width; let clientX = e.touches ? e.touches[0].clientX : e.clientX; let mouseX = (clientX - rect.left) * scaleX; mouseX = Math.min(Math.max(mouseX, LEFT_MARGIN), GOAL_X_PX - 8); let nuevaPos = (mouseX - LEFT_MARGIN) / escalaPxPorMetro; nuevaPos = Math.min(Math.max(nuevaPos, 0.5), GOAL_X_M - 3); if (Math.abs(nuevaPos - lanzadorX_M) > 0.05) { lanzadorX_M = nuevaPos; animActiva = false; tiempoActual = 0; lastReportedGoal = false; reboteActivo = false; fueraMostrado = false; actualizarSimulacion(); actualizarPanelFisico(); actualizarGraficoCinematico(); } }
+    function endDrag() { dragging = false; canvas.style.cursor = "grab"; }
+    canvas.addEventListener("mousedown", startDrag); window.addEventListener("mousemove", onDrag); window.addEventListener("mouseup", endDrag);
+    canvas.addEventListener("touchstart", startDrag); window.addEventListener("touchmove", onDrag); window.addEventListener("touchend", endDrag);
+    canvas.style.cursor = "grab";
+
+    // Acordeón
+    document.querySelectorAll(".tarjeta-header").forEach(header => {
+        header.addEventListener("click", async () => {
+            const targetId = header.getAttribute("data-target");
+            const body = document.getElementById(targetId);
+            const flecha = header.querySelector(".flecha");
+            if (body.classList.contains("abierto")) {
+                body.style.maxHeight = "0px"; body.classList.remove("abierto"); flecha.innerHTML = "▼";
+            } else {
+                body.classList.add("abierto"); body.style.maxHeight = body.scrollHeight + "px"; flecha.innerHTML = "▲";
+                if (targetId === "body-fisica") { await MathJax.typesetPromise(); setTimeout(() => { body.style.maxHeight = body.scrollHeight + "px"; }, 50); }
+            }
+        });
+    });
+    const fisicaBody = document.getElementById("body-fisica");
+    fisicaBody.classList.add("abierto");
+    setTimeout(() => { fisicaBody.style.maxHeight = fisicaBody.scrollHeight + "px"; }, 100);
+    document.querySelector(".tarjeta-acordeon .flecha").innerHTML = "▲";
+
+    // Inicialización
+    actualizarSlidersDisplay();
+    actualizarPuntosUI();
+    actualizarPanelFisico();
+    actualizarGraficoCinematico();
+    actualizarHUD();
+    function animLoop() { actualizarSimulacion(); requestAnimationFrame(animLoop); }
+    animLoop();
+
+    // ========== QUIZ COMPLETO (CORREGIDO) ==========
+    let preguntasBase = [
+        { texto: "¿Qué ángulo produce el máximo alcance horizontal?", opciones: ["30°", "45°", "60°", "90°"], correcta: 1 },
+        { texto: "Si aumentas la velocidad inicial, el alcance:", opciones: ["Disminuye", "No cambia", "Aumenta cuadráticamente", "Solo altura"], correcta: 2 },
+        { texto: "Componente horizontal de la velocidad (sin fricción):", opciones: ["Aumenta", "Disminuye", "Constante", "Depende masa"], correcta: 2 },
+        { texto: "¿Qué sucede si el ángulo es 90°?", opciones: ["Alcance máximo", "Altura máxima, alcance cero", "Rectilíneo", "Circular"], correcta: 1 },
+        { texto: "Fórmula del tiempo de vuelo:", opciones: ["2v₀ senθ/g", "v₀² senθ/g", "2v₀ cosθ/g", "v₀ senθ/(2g)"], correcta: 0 },
+        { texto: "¿Qué representa la línea punteada en el simulador?", opciones: ["Trayectoria durante movimiento", "Viento", "Altura máxima", "Ángulo"], correcta: 0 },
+        { texto: "Con v₀=20 m/s, θ=45°, alcance aprox:", opciones: ["20 m", "30 m", "40 m", "50 m"], correcta: 2 },
+        { texto: "Variable que NO afecta el alcance ideal:", opciones: ["Velocidad", "Ángulo", "Gravedad", "Masa"], correcta: 3 },
+        { texto: "Punto morado en la gráfica representa:", opciones: ["Alcance", "Altura máxima", "Tiempo", "Velocidad"], correcta: 1 },
+        { texto: "Si θ < 45°, al aumentarlo el alcance:", opciones: ["Siempre disminuye", "Aumenta hasta 45°", "Disminuye hasta 45°", "No cambia"], correcta: 1 }
+    ];
+    let preguntasActuales = [];
+    function mezclarPreguntas() { 
+        preguntasActuales = [...preguntasBase]; 
+        for (let i = preguntasActuales.length - 1; i > 0; i--) { 
+            const j = Math.floor(Math.random() * (i + 1)); 
+            [preguntasActuales[i], preguntasActuales[j]] = [preguntasActuales[j], preguntasActuales[i]]; 
+        } 
+    }
+    mezclarPreguntas();
+
+    let intentosRestantes = 3, ultimaNota = null, ultimoPorcentaje = null, ultimoNivel = "", tablaRespuestas = [];
+    let nombreAlumnoGlobal = localStorage.getItem("nombreEstudiante") || "";
+
+    function obtenerMensajePersonalizado(nota) {
+        if (nota >= 4.8) return { nivel: "🏆 GENIO DE LA FÍSICA Y LEYENDA DEL FÚTBOL 🏆", msg: "Tu análisis del movimiento bidimensional es impresionante. Newton estaría orgulloso de ti y además juegas como CR7. ¡Eres imparable!" };
+        else if (nota >= 4.5) return { nivel: "🚀 AYUDANTE DE GALILEO Y FUTBOLISTA ÉLITE 🚀", msg: "Excelente comprensión de las leyes de caída libre. Messi aplaudiría tu precisión. ¡Sigue así!" };
+        else if (nota >= 4.0) return { nivel: "🔭 EXPLORADOR DE KEPLER Y CRACK EN CANCHA 🔭", msg: "Muy bien, dominas las órbitas parabólicas y tienes la potencia de James Rodríguez. ¡A seguir aprendiendo!" };
+        else if (nota >= 3.5) return { nivel: "⚡ APRENDIZ DE FARADAY Y PROMESA DEPORTIVA ⚡", msg: "Buen trabajo, combinas ciencia y deporte. Luis Díaz te felicita. ¡Mejora tus parámetros!" };
+        else if (nota >= 3.0) return { nivel: "📐 DISCÍPULO DE EUCLIDES Y JUGADOR ESFORZADO 📐", msg: "Fundamentos sólidos. Puedes mejorar con práctica. ¡Como Radamel Falcao, nunca te rindas!" };
+        else return { nivel: "📚 RECLUTA CIENTÍFICO Y CANTERANO 📚", msg: "Dedica tiempo al estudio del movimiento parabólico. Con esfuerzo llegarás a ser como Yerry Mina en defensa y en ciencias." };
+    }
+
+    function actualizarResultadoQuizUI() {
+        let nivelInfo = obtenerMensajePersonalizado(ultimaNota);
+        ultimoNivel = nivelInfo.nivel;
+        let tablaHtml = `<div class="tabla-resultados"><table><thead><tr><th>Preg</th><th>Tu resp</th><th>Correcta</th><th>Estado</th></tr></thead><tbody>`;
+        tablaRespuestas.forEach(r => { 
+            tablaHtml += `<tr><td>${r.pregunta}</td><td>${r.alumno}</td><td>${r.correcta}</td><td>${r.estado}</td></tr>`; 
+        });
+        tablaHtml += `</tbody></table></div>`;
+        
+        let bonusLegend = "";
+        if (bonusQuizOtorgado) {
+            bonusLegend = `<div style="background: #ffd966; color: #2c3e50; border-radius: 40px; padding: 8px; margin: 10px 0; text-align: center; font-weight: bold;">
+                            🎁 BONUS +1.0: Alcanzaste 500 puntos como CRACK FUTBOLERO. ¡Unidad extra concedida! ⚽🧠
+                           </div>`;
+        }
+        
+        document.getElementById("resultadoNota").innerHTML = `
+            <div style="background:#e9c46a; border-radius:40px; padding:12px; text-align:center;">
+                🎓 NOTA: ${ultimaNota}/5.0 (${ultimoPorcentaje}%)<br>
+                Aciertos: ${tablaRespuestas.filter(r => r.estado === "✅").length}/${preguntasActuales.length}
+            </div>
+            <div class="nivel-stem">${nivelInfo.nivel}<br>${nivelInfo.msg}</div>
+            ${bonusLegend}
+            ${tablaHtml}
+            <div>Intentos restantes: ${intentosRestantes}</div>
+        `;
+    }
+
+    function evaluarQuiz() {
+        let nombreInp = document.getElementById("nombreAlumnoQuiz");
+        if (!nombreInp.value.trim()) { alert("Ingresa el nombre del estudiante."); return; }
+        nombreAlumnoGlobal = nombreInp.value.trim();
+        localStorage.setItem("nombreEstudiante", nombreAlumnoGlobal);
+        
+        let faltantes = [];
+        for (let i = 0; i < preguntasActuales.length; i++) 
+            if (!Array.from(document.getElementsByName(`q${i}`)).some(r => r.checked)) 
+                faltantes.push(i + 1);
+        if (faltantes.length > 0) { alert(`Faltan preguntas: ${faltantes.join(", ")}`); return; }
+        
+        if (intentosRestantes <= 0) { alert("Sin intentos. Reinicie el quiz."); return; }
+        
+        let aciertos = 0, detalle = [];
+        for (let i = 0; i < preguntasActuales.length; i++) {
+            let radios = document.getElementsByName(`q${i}`), selec = null;
+            for (let r of radios) if (r.checked) selec = parseInt(r.value);
+            let ok = (selec === preguntasActuales[i].correcta);
+            if (ok) aciertos++;
+            detalle.push({ 
+                pregunta: i + 1, 
+                alumno: selec !== null ? String.fromCharCode(65 + selec) : "-", 
+                correcta: String.fromCharCode(65 + preguntasActuales[i].correcta), 
+                estado: ok ? "✅" : "❌" 
+            });
+        }
+        
+        let nota = (aciertos / preguntasActuales.length) * 5;
+        if (bonusQuizOtorgado) {
+            nota = Math.min(5.0, nota + 1.0);
+        }
+        nota = Math.round(nota * 10) / 10;
+        
+        ultimaNota = nota;
+        ultimoPorcentaje = Math.round((aciertos / preguntasActuales.length) * 100);
+        tablaRespuestas = detalle;
+        intentosRestantes--;
+        
+        actualizarResultadoQuizUI();  // muestra el resultado
+        
+        // Deshabilitar el botón de calificar si ya no hay intentos
+        if (intentosRestantes === 0) {
+            document.getElementById("btnCalificarQuiz").disabled = true;
+            // Deshabilitar también los radios
+            for (let i = 0; i < preguntasActuales.length; i++) {
+                let radios = document.getElementsByName(`q${i}`);
+                radios.forEach(r => r.disabled = true);
+            }
+        }
+        // Actualizar el badge de intentos
+        const badge = document.querySelector("#body-quiz .intentos-badge");
+        if (badge) badge.innerHTML = `🎯 Intentos: ${intentosRestantes}`;
+    }
+
+    function reiniciarQuiz() {
+        if (confirm("¿Reiniciar evaluación? Se perderán respuestas.")) {
+            mezclarPreguntas();
+            intentosRestantes = 3;
+            ultimaNota = null;
+            tablaRespuestas = [];
+            // No se modifica bonusQuizOtorgado
+            actualizarContenedorQuiz();
+        }
+    }
+
+    function actualizarProgresoQuiz() {
+        let respondidas = 0;
+        for (let i = 0; i < preguntasActuales.length; i++) {
+            let radios = document.getElementsByName(`q${i}`);
+            if (Array.from(radios).some(r => r.checked)) respondidas++;
+            let div = document.getElementById(`pregunta-${i}`);
+            if (div) {
+                if (!Array.from(radios).some(r => r.checked)) div.classList.add("no-respondida");
+                else div.classList.remove("no-respondida");
+            }
+        }
+        let porcentaje = (respondidas / preguntasActuales.length) * 100;
+        let fill = document.getElementById("progresoFillQuiz");
+        if (fill) fill.style.width = porcentaje + "%";
+        let txt = document.getElementById("progressText");
+        if (txt) txt.innerText = `${respondidas}/${preguntasActuales.length} respondidas`;
+    }
+
+    function generarUIQuiz() {
+        return `<div class="quiz-header">
+            <label>Nombre del estudiante:</label>
+            <input type="text" id="nombreAlumnoQuiz" class="nombre-input" placeholder="Ej: Isaac Newton" value="${nombreAlumnoGlobal}">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <div class="progress-text" id="progressText">0/${preguntasActuales.length} respondidas</div>
+                <div class="intentos-badge">🎯 Intentos: ${intentosRestantes}</div>
+            </div>
+            <div class="progress-bar-container"><div id="progresoFillQuiz" class="progress-fill"></div></div>
+        </div>
+        <div id="preguntasQuiz"></div>
+        <button id="btnCalificarQuiz" style="background:#2b7a4b; width:100%; padding:12px; border-radius:60px;">✅ CALIFICAR EVALUACIÓN</button>
+        <div id="resultadoNota"></div>
+        <button id="btnResetQuiz" class="btn-reset-quiz">🔄 REINICIAR QUIZ</button>
+        <button id="btnDescargarPDF" class="btn-pdf">📄 DESCARGAR CERTIFICADO STEM</button>`;
+    }
+
+    function actualizarContenedorQuiz() {
+        const cont = document.getElementById("quizDynamicContainer");
+        if (!cont) return;
+        cont.innerHTML = generarUIQuiz();
+        const preguntasDiv = document.getElementById("preguntasQuiz");
+        let pregHtml = "";
+        for (let i = 0; i < preguntasActuales.length; i++) {
+            let p = preguntasActuales[i];
+            pregHtml += `<div class="quiz-pregunta" id="pregunta-${i}"><p><strong>Pregunta ${i + 1}:</strong> ${p.texto}</p><div class="quiz-opciones">`;
+            for (let j = 0; j < p.opciones.length; j++) pregHtml += `<label><input type="radio" name="q${i}" value="${j}" onchange="window.actualizarProgresoQuizGlobal()"> ${String.fromCharCode(65 + j)}. ${p.opciones[j]}</label>`;
+            pregHtml += `</div></div>`;
+        }
+        preguntasDiv.innerHTML = pregHtml;
+        document.getElementById("btnCalificarQuiz")?.addEventListener("click", evaluarQuiz);
+        document.getElementById("btnResetQuiz")?.addEventListener("click", reiniciarQuiz);
+        document.getElementById("btnDescargarPDF")?.addEventListener("click", () => {
+            if (!nombreAlumnoGlobal && document.getElementById("nombreAlumnoQuiz")?.value) nombreAlumnoGlobal = document.getElementById("nombreAlumnoQuiz").value.trim();
+            if (!nombreAlumnoGlobal || ultimaNota === null) { alert("Complete nombre y califique primero."); return; }
+            const { jsPDF } = window.jspdf;
+            let doc = new jsPDF();
+            doc.text("Certificado STEM - Movimiento Parabólico", 20, 20);
+            doc.text(`Nombre: ${nombreAlumnoGlobal}`, 20, 45);
+            doc.text(`Nota: ${ultimaNota}/5.0 (${ultimoPorcentaje}%)`, 20, 55);
+            doc.text(`Logro: ${ultimoNivel}`, 20, 65);
+            if (bonusQuizOtorgado) {
+                doc.text("Bonus aplicado: +1.0 por 500 puntos (CRACK FUTBOLERO)", 20, 75);
+            }
+            doc.text("Rural STEAM Lab Colombia", 20, 95);
+            let y = 120;
+            tablaRespuestas.forEach(r => { doc.text(`Preg ${r.pregunta}: ${r.alumno} | correcta ${r.correcta} ${r.estado}`, 20, y); y += 6; });
+            doc.save(`STEM_${nombreAlumnoGlobal.replace(/\s/g, '_')}.pdf`);
+        });
+        window.actualizarProgresoQuizGlobal = actualizarProgresoQuiz;
+        actualizarProgresoQuiz();
+    }
+
+    actualizarContenedorQuiz();
+</script>
+</body>
+</html>
