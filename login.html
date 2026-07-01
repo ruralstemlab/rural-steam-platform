@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Iniciar Sesión - Rural STEAM Lab</title>
+    <style>
+        /* ===== ESTILOS COMPARTIDOS ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            background: #0f172a;
+            color: white;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes floatParticle {
+            0% { transform: translateY(100vh) scale(0); opacity: 0; }
+            10% { opacity: 0.8; }
+            90% { opacity: 0.8; }
+            100% { transform: translateY(-10vh) scale(1); opacity: 0; }
+        }
+        nav {
+            background: #020617;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            backdrop-filter: blur(8px);
+            border-bottom: 1px solid #38bdf8;
+            gap: 10px;
+        }
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #38bdf8, #818cf8);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            letter-spacing: -0.5px;
+            cursor: pointer;
+            transition: 0.2s;
+            flex-shrink: 0;
+        }
+        .logo:hover {
+            transform: scale(1.02);
+            text-shadow: 0 0 8px rgba(56,189,248,0.5);
+        }
+        .menu {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            flex: 1;
+            justify-content: center;
+        }
+        .menu a {
+            color: #e2e8f0;
+            text-decoration: none;
+            font-weight: 600;
+            transition: 0.3s;
+            padding: 5px 0;
+            border-bottom: 2px solid transparent;
+            white-space: nowrap;
+        }
+        .menu a:hover {
+            color: #38bdf8;
+            border-bottom-color: #38bdf8;
+            transform: translateY(-2px);
+        }
+        .auth-lang {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            flex-shrink: 0;
+            margin-left: auto;
+        }
+        .lang-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 2px 4px;
+            border-radius: 6px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+        }
+        .lang-btn:hover {
+            transform: scale(1.15);
+            box-shadow: 0 0 10px rgba(56,189,248,0.4);
+        }
+        .lang-btn img {
+            width: 28px;
+            height: 28px;
+            border-radius: 4px;
+            object-fit: cover;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+            transition: box-shadow 0.2s;
+            display: block;
+        }
+        .lang-btn:hover img {
+            box-shadow: 0 4px 12px rgba(56,189,248,0.5);
+        }
+        .auth-link {
+            color: #e2e8f0;
+            text-decoration: none;
+            font-weight: 600;
+            transition: 0.3s;
+            padding: 5px 0;
+            border-bottom: 2px solid transparent;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 1rem;
+            white-space: nowrap;
+        }
+        .auth-link:hover {
+            color: #38bdf8;
+            border-bottom-color: #38bdf8;
+            transform: translateY(-2px);
+        }
+        @media (max-width: 1100px) {
+            .menu {
+                flex: 0 1 auto;
+                order: 2;
+                width: 100%;
+                justify-content: center;
+                margin-top: 5px;
+            }
+            .auth-lang {
+                margin-left: 0;
+                order: 1;
+            }
+            .logo { order: 0; }
+        }
+        @media (max-width: 750px) {
+            nav {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 8px;
+                padding: 12px 15px;
+            }
+            .logo { text-align: center; }
+            .menu {
+                justify-content: center;
+                gap: 12px;
+                order: 2;
+                width: 100%;
+            }
+            .auth-lang {
+                justify-content: center;
+                margin-left: 0;
+                order: 1;
+                gap: 10px;
+                width: 100%;
+                flex-wrap: wrap;
+            }
+            .lang-btn img { width: 24px; height: 24px; }
+        }
+        footer {
+            width: 100%;
+            padding: 0;
+            margin: 0;
+            background: #020617;
+            border-top: 1px solid #1e293b;
+            margin-top: auto;
+        }
+        .footer-banner {
+            width: 100%;
+            max-width: 2022px;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+            border-radius: 0;
+            box-shadow: none;
+        }
+        footer a {
+            display: block;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            transition: none;
+        }
+        footer a:hover { transform: none; }
+        .particles-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* ===== FORMULARIO ===== */
+        .auth-page {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+            position: relative;
+            z-index: 2;
+        }
+        .auth-card {
+            background: linear-gradient(145deg, #1e293b, #0f172a);
+            padding: 35px 30px;
+            border-radius: 2rem;
+            max-width: 420px;
+            width: 100%;
+            border: 1px solid #38bdf8;
+            box-shadow: 0 25px 45px rgba(0,0,0,0.6);
+            animation: fadeInUp 0.4s ease;
+            text-align: left;
+        }
+        .auth-card h2 {
+            color: #38bdf8;
+            text-align: center;
+            margin-bottom: 8px;
+            font-size: 1.8rem;
+            border-bottom: 2px solid #38bdf8;
+            padding-bottom: 10px;
+        }
+        .auth-card .subtitle {
+            text-align: center;
+            color: #94a3b8;
+            margin-bottom: 25px;
+            font-size: 0.9rem;
+        }
+        .auth-card label {
+            display: block;
+            color: #e2e8f0;
+            font-weight: 500;
+            margin-top: 15px;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+        }
+        .auth-card input {
+            width: 100%;
+            padding: 12px 15px;
+            border-radius: 10px;
+            border: 1px solid #334155;
+            background: #0f172a;
+            color: white;
+            font-size: 1rem;
+            transition: border 0.3s;
+            outline: none;
+        }
+        .auth-card input:focus {
+            border-color: #38bdf8;
+            box-shadow: 0 0 0 3px rgba(56,189,248,0.2);
+        }
+        .btn-submit {
+            width: 100%;
+            padding: 14px;
+            margin-top: 25px;
+            border: none;
+            border-radius: 50px;
+            background: linear-gradient(95deg, #2563eb, #3b82f6);
+            color: white;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.25s;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        .btn-submit:hover {
+            background: linear-gradient(95deg, #1d4ed8, #2563eb);
+            transform: scale(1.02);
+        }
+        .auth-switch {
+            text-align: center;
+            margin-top: 20px;
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+        .auth-switch a {
+            color: #38bdf8;
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .auth-switch a:hover { text-decoration: underline; }
+        .error-msg {
+            color: #ef4444;
+            font-size: 0.85rem;
+            margin-top: 5px;
+            display: none;
+        }
+        .error-msg.show { display: block; }
+        .success-msg {
+            color: #4ade80;
+            font-size: 0.9rem;
+            margin-top: 5px;
+            display: none;
+        }
+        .success-msg.show { display: block; }
+    </style>
+</head>
+<body>
+
+<div class="particles-container" id="particlesContainer"></div>
+
+<nav>
+    <div class="logo" onclick="window.location.href='index.html'">🧪 Rural STEAM Lab</div>
+    <div class="menu">
+        <a href="index.html">🏠 Home</a>
+        <a href="physics/">⚙️ Physics</a>
+        <a href="chemistry/">🧪 Chemistry</a>
+        <a href="mathematics/">📐 Mathematics</a>
+        <a href="elementary/">🧸 Elementary</a>
+    </div>
+    <div class="auth-lang">
+        <button class="lang-btn" id="btnES" title="Español">
+            <img src="https://flagcdn.com/co.svg" alt="Colombia" width="28" height="28">
+        </button>
+        <button class="lang-btn" id="btnEN" title="English">
+            <img src="https://flagcdn.com/us.svg" alt="USA" width="28" height="28">
+        </button>
+        <a href="login.html" class="auth-link" style="border-bottom-color:#38bdf8;">👤 Login</a>
+        <a href="register.html" class="auth-link">📝 Register</a>
+    </div>
+</nav>
+
+<div class="auth-page">
+    <div class="auth-card">
+        <h2>Iniciar Sesión</h2>
+        <p class="subtitle">Accede a tu cuenta para continuar</p>
+        <form id="loginForm">
+            <label for="loginEmail">Correo electrónico</label>
+            <input type="email" id="loginEmail" placeholder="tucorreo@ejemplo.com" required>
+            <div class="error-msg" id="loginEmailError">Por favor ingresa un correo válido.</div>
+
+            <label for="loginPassword">Contraseña</label>
+            <input type="password" id="loginPassword" placeholder="••••••••" required minlength="6">
+            <div class="error-msg" id="loginPasswordError">La contraseña debe tener al menos 6 caracteres.</div>
+
+            <div class="error-msg" id="loginGeneralError">Credenciales incorrectas. Intenta de nuevo.</div>
+            <div class="success-msg" id="loginSuccess">¡Inicio de sesión exitoso! Redirigiendo...</div>
+
+            <button type="submit" class="btn-submit">Ingresar</button>
+        </form>
+        <div class="auth-switch">
+            ¿No tienes cuenta? <a href="register.html">Regístrate aquí</a>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <a href="https://ruralsteamlab.com/Licenses.html" target="_blank">
+        <img src="assets/Licenses.png" class="footer-banner" alt="Rural STEAM Lab Footer">
+    </a>
+</footer>
+
+<script>
+    // === PARTÍCULAS ===
+    const particlesContainer = document.getElementById('particlesContainer');
+    const PARTICLE_COUNT = 100;
+    const colors = ['rgba(96, 165, 250, 0.7)', 'rgba(163, 230, 53, 0.6)', 'rgba(249, 115, 22, 0.6)', 'rgba(255, 255, 255, 0.5)'];
+    for (let i = 0; i < PARTICLE_COUNT; i++) {
+        const particle = document.createElement('div');
+        particle.style.position = 'absolute';
+        particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        particle.style.borderRadius = '50%';
+        particle.style.pointerEvents = 'none';
+        const size = Math.random() * 5 + 1;
+        particle.style.width = size + 'px';
+        particle.style.height = size + 'px';
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.top = Math.random() * 100 + '%';
+        particle.style.opacity = Math.random() * 0.6 + 0.2;
+        particle.style.boxShadow = '0 0 4px currentColor';
+        const duration = Math.random() * 15 + 8;
+        const delay = Math.random() * 10;
+        particle.style.animation = `floatParticle ${duration}s linear infinite`;
+        particle.style.animationDelay = `${delay}s`;
+        particlesContainer.appendChild(particle);
+    }
+
+    // === LOGIN LOGIC ===
+    const loginForm = document.getElementById('loginForm');
+    const loginEmail = document.getElementById('loginEmail');
+    const loginPassword = document.getElementById('loginPassword');
+    const loginEmailError = document.getElementById('loginEmailError');
+    const loginPasswordError = document.getElementById('loginPasswordError');
+    const loginGeneralError = document.getElementById('loginGeneralError');
+    const loginSuccess = document.getElementById('loginSuccess');
+
+    loginForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        let valid = true;
+
+        // Validar email
+        if (!loginEmail.value || !loginEmail.value.includes('@')) {
+            loginEmailError.classList.add('show');
+            valid = false;
+        } else {
+            loginEmailError.classList.remove('show');
+        }
+
+        // Validar password
+        if (!loginPassword.value || loginPassword.value.length < 6) {
+            loginPasswordError.classList.add('show');
+            valid = false;
+        } else {
+            loginPasswordError.classList.remove('show');
+        }
+
+        if (!valid) return;
+
+        // Simular autenticación con localStorage
+        const users = JSON.parse(localStorage.getItem('ruralsteam_users')) || [];
+        const found = users.find(u => u.email === loginEmail.value && u.password === loginPassword.value);
+
+        if (found) {
+            loginGeneralError.classList.remove('show');
+            loginSuccess.classList.add('show');
+            // Guardar sesión
+            localStorage.setItem('ruralsteam_session', JSON.stringify({ email: found.email, name: found.name }));
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 1500);
+        } else {
+            loginSuccess.classList.remove('show');
+            loginGeneralError.classList.add('show');
+        }
+    });
+
+    // === IDIOMAS ===
+    document.getElementById('btnES').addEventListener('click', function() {
+        alert('Cambiar a Español (función en desarrollo)');
+    });
+    document.getElementById('btnEN').addEventListener('click', function() {
+        alert('Switch to English (function in development)');
+    });
+</script>
+</body>
+</html>
