@@ -2,7 +2,7 @@
   "id": "/",
   "name": "Rural STEAM Lab",
   "short_name": "Rural STEAM",
-  "description": "Plataforma educativa STEM con simuladores interactivos para educación rural.",
+  "description": "description": "Rural STEAM Lab es un ecosistema educativo inteligente que integra simulación interactiva, inteligencia artificial, evaluación inteligente, analítica del aprendizaje y tecnologías digitales para fortalecer el pensamiento sistémico y transformar la educación.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
