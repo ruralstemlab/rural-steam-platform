@@ -9,7 +9,7 @@
     <link rel="canonical" href="https://ruralstemlab.github.io/rural-steam-platform/">
     <meta name="robots" content="index, follow">
     
-    <!-- === OPEN GRAPH (para Facebook, WhatsApp, LinkedIn) === -->
+    <!-- === OPEN GRAPH === -->
     <meta property="og:title" content="Rural STEAM Lab - Plataforma STEM Interactiva">
     <meta property="og:description" content="Simuladores de física, matemáticas, química y evaluación ICFES para educación rural. Laboratorios virtuales y recursos offline.">
     <meta property="og:image" content="https://ruralstemlab.github.io/rural-steam-platform/assets/og-image.jpg">
@@ -59,7 +59,6 @@
             50% { background-position: 49% 51%; background-size: 108%; }
             100% { background-position: 50% 50%; background-size: 105%; }
         }
-        /* Animación para partículas */
         @keyframes floatParticle {
             0% { transform: translateY(100vh) scale(0); opacity: 0; }
             10% { opacity: 0.8; }
@@ -81,6 +80,7 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.5);
             backdrop-filter: blur(8px);
             border-bottom: 1px solid #38bdf8;
+            gap: 10px;
         }
 
         .logo {
@@ -93,6 +93,7 @@
             letter-spacing: -0.5px;
             cursor: pointer;
             transition: 0.2s;
+            flex-shrink: 0;
         }
         .logo:hover {
             transform: scale(1.02);
@@ -103,6 +104,8 @@
             display: flex;
             gap: 20px;
             flex-wrap: wrap;
+            flex: 1;
+            justify-content: center;
         }
         .menu a {
             color: #e2e8f0;
@@ -111,6 +114,7 @@
             transition: 0.3s;
             padding: 5px 0;
             border-bottom: 2px solid transparent;
+            white-space: nowrap;
         }
         .menu a:hover {
             color: #38bdf8;
@@ -118,29 +122,43 @@
             transform: translateY(-2px);
         }
 
-        /* ===== BLOQUE DE AUTENTICACIÓN E IDIOMA ===== */
+        /* ===== BLOQUE DE AUTENTICACIÓN E IDIOMA - BANDERAS PREMIUM ===== */
         .auth-lang {
             display: flex;
             align-items: center;
-            gap: 15px;
-            margin-left: auto;
+            gap: 12px;
             flex-wrap: wrap;
+            flex-shrink: 0;
+            margin-left: auto;
         }
 
         .lang-btn {
             background: none;
             border: none;
-            font-size: 1.6rem;
-            line-height: 1;
             cursor: pointer;
-            padding: 4px 6px;
+            padding: 2px 4px;
             border-radius: 6px;
             transition: transform 0.2s ease, box-shadow 0.2s ease;
-            color: #e2e8f0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
         }
         .lang-btn:hover {
             transform: scale(1.15);
-            box-shadow: 0 0 8px rgba(56,189,248,0.3);
+            box-shadow: 0 0 10px rgba(56,189,248,0.4);
+        }
+        .lang-btn img {
+            width: 28px;
+            height: 28px;
+            border-radius: 4px;
+            object-fit: cover;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+            transition: box-shadow 0.2s;
+            display: block;
+        }
+        .lang-btn:hover img {
+            box-shadow: 0 4px 12px rgba(56,189,248,0.5);
         }
 
         .auth-link {
@@ -154,6 +172,7 @@
             align-items: center;
             gap: 4px;
             font-size: 1rem;
+            white-space: nowrap;
         }
         .auth-link:hover {
             color: #38bdf8;
@@ -161,15 +180,50 @@
             transform: translateY(-2px);
         }
 
-        @media (max-width: 750px) {
-            nav {
-                flex-direction: column;
-                gap: 12px;
+        @media (max-width: 1100px) {
+            .menu {
+                flex: 0 1 auto;
+                order: 2;
+                width: 100%;
+                justify-content: center;
+                margin-top: 5px;
             }
             .auth-lang {
                 margin-left: 0;
-                align-self: flex-end;
-                margin-top: 5px;
+                order: 1;
+            }
+            .logo {
+                order: 0;
+            }
+        }
+
+        @media (max-width: 750px) {
+            nav {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 8px;
+                padding: 12px 15px;
+            }
+            .logo {
+                text-align: center;
+            }
+            .menu {
+                justify-content: center;
+                gap: 12px;
+                order: 2;
+                width: 100%;
+            }
+            .auth-lang {
+                justify-content: center;
+                margin-left: 0;
+                order: 1;
+                gap: 10px;
+                width: 100%;
+                flex-wrap: wrap;
+            }
+            .lang-btn img {
+                width: 24px;
+                height: 24px;
             }
             h1 { font-size: 2.5rem; }
             header p { font-size: 1rem; }
@@ -177,7 +231,6 @@
             .modal-content { padding: 15px; }
             .modal-content td, .modal-content th { font-size: 0.75rem; padding: 6px; }
         }
-        /* ===== FIN BLOQUE ===== */
 
         /* Header con imagen */
         header {
@@ -303,7 +356,7 @@
             box-shadow: 0 8px 18px rgba(0,0,0,0.3);
         }
 
-        /* ===== FOOTER MEJORADO COMO BANNER ===== */
+        /* ===== FOOTER COMO BANNER ===== */
         footer {
             width: 100%;
             padding: 0;
@@ -320,7 +373,7 @@
             height: auto;
             display: block;
             margin: 0 auto;
-            border-radius: 0; /* Sin bordes redondeados para un banner completo */
+            border-radius: 0;
             box-shadow: none;
         }
 
@@ -333,11 +386,10 @@
         }
 
         footer a:hover {
-            transform: none; /* Sin efecto hover para que el banner no se mueva */
+            transform: none;
         }
-        /* ===== FIN FOOTER ===== */
 
-        /* MODAL INSTITUCIONAL */
+        /* MODAL INSTITUCIONAL ACTUALIZADO */
         .modal {
             display: none;
             position: fixed;
@@ -367,11 +419,19 @@
         .modal-content h2 {
             color: #38bdf8;
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
             border-bottom: 2px solid #38bdf8;
             display: inline-block;
             padding-bottom: 8px;
             width: auto;
+            font-size: 1.8rem;
+        }
+        .modal-content .subtitle {
+            color: #facc15;
+            text-align: center;
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            font-style: italic;
         }
         .modal-content table {
             width: 100%;
@@ -444,8 +504,13 @@
     </div>
 
     <div class="auth-lang">
-        <button class="lang-btn" id="btnES" title="Español" aria-label="Cambiar a Español">🇨🇴</button>
-        <button class="lang-btn" id="btnEN" title="English" aria-label="Switch to English">🇺🇸</button>
+        <!-- Banderas con imágenes SVG premium -->
+        <button class="lang-btn" id="btnES" title="Español" aria-label="Cambiar a Español">
+            <img src="https://flagcdn.com/co.svg" alt="Bandera de Colombia" width="28" height="28">
+        </button>
+        <button class="lang-btn" id="btnEN" title="English" aria-label="Switch to English">
+            <img src="https://flagcdn.com/us.svg" alt="Bandera de Estados Unidos" width="28" height="28">
+        </button>
         <a href="#" class="auth-link" id="loginBtn">👤 Login</a>
         <a href="#" class="auth-link" id="registerBtn">📝 Register</a>
     </div>
@@ -497,41 +562,74 @@
 </footer>
 <!-- ===== FIN FOOTER ===== -->
 
-<!-- MODAL INSTITUCIONAL -->
+<!-- MODAL INSTITUCIONAL ACTUALIZADO -->
 <div id="modalInstitucional" class="modal">
     <div class="modal-content">
-        <h2>🧪 Rural STEM Lab - Ecosistema Educativo</h2>
+        <h2>Rural STEAM Lab</h2>
+        <div class="subtitle">Intelligent Educational Ecosystem for STEAM Learning, Systemic Thinking and Educational Innovation</div>
         <table>
             <tr><th>Ítem</th><th>Descripción</th></tr>
-            <tr><td><strong>Nombre del ecosistema</strong></td><td><strong>Rural STEM Lab</strong></td></tr>
-            <tr><td>Tipo de proyecto</td><td>Ecosistema educativo STEM interactivo para contexto rural</td></tr>
-            <tr><td>Autor</td><td>Ingeniero Henson Alberto Medina</td></tr>
-            <tr><td>Formación profesional</td><td>Ingeniero Mecánico – Universidad Industrial de Santander</td></tr>
-            <tr><td>Formación de posgrado</td><td>Especialista en TIC para la Enseñanza – Universidad de Santander</td></tr>
-            <tr><td>Formación actual</td><td>Estudiante de Maestría en Tecnologías Emergentes aplicadas a la Educación – Universidad de Santander</td></tr>
-            <tr><td>Experiencia docente</td><td>Más de 18 años en enseñanza de Matemáticas y Física</td></tr>
-            <tr><td>Institución actual</td><td>Institución Educativa Tierra Negra</td></tr>
-            <tr><td>URL del proyecto</td><td><a href="https://ruralstemlab.github.io/rural-steam-platform/" target="_blank" style="color:#38bdf8;">Rural STEM Lab</a></td></tr>
-            <tr><td><strong>Contacto</strong></td><td><strong>+57 321 9626339</strong></td></tr>
-            <tr><td>Descripción general</td><td>Rural STEM Lab es un ecosistema educativo digital diseñado para fortalecer la enseñanza y el aprendizaje de Matemáticas, Física y áreas STEM en contextos rurales mediante simuladores interactivos, evaluaciones automatizadas, laboratorios virtuales y herramientas pedagógicas offline.</td></tr>
-            <tr><td>Objetivo principal</td><td>Mejorar el aprendizaje STEM en instituciones rurales mediante tecnologías educativas accesibles, interactivas y adaptadas a las necesidades reales del aula.</td></tr>
-            <tr><td>Problemática que aborda</td><td>Escasez de laboratorios físicos, baja conectividad, limitada disponibilidad de recursos didácticos STEM y alta carga operativa para docentes rurales.</td></tr>
-            <tr><td>Población beneficiada</td><td>Docentes y estudiantes de educación primaria, básica secundaria y media.</td></tr>
-            <tr><td>Apoyo a docentes de primaria</td><td>Facilita la enseñanza mediante actividades visuales, simuladores intuitivos, aprendizaje interactivo y recursos didácticos adaptados para fortalecer operaciones básicas, pensamiento lógico y razonamiento matemático.</td></tr>
-            <tr><td>Apoyo a docentes de ciencias y matemáticas</td><td>Proporciona simuladores físicos y matemáticos con desarrollo paso a paso, interpretación conceptual, visualización dinámica y herramientas de evaluación tipo ICFES.</td></tr>
-            <tr><td>Beneficios para los estudiantes</td><td>Incrementa la motivación, mejora la comprensión conceptual, fortalece el aprendizaje visual y permite experimentar fenómenos físicos y matemáticos de manera interactiva.</td></tr>
-            <tr><td>Reducción de carga docente</td><td>Automatiza procesos de evaluación y calificación mediante sistemas OMR y análisis automático de resultados, permitiendo que el docente dedique más tiempo a la retroalimentación pedagógica.</td></tr>
-            <tr><td>Retroalimentación pedagógica</td><td>El ecosistema genera interpretación de resultados, análisis por preguntas, identificación de debilidades y recomendaciones de mejora académica.</td></tr>
-            <tr><td>Fortalecimiento tipo ICFES</td><td>Incluye simulacros, microevaluaciones y análisis automático orientado al fortalecimiento del desempeño en pruebas estandarizadas tipo ICFES.</td></tr>
-            <tr><td>Componentes del ecosistema</td><td>Simuladores STEM, laboratorios virtuales, evaluaciones interactivas, sistema OMR, análisis de desempeño, retroalimentación automática y recursos offline.</td></tr>
-            <tr><td>Áreas trabajadas</td><td>Matemáticas, Física, Geometría, Estadística, Ondas, Cinemática, Dinámica y razonamiento lógico.</td></tr>
-            <tr><td>Tecnologías utilizadas</td><td>HTML, CSS, JavaScript, inteligencia artificial educativa, procesamiento OMR y simulación interactiva offline.</td></tr>
-            <tr><td>Funcionamiento offline</td><td>Diseñado para operar en contextos rurales con acceso limitado o inexistente a internet.</td></tr>
-            <tr><td>Innovación principal</td><td>Integración de simulación interactiva, evaluación automática y análisis pedagógico en una sola plataforma educativa rural.</td></tr>
-            <tr><td>Impacto esperado</td><td>Mejorar el rendimiento académico, fortalecer competencias STEM, reducir brechas tecnológicas y optimizar el tiempo pedagógico docente.</td></tr>
-            <tr><td>Potencial de mejora y expansión</td><td>El ecosistema puede seguir creciendo mediante incorporación de nuevas áreas STEM, módulos de inteligencia artificial, analítica educativa avanzada, seguimiento académico y expansión institucional.</td></tr>
-            <tr><td>Potencial investigativo</td><td>Desarrollo de artículos científicos, tesis de maestría y doctorado, innovación educativa rural y proyectos de investigación en TIC aplicadas a la educación.</td></tr>
-            <tr><td>Proyección futura</td><td>Consolidarse como laboratorio STEM rural digital de referencia para instituciones educativas rurales de Colombia y Latinoamérica.</td></tr>
+            <tr><td>Nombre de la plataforma</td><td>Rural STEAM Lab</td></tr>
+            <tr><td>Eslogan</td><td>Innovando la educación mediante tecnologías digitales, inteligencia artificial y simulación interactiva.</td></tr>
+            <tr><td>Naturaleza</td><td>Plataforma tecnológica educativa (EdTech) especializada en simulación interactiva, inteligencia artificial, evaluación digital, analítica del aprendizaje y fortalecimiento del pensamiento sistémico.</td></tr>
+            <tr><td>Tipo de iniciativa</td><td>Plataforma de innovación educativa, investigación aplicada y desarrollo tecnológico.</td></tr>
+            <tr><td>Misión</td><td>Diseñar, desarrollar e implementar soluciones tecnológicas innovadoras que fortalezcan el pensamiento sistémico y el aprendizaje STEAM mediante simulación interactiva, recursos educativos abiertos, inteligencia artificial y analítica educativa.</td></tr>
+            <tr><td>Visión</td><td>Consolidarse como una plataforma tecnológica educativa de referencia en Colombia y Latinoamérica, impulsando la transformación digital de la educación mediante tecnologías emergentes, inteligencia artificial y aprendizaje basado en simulación.</td></tr>
+            <tr><td>Origen del proyecto</td><td>Rural STEAM Lab nace como una iniciativa de innovación educativa desarrollada inicialmente durante la Maestría en Tecnologías Digitales Aplicadas a la Educación de la Universidad de Santander (UDES), evolucionando hacia una plataforma tecnológica independiente con proyección nacional e internacional.</td></tr>
+            <tr><td>Proyecto de investigación asociado</td><td>Fortalecimiento del pensamiento sistémico mediante un ecosistema STEAM rural apoyado en simulación interactiva, evaluación inteligente y tecnología educativa offline.</td></tr>
+            <tr><td>Programa académico de origen</td><td>Maestría en Tecnologías Digitales Aplicadas a la Educación.</td></tr>
+            <tr><td>Institución académica de origen</td><td>Universidad de Santander – UDES.</td></tr>
+            <tr><td>Línea de investigación</td><td>Tecnologías Digitales Aplicadas a la Educación.</td></tr>
+            <tr><td>Autor, líder del proyecto y desarrollador principal</td><td>Ing. Henson Alberto Medina Castillo – <strong>Fundador y líder del proyecto</strong></td></tr>
+            <tr><td>Rol principal</td><td>Dirección estratégica del proyecto, arquitectura del ecosistema, desarrollo de software, diseño de simuladores interactivos, integración tecnológica, investigación aplicada e innovación educativa.</td></tr>
+            <tr><td>Colaboradores del proyecto</td><td>
+                <strong>Alfonso Montañez Diana Marcela</strong> – Colaboradora Especialista TIC.<br>
+                <strong>Gómez López Uberto Manuel</strong> – Colaborador Especialista TIC.
+            </td></tr>
+            <tr><td>Profesión</td><td>Ingeniero Mecánico – Universidad Industrial de Santander (UIS).</td></tr>
+            <tr><td>Formación de posgrado</td><td>Especialista en Aplicación de las TIC para la Enseñanza – Universidad de Santander (UDES).</td></tr>
+            <tr><td>Formación actual</td><td>Estudiante de Maestría en Tecnologías Digitales Aplicadas a la Educación – Universidad de Santander (UDES).</td></tr>
+            <tr><td>Experiencia profesional</td><td>Más de 18 años de experiencia en docencia de Matemáticas, Física, Tecnología e innovación educativa.</td></tr>
+            <tr><td>Ubicación</td><td>Vélez, Santander, Colombia.</td></tr>
+            <tr><td>Sitio web oficial</td><td><a href="https://ruralsteamlab.com" target="_blank" style="color:#38bdf8;">https://ruralsteamlab.com</a></td></tr>
+            <tr><td>Repositorio oficial</td><td><a href="https://github.com/ruralstemlab/rural-steam-platform" target="_blank" style="color:#38bdf8;">https://github.com/ruralstemlab/rural-steam-platform</a></td></tr>
+            <tr><td>Correo institucional</td><td>info@ruralsteamlab.com</td></tr>
+            <tr><td>Contacto</td><td>+57 321 962 6339</td></tr>
+            <tr><td>Licencia de recursos educativos</td><td>Creative Commons Atribución – No Comercial – Compartir Igual 4.0 Internacional (CC BY-NC-SA 4.0).</td></tr>
+            <tr><td>Código fuente</td><td>En desarrollo. Todos los derechos reservados.</td></tr>
+            <tr><td>Marca e identidad visual</td><td>Rural STEAM Lab®, su logotipo e identidad visual son propiedad intelectual del proyecto y se encuentran protegidos por la legislación sobre derechos de autor.</td></tr>
+            <tr><td>Descripción</td><td>Rural STEAM Lab es una plataforma tecnológica educativa que integra simuladores interactivos, laboratorios virtuales, recursos educativos abiertos, evaluación inteligente, analítica del aprendizaje e inteligencia artificial para fortalecer el pensamiento sistémico y las competencias STEAM. Su propósito es ofrecer soluciones innovadoras para estudiantes, docentes e instituciones educativas, especialmente en contextos rurales, mediante herramientas accesibles, interactivas y de alto impacto pedagógico.</td></tr>
+            <tr><td>Objetivo estratégico</td><td>Diseñar e implementar un ecosistema educativo inteligente que fortalezca el pensamiento sistémico mediante tecnologías digitales, simulación interactiva, evaluación inteligente e inteligencia artificial para mejorar los procesos de enseñanza, aprendizaje y toma de decisiones pedagógicas.</td></tr>
+            <tr><td>Problema que aborda</td><td>Escasez de laboratorios físicos, baja conectividad, limitada disponibilidad de recursos educativos digitales, dificultades para fortalecer el pensamiento sistémico y elevada carga administrativa asociada a la evaluación y seguimiento académico.</td></tr>
+            <tr><td>Fundamento pedagógico</td><td>Educación STEAM, pensamiento sistémico, aprendizaje activo, aprendizaje basado en simulación, recursos educativos abiertos (REA), evaluación formativa, analítica del aprendizaje e inteligencia artificial educativa.</td></tr>
+            <tr><td>Población objetivo</td><td>Estudiantes de educación primaria, básica secundaria y media, docentes, instituciones educativas, investigadores y organizaciones interesadas en innovación educativa.</td></tr>
+            <tr><td>Áreas de trabajo</td><td>Matemáticas, Física, Química, Ciencias Naturales, Tecnología, Ingeniería, Pensamiento Computacional, Robótica Educativa y Educación STEAM.</td></tr>
+            <tr><td>Componentes actuales</td><td>Simuladores interactivos, laboratorios virtuales, recursos educativos abiertos, Teacher Zone, Student Zone, portal institucional, sistema de licencias, plataforma bilingüe (en desarrollo), documentación técnica y recursos para docentes.</td></tr>
+            <tr><td>Componentes en desarrollo</td><td>Registro e inicio de sesión, panel del estudiante, panel docente, banco de preguntas, evaluaciones inteligentes, seguimiento académico, analítica educativa, inteligencia artificial, aprendizaje adaptativo, generación automática de informes y panel administrativo.</td></tr>
+            <tr><td>Evaluación inteligente</td><td>Registro automático del desempeño, tiempos de respuesta, resultados por competencias, análisis por Derechos Básicos de Aprendizaje (DBA) y generación de retroalimentación personalizada.</td></tr>
+            <tr><td>Analítica educativa</td><td>Seguimiento individual y grupal del aprendizaje, análisis de fortalezas y debilidades, indicadores de desempeño, visualización de datos y apoyo a la toma de decisiones pedagógicas mediante inteligencia artificial.</td></tr>
+            <tr><td>Tecnologías implementadas</td><td>HTML5, CSS3, JavaScript, GitHub Pages, simulación interactiva, procesamiento OMR, inteligencia artificial educativa, diseño responsive y futura integración con Node.js, PostgreSQL y servicios web.</td></tr>
+            <tr><td>Funcionamiento</td><td>Plataforma web optimizada para contextos urbanos y rurales, con capacidad de funcionamiento offline y sincronización de información cuando exista conectividad.</td></tr>
+            <tr><td>Innovación principal</td><td>Integración de simulación interactiva, evaluación inteligente, inteligencia artificial, recursos educativos abiertos y analítica del aprendizaje dentro de un único ecosistema tecnológico para fortalecer el pensamiento sistémico.</td></tr>
+            <tr><td>Resultados esperados</td><td>Fortalecer el pensamiento sistémico, mejorar el aprendizaje STEAM, optimizar la evaluación, reducir la carga administrativa docente, apoyar la toma de decisiones pedagógicas y generar evidencia para procesos de investigación e innovación educativa.</td></tr>
+            <tr><td>Potencial científico</td><td>Desarrollo de publicaciones científicas, tesis de maestría y doctorado, innovación educativa, transferencia tecnológica, desarrollo de software educativo y proyectos de investigación interdisciplinarios.</td></tr>
+            <tr><td>Modelo de crecimiento</td><td>Plataforma tecnológica escalable con proyección como solución EdTech para instituciones educativas, universidades, organizaciones y entidades interesadas en transformación digital e innovación pedagógica.</td></tr>
+            <tr><td>Proyección</td><td>Consolidarse como una plataforma tecnológica educativa líder en Colombia y Latinoamérica para el fortalecimiento del pensamiento sistémico mediante simulación interactiva, inteligencia artificial, analítica educativa y tecnologías digitales aplicadas a la educación.</td></tr>
+            <!-- Control del Documento -->
+            <tr><th colspan="2" style="text-align:center; background:#0f172a; color:#facc15;">Control del Documento</th></tr>
+            <tr><td>Documento</td><td>Ficha Institucional de Rural STEAM Lab</td></tr>
+            <tr><td>Versión</td><td>1.0.0</td></tr>
+            <tr><td>Estado</td><td>En desarrollo activo</td></tr>
+            <tr><td>Fecha de creación</td><td>Junio de 2026</td></tr>
+            <tr><td>Última actualización</td><td>Julio de 2026</td></tr>
+            <tr><td>Idioma principal</td><td>Español (versión en inglés en desarrollo)</td></tr>
+            <tr><td>Clasificación</td><td>Documento institucional</td></tr>
+            <tr><td>Propietario intelectual</td><td>Ing. Henson Alberto Medina Castillo</td></tr>
+            <tr><td>Colaboradores</td><td>Alfonso Montañez Diana Marcela – Gómez López Uberto Manuel</td></tr>
+            <tr><td>Licencia de recursos educativos</td><td>Creative Commons CC BY-NC-SA 4.0</td></tr>
+            <tr><td>Código fuente</td><td>Todos los derechos reservados</td></tr>
+            <tr><td>Sitio web</td><td><a href="https://ruralsteamlab.com" target="_blank" style="color:#38bdf8;">https://ruralsteamlab.com</a></td></tr>
+            <tr><td>Repositorio oficial</td><td><a href="https://github.com/ruralstemlab/rural-steam-platform" target="_blank" style="color:#38bdf8;">https://github.com/ruralstemlab/rural-steam-platform</a></td></tr>
         </table>
         <button class="close-modal" onclick="cerrarModal()">Cerrar</button>
     </div>
@@ -584,12 +682,14 @@
     function cerrarModal() { modal.style.display = 'none'; }
     window.onclick = function(event) { if (event.target == modal) modal.style.display = 'none'; }
 
-    // ===== FUNCIONALIDAD PARA LOS NUEVOS ELEMENTOS =====
+    // === FUNCIONALIDAD PARA BOTONES DE IDIOMA Y AUTENTICACIÓN ===
     document.getElementById('btnES').addEventListener('click', function() {
+        // changeLanguage('es');
         alert('Cambiar a Español (función en desarrollo)');
     });
 
     document.getElementById('btnEN').addEventListener('click', function() {
+        // changeLanguage('en');
         alert('Switch to English (function in development)');
     });
 
