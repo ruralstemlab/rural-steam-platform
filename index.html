@@ -3,27 +3,95 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     
+    <!-- ===== SEO Básico ===== -->
+    <title>Rural STEAM Lab | Plataforma Educativa STEM Rural</title>
+    <meta name="description" content="Rural STEAM Lab es una plataforma educativa con simuladores interactivos de Física, Matemáticas, Química, Inteligencia Artificial, Analítica Educativa y preparación ICFES para educación rural.">
+    <meta name="keywords" content="STEM, simuladores, física, química, matemáticas, educación rural, ICFES, inteligencia artificial, laboratorio virtual, pensamiento sistémico">
+    <meta name="author" content="Henson Alberto Medina Castillo">
+    <meta name="copyright" content="Rural STEAM Lab">
     <link rel="canonical" href="https://ruralsteamlab.com/">
     <meta name="robots" content="index, follow">
     
+    <!-- ===== Theme y PWA ===== -->
+    <meta name="theme-color" content="#0f172a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="msapplication-TileColor" content="#0f172a">
+    
+    <!-- ===== Favicon ===== -->
+    <link rel="icon" href="/assets/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" href="/assets/favicon.png">
+    <link rel="manifest" href="/manifest.webmanifest">
+    
+    <!-- ===== Open Graph ===== -->
     <meta property="og:title" content="Rural STEAM Lab - Plataforma STEM Interactiva">
     <meta property="og:description" content="Simuladores de física, matemáticas, química y evaluación ICFES para educación rural. Laboratorios virtuales y recursos offline.">
     <meta property="og:image" content="https://ruralsteamlab.com/assets/og-image.jpg">
     <meta property="og:url" content="https://ruralsteamlab.com/">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="Rural STEAM Lab">
+    <meta property="og:locale" content="es_CO">
+    <meta property="og:locale:alternate" content="en_US">
     
+    <!-- ===== Twitter Cards ===== -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Rural STEAM Lab - STEM para educación rural">
     <meta name="twitter:description" content="Simuladores interactivos de Física, Matemáticas y Química. Ideal para colegios rurales y preparación ICFES.">
     <meta name="twitter:image" content="https://ruralsteamlab.com/assets/og-image.jpg">
+    <meta name="twitter:site" content="@RuralSTEAMLab">
     
-    <title>Rural STEAM Lab | Plataforma Educativa STEM Rural</title>
+    <!-- ===== Datos Estructurados (JSON-LD) ===== -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Rural STEAM Lab",
+      "alternateName": "Rural STEAM Lab - Plataforma STEM Rural",
+      "url": "https://ruralsteamlab.com/",
+      "description": "Rural STEAM Lab es una plataforma educativa con simuladores interactivos de Física, Matemáticas, Química, Inteligencia Artificial, Analítica Educativa y preparación ICFES para educación rural.",
+      "author": {
+        "@type": "Person",
+        "name": "Henson Alberto Medina Castillo"
+      },
+      "inLanguage": "es-CO",
+      "isAccessibleForFree": true,
+      "license": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+      "sameAs": [
+        "https://github.com/ruralstemlab/rural-steam-platform"
+      ]
+    }
+    </script>
     
-    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" id="MathJax-script" async></script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "EducationalOrganization",
+      "name": "Rural STEAM Lab",
+      "url": "https://ruralsteamlab.com/",
+      "logo": "https://ruralsteamlab.com/assets/og-image.jpg",
+      "description": "Plataforma tecnológica educativa especializada en simulación interactiva, inteligencia artificial, evaluación digital y analítica del aprendizaje para fortalecer el pensamiento sistémico y las competencias STEAM en contextos rurales.",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Vélez",
+        "addressRegion": "Santander",
+        "addressCountry": "CO"
+      },
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "customer service",
+        "email": "info@ruralsteamlab.com",
+        "telephone": "+573219626339"
+      },
+      "sameAs": [
+        "https://github.com/ruralstemlab/rural-steam-platform"
+      ]
+    }
+    </script>
     
+    <!-- ===== CSS (crítico) ===== -->
     <style>
         /* ===== ESTILOS COMPLETOS DEL INDEX (sin modales) ===== */
         * {
@@ -235,6 +303,7 @@
             animation: subtleZoom 25s ease-in-out infinite;
             position: relative;
             z-index: 2;
+            /* Añadimos fetchpriority con un truco: se puede establecer mediante un atributo data, pero no afecta al CSS */
         }
         h1 {
             font-size: 4rem;
@@ -542,7 +611,7 @@
 
 <footer>
     <a href="https://ruralsteamlab.com/Licenses.html" target="_blank">
-        <img src="assets/Licenses.png" class="footer-banner" alt="Rural STEAM Lab Footer">
+        <img src="assets/Licenses.png" class="footer-banner" alt="Rural STEAM Lab Footer" loading="lazy">
     </a>
 </footer>
 
