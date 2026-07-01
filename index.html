@@ -118,6 +118,67 @@
             transform: translateY(-2px);
         }
 
+        /* ===== BLOQUE DE AUTENTICACIÓN E IDIOMA ===== */
+        .auth-lang {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-left: auto;
+            flex-wrap: wrap;
+        }
+
+        .lang-btn {
+            background: none;
+            border: none;
+            font-size: 1.6rem;
+            line-height: 1;
+            cursor: pointer;
+            padding: 4px 6px;
+            border-radius: 6px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            color: #e2e8f0;
+        }
+        .lang-btn:hover {
+            transform: scale(1.15);
+            box-shadow: 0 0 8px rgba(56,189,248,0.3);
+        }
+
+        .auth-link {
+            color: #e2e8f0;
+            text-decoration: none;
+            font-weight: 600;
+            transition: 0.3s;
+            padding: 5px 0;
+            border-bottom: 2px solid transparent;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 1rem;
+        }
+        .auth-link:hover {
+            color: #38bdf8;
+            border-bottom-color: #38bdf8;
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 750px) {
+            nav {
+                flex-direction: column;
+                gap: 12px;
+            }
+            .auth-lang {
+                margin-left: 0;
+                align-self: flex-end;
+                margin-top: 5px;
+            }
+            h1 { font-size: 2.5rem; }
+            header p { font-size: 1rem; }
+            .container { padding: 20px; }
+            .modal-content { padding: 15px; }
+            .modal-content td, .modal-content th { font-size: 0.75rem; padding: 6px; }
+        }
+        /* ===== FIN BLOQUE ===== */
+
         /* Header con imagen */
         header {
             padding: 130px 20px;
@@ -242,31 +303,39 @@
             box-shadow: 0 8px 18px rgba(0,0,0,0.3);
         }
 
-        /* === FOOTER MODIFICADO === */
+        /* ===== FOOTER MEJORADO COMO BANNER ===== */
         footer {
-            text-align: center;
-            padding: 30px 20px;
+            width: 100%;
+            padding: 0;
+            margin: 0;
             background: #020617;
             border-top: 1px solid #1e293b;
             position: relative;
             z-index: 2;
         }
-        footer a {
-            display: inline-block;
-            max-width: 90%;
-            transition: transform 0.2s;
-        }
-        footer a:hover {
-            transform: scale(1.02);
-        }
-        footer img {
-            max-width: 100%;
+
+        .footer-banner {
+            width: 100%;
+            max-width: 2022px;
             height: auto;
-            max-height: 120px;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-            cursor: pointer;
+            display: block;
+            margin: 0 auto;
+            border-radius: 0; /* Sin bordes redondeados para un banner completo */
+            box-shadow: none;
         }
+
+        footer a {
+            display: block;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            transition: none;
+        }
+
+        footer a:hover {
+            transform: none; /* Sin efecto hover para que el banner no se mueva */
+        }
+        /* ===== FIN FOOTER ===== */
 
         /* MODAL INSTITUCIONAL */
         .modal {
@@ -357,16 +426,6 @@
             pointer-events: none;
             z-index: 1;
         }
-
-        @media (max-width: 750px) {
-            nav { flex-direction: column; gap: 12px; }
-            h1 { font-size: 2.5rem; }
-            header p { font-size: 1rem; }
-            .container { padding: 20px; }
-            .modal-content { padding: 15px; }
-            .modal-content td, .modal-content th { font-size: 0.75rem; padding: 6px; }
-            footer img { max-height: 80px; }
-        }
     </style>
 </head>
 <body>
@@ -382,6 +441,13 @@
         <a href="chemistry/">🧪 Chemistry</a>
         <a href="mathematics/">📐 Mathematics</a>
         <a href="elementary/">🧸 Elementary</a>
+    </div>
+
+    <div class="auth-lang">
+        <button class="lang-btn" id="btnES" title="Español" aria-label="Cambiar a Español">🇨🇴</button>
+        <button class="lang-btn" id="btnEN" title="English" aria-label="Switch to English">🇺🇸</button>
+        <a href="#" class="auth-link" id="loginBtn">👤 Login</a>
+        <a href="#" class="auth-link" id="registerBtn">📝 Register</a>
     </div>
 </nav>
 
@@ -423,12 +489,13 @@
     </div>
 </section>
 
-<!-- ===== FOOTER CON IMAGEN CLICKEABLE ===== -->
+<!-- ===== FOOTER COMO BANNER ===== -->
 <footer>
     <a href="https://ruralsteamlab.com/Licenses.html" target="_blank">
-        <img src="assets/Licenses.png" alt="Licencias Rural STEAM Lab">
+        <img src="assets/Licenses.png" class="footer-banner" alt="Rural STEAM Lab Footer">
     </a>
 </footer>
+<!-- ===== FIN FOOTER ===== -->
 
 <!-- MODAL INSTITUCIONAL -->
 <div id="modalInstitucional" class="modal">
@@ -510,12 +577,31 @@
         document.head.appendChild(style);
     }
 
-    // === MODAL ===
+    // === MODAL INSTITUCIONAL ===
     const modal = document.getElementById('modalInstitucional');
     const logo = document.getElementById('logoInstitucional');
     logo.onclick = () => { modal.style.display = 'flex'; };
     function cerrarModal() { modal.style.display = 'none'; }
     window.onclick = function(event) { if (event.target == modal) modal.style.display = 'none'; }
+
+    // ===== FUNCIONALIDAD PARA LOS NUEVOS ELEMENTOS =====
+    document.getElementById('btnES').addEventListener('click', function() {
+        alert('Cambiar a Español (función en desarrollo)');
+    });
+
+    document.getElementById('btnEN').addEventListener('click', function() {
+        alert('Switch to English (function in development)');
+    });
+
+    document.getElementById('loginBtn').addEventListener('click', function(e) {
+        e.preventDefault();
+        alert('Abrir modal de Login (función en desarrollo)');
+    });
+
+    document.getElementById('registerBtn').addEventListener('click', function(e) {
+        e.preventDefault();
+        alert('Abrir formulario de Registro (función en desarrollo)');
+    });
 </script>
 </body>
 </html>
