@@ -242,20 +242,30 @@
             box-shadow: 0 8px 18px rgba(0,0,0,0.3);
         }
 
+        /* === FOOTER MODIFICADO === */
         footer {
             text-align: center;
-            padding: 40px 20px;
+            padding: 30px 20px;
             background: #020617;
-            color: #94a3b8;
-            margin-top: 50px;
             border-top: 1px solid #1e293b;
             position: relative;
             z-index: 2;
         }
-        footer h3 {
-            color: #f1f5f9;
-            margin-bottom: 12px;
-            font-size: 1.3rem;
+        footer a {
+            display: inline-block;
+            max-width: 90%;
+            transition: transform 0.2s;
+        }
+        footer a:hover {
+            transform: scale(1.02);
+        }
+        footer img {
+            max-width: 100%;
+            height: auto;
+            max-height: 120px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            cursor: pointer;
         }
 
         /* MODAL INSTITUCIONAL */
@@ -355,6 +365,7 @@
             .container { padding: 20px; }
             .modal-content { padding: 15px; }
             .modal-content td, .modal-content th { font-size: 0.75rem; padding: 6px; }
+            footer img { max-height: 80px; }
         }
     </style>
 </head>
@@ -412,10 +423,11 @@
     </div>
 </section>
 
+<!-- ===== FOOTER CON IMAGEN CLICKEABLE ===== -->
 <footer>
-    <h3>Eng. Medina H. A.</h3>
-    <p>Developer • Educator • Innovator</p>
-    <p>Rural STEAM Lab © 2026</p>
+    <a href="https://ruralsteamlab.com/Licenses.html" target="_blank">
+        <img src="assets/Licenses.png" alt="Licencias Rural STEAM Lab">
+    </a>
 </footer>
 
 <!-- MODAL INSTITUCIONAL -->
@@ -433,6 +445,7 @@
             <tr><td>Experiencia docente</td><td>Más de 18 años en enseñanza de Matemáticas y Física</td></tr>
             <tr><td>Institución actual</td><td>Institución Educativa Tierra Negra</td></tr>
             <tr><td>URL del proyecto</td><td><a href="https://ruralstemlab.github.io/rural-steam-platform/" target="_blank" style="color:#38bdf8;">Rural STEM Lab</a></td></tr>
+            <tr><td><strong>Contacto</strong></td><td><strong>+57 321 9626339</strong></td></tr>
             <tr><td>Descripción general</td><td>Rural STEM Lab es un ecosistema educativo digital diseñado para fortalecer la enseñanza y el aprendizaje de Matemáticas, Física y áreas STEM en contextos rurales mediante simuladores interactivos, evaluaciones automatizadas, laboratorios virtuales y herramientas pedagógicas offline.</td></tr>
             <tr><td>Objetivo principal</td><td>Mejorar el aprendizaje STEM en instituciones rurales mediante tecnologías educativas accesibles, interactivas y adaptadas a las necesidades reales del aula.</td></tr>
             <tr><td>Problemática que aborda</td><td>Escasez de laboratorios físicos, baja conectividad, limitada disponibilidad de recursos didácticos STEM y alta carga operativa para docentes rurales.</td></tr>
