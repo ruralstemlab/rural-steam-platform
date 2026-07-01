@@ -5,11 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     
-    <!-- === MEJORAS SEO === -->
     <link rel="canonical" href="https://ruralstemlab.github.io/rural-steam-platform/">
     <meta name="robots" content="index, follow">
     
-    <!-- === OPEN GRAPH === -->
     <meta property="og:title" content="Rural STEAM Lab - Plataforma STEM Interactiva">
     <meta property="og:description" content="Simuladores de física, matemáticas, química y evaluación ICFES para educación rural. Laboratorios virtuales y recursos offline.">
     <meta property="og:image" content="https://ruralstemlab.github.io/rural-steam-platform/assets/og-image.jpg">
@@ -17,7 +15,6 @@
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="Rural STEAM Lab">
     
-    <!-- === TWITTER CARD === -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Rural STEAM Lab - STEM para educación rural">
     <meta name="twitter:description" content="Simuladores interactivos de Física, Matemáticas y Química. Ideal para colegios rurales y preparación ICFES.">
@@ -25,10 +22,10 @@
     
     <title>Rural STEAM Lab | Plataforma Educativa STEM Rural</title>
     
-    <!-- MathJax para fórmulas -->
     <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" id="MathJax-script" async></script>
     
     <style>
+        /* ===== ESTILOS COMPLETOS DEL INDEX (sin modales) ===== */
         * {
             margin: 0;
             padding: 0;
@@ -44,7 +41,6 @@
             overflow-x: hidden;
         }
 
-        /* Animaciones */
         @keyframes fadeInUp {
             from { opacity: 0; transform: translateY(30px); }
             to { opacity: 1; transform: translateY(0); }
@@ -66,7 +62,6 @@
             100% { transform: translateY(-10vh) scale(1); opacity: 0; }
         }
 
-        /* Menu superior */
         nav {
             background: #020617;
             padding: 15px 30px;
@@ -122,7 +117,6 @@
             transform: translateY(-2px);
         }
 
-        /* ===== BLOQUE DE AUTENTICACIÓN E IDIOMA - BANDERAS PREMIUM ===== */
         .auth-lang {
             display: flex;
             align-items: center;
@@ -232,7 +226,6 @@
             .modal-content td, .modal-content th { font-size: 0.75rem; padding: 6px; }
         }
 
-        /* Header con imagen */
         header {
             padding: 130px 20px;
             background: url('assets/stem-banner-full.png');
@@ -264,7 +257,6 @@
             text-shadow: 1px 1px 6px rgba(0,0,0,0.8);
         }
 
-        /* Tarjetas en grid horizontal */
         .container {
             display: grid;
             grid-template-columns: repeat(6, 1fr);
@@ -356,7 +348,6 @@
             box-shadow: 0 8px 18px rgba(0,0,0,0.3);
         }
 
-        /* ===== FOOTER COMO BANNER ===== */
         footer {
             width: 100%;
             padding: 0;
@@ -366,7 +357,6 @@
             position: relative;
             z-index: 2;
         }
-
         .footer-banner {
             width: 100%;
             max-width: 2022px;
@@ -376,7 +366,6 @@
             border-radius: 0;
             box-shadow: none;
         }
-
         footer a {
             display: block;
             width: 100%;
@@ -384,12 +373,11 @@
             padding: 0;
             transition: none;
         }
-
         footer a:hover {
             transform: none;
         }
 
-        /* MODAL INSTITUCIONAL ACTUALIZADO */
+        /* MODAL INSTITUCIONAL */
         .modal {
             display: none;
             position: fixed;
@@ -476,7 +464,6 @@
             background: linear-gradient(95deg, #dc2626, #b91c1c);
         }
 
-        /* Contenedor de partículas (fondo) */
         .particles-container {
             position: fixed;
             top: 0;
@@ -490,7 +477,6 @@
 </head>
 <body>
 
-<!-- Contenedor de partículas flotantes -->
 <div class="particles-container" id="particlesContainer"></div>
 
 <nav>
@@ -504,15 +490,15 @@
     </div>
 
     <div class="auth-lang">
-        <!-- Banderas con imágenes SVG premium -->
         <button class="lang-btn" id="btnES" title="Español" aria-label="Cambiar a Español">
             <img src="https://flagcdn.com/co.svg" alt="Bandera de Colombia" width="28" height="28">
         </button>
         <button class="lang-btn" id="btnEN" title="English" aria-label="Switch to English">
             <img src="https://flagcdn.com/us.svg" alt="Bandera de Estados Unidos" width="28" height="28">
         </button>
-        <a href="#" class="auth-link" id="loginBtn">👤 Login</a>
-        <a href="#" class="auth-link" id="registerBtn">📝 Register</a>
+        <!-- Enlaces a páginas independientes -->
+        <a href="login.html" class="auth-link">👤 Login</a>
+        <a href="register.html" class="auth-link">📝 Register</a>
     </div>
 </nav>
 
@@ -554,15 +540,13 @@
     </div>
 </section>
 
-<!-- ===== FOOTER COMO BANNER ===== -->
 <footer>
     <a href="https://ruralsteamlab.com/Licenses.html" target="_blank">
         <img src="assets/Licenses.png" class="footer-banner" alt="Rural STEAM Lab Footer">
     </a>
 </footer>
-<!-- ===== FIN FOOTER ===== -->
 
-<!-- MODAL INSTITUCIONAL ACTUALIZADO -->
+<!-- MODAL INSTITUCIONAL -->
 <div id="modalInstitucional" class="modal">
     <div class="modal-content">
         <h2>Rural STEAM Lab</h2>
@@ -615,7 +599,6 @@
             <tr><td>Potencial científico</td><td>Desarrollo de publicaciones científicas, tesis de maestría y doctorado, innovación educativa, transferencia tecnológica, desarrollo de software educativo y proyectos de investigación interdisciplinarios.</td></tr>
             <tr><td>Modelo de crecimiento</td><td>Plataforma tecnológica escalable con proyección como solución EdTech para instituciones educativas, universidades, organizaciones y entidades interesadas en transformación digital e innovación pedagógica.</td></tr>
             <tr><td>Proyección</td><td>Consolidarse como una plataforma tecnológica educativa líder en Colombia y Latinoamérica para el fortalecimiento del pensamiento sistémico mediante simulación interactiva, inteligencia artificial, analítica educativa y tecnologías digitales aplicadas a la educación.</td></tr>
-            <!-- Control del Documento -->
             <tr><th colspan="2" style="text-align:center; background:#0f172a; color:#facc15;">Control del Documento</th></tr>
             <tr><td>Documento</td><td>Ficha Institucional de Rural STEAM Lab</td></tr>
             <tr><td>Versión</td><td>1.0.0</td></tr>
@@ -682,25 +665,12 @@
     function cerrarModal() { modal.style.display = 'none'; }
     window.onclick = function(event) { if (event.target == modal) modal.style.display = 'none'; }
 
-    // === FUNCIONALIDAD PARA BOTONES DE IDIOMA Y AUTENTICACIÓN ===
+    // === IDIOMAS (solo alert por ahora) ===
     document.getElementById('btnES').addEventListener('click', function() {
-        // changeLanguage('es');
         alert('Cambiar a Español (función en desarrollo)');
     });
-
     document.getElementById('btnEN').addEventListener('click', function() {
-        // changeLanguage('en');
         alert('Switch to English (function in development)');
-    });
-
-    document.getElementById('loginBtn').addEventListener('click', function(e) {
-        e.preventDefault();
-        alert('Abrir modal de Login (función en desarrollo)');
-    });
-
-    document.getElementById('registerBtn').addEventListener('click', function(e) {
-        e.preventDefault();
-        alert('Abrir formulario de Registro (función en desarrollo)');
     });
 </script>
 </body>
