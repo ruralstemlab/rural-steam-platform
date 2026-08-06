@@ -270,6 +270,25 @@
         }
         .future-card .btn-sim:hover { transform: none; filter: none; }
 
+        /* ===== ESTRELLA DORADA PARA DESTACADOS ===== */
+        .card.featured {
+            border-color: #facc15;
+            box-shadow: 0 0 30px rgba(250, 204, 21, 0.08);
+        }
+        .card.featured::after {
+            content: '⭐ DESTACADO';
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: #facc15;
+            color: #0b1120;
+            font-size: 0.55rem;
+            font-weight: 700;
+            padding: 2px 10px;
+            border-radius: 20px;
+            letter-spacing: 0.5px;
+        }
+
         footer {
             text-align: center;
             padding: 2rem;
@@ -305,79 +324,287 @@
 
 <div class="physics-header">
     <h1>📐 Laboratorio de Física</h1>
-    <p>Cinemática → Dinámica → Ondas → Electrostática → Fluidos → Física Moderna.</p>
+    <p>Cinemática → Dinámica → Conservación → Ondas → Electrostática → Fluidos → Física Moderna.</p>
 </div>
 
 <div class="curriculum-container">
-    <!-- ================= CINEMÁTICA (tarjeta actualizada) ================= -->
+
+    <!-- ================================================================
+         ===== 1. CINEMÁTICA =====
+         ================================================================ -->
     <div class="topic-block">
         <div class="topic-header">
             <h2>📈 1. Cinemática</h2>
-            <span class="topic-badge">Movimiento en 2D · Vectores</span>
+            <span class="topic-badge">Movimiento Rectilíneo · MRUA · Parabólico · Circular</span>
         </div>
         <div class="cards-grid">
-            <!-- NUEVA TARJETA: STEM League: Road to Glory (reemplaza la anterior) -->
+            <!-- Movimiento Rectilíneo -->
             <div class="card">
+                <div class="card-icon">📏</div>
+                <h3>Movimiento Rectilíneo</h3>
+                <p>Posición, velocidad, aceleración en línea recta. Conceptos fundamentales de cinemática.</p>
+                <div class="button-group">
+                    <span class="btn-sim" style="background:#334155;">🚧 Próximamente</span>
+                </div>
+            </div>
+
+            <!-- MRUA -->
+            <div class="card">
+                <div class="card-icon">📈</div>
+                <h3>Movimiento Uniformemente Acelerado</h3>
+                <p>Ecuaciones de MRUA, caída libre, gráficas posición-tiempo y velocidad-tiempo.</p>
+                <div class="button-group">
+                    <span class="btn-sim" style="background:#334155;">🚧 Próximamente</span>
+                </div>
+            </div>
+
+            <!-- Tiro Parabólico (existente) -->
+            <div class="card featured">
                 <div class="card-icon">⚽</div>
                 <h3>⚽ STEM League: Road to Glory</h3>
-                <p>
-                    Movimiento parabólico, vectores velocidad,
-                    alcance máximo, gamificación STEM,
-                    desafíos futbolísticos y evaluación integrada.
-                </p>
+                <p>Movimiento parabólico, vectores velocidad, alcance máximo, gamificación STEM, desafíos futbolísticos y evaluación integrada.</p>
                 <div class="button-group">
                     <a href="../simulators/projectile-motion/" class="btn-sim">🎮 Abrir</a>
-                    <a href="../simulators/projectile-motion/projectile-motion.html"
-                       class="btn-sim download"
-                       download>
-                        📥 Descargar App
-                    </a>
-                    <a href="../simulators/projectile-motion/projectile-guide.pdf"
-                       class="btn-sim guide"
-                       download>
-                        📘 Guía PDF
-                    </a>
+                    <a href="../simulators/projectile-motion/projectile-motion.html" class="btn-sim download" download>📥 Descargar App</a>
+                    <a href="../simulators/projectile-motion/projectile-guide.pdf" class="btn-sim guide" download>📘 Guía PDF</a>
+                </div>
+            </div>
+
+            <!-- Movimiento Circular -->
+            <div class="card">
+                <div class="card-icon">🔄</div>
+                <h3>Movimiento Circular</h3>
+                <p>Velocidad angular, aceleración centrípeta, periodo, frecuencia. MCU y MCUV.</p>
+                <div class="button-group">
+                    <span class="btn-sim" style="background:#334155;">🚧 Próximamente</span>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- ================= DINÁMICA ================= -->
+    <!-- ================================================================
+         ===== 2. DINÁMICA =====
+         ================================================================ -->
     <div class="topic-block">
         <div class="topic-header">
             <h2>⚙️ 2. Dinámica (Leyes de Newton)</h2>
-            <span class="topic-badge">Fricción · Poleas · Plano inclinado</span>
+            <span class="topic-badge">Leyes · Fricción · Plano Inclinado · Poleas · Equilibrio</span>
         </div>
         <div class="cards-grid">
-            <div class="card"><div class="card-icon">🧱</div><h3>Friction System</h3><p>Segunda ley con rozamiento.</p><div class="button-group"><a href="../simulators/friction/" class="btn-sim">🎮 Abrir</a><a href="../simulators/friction/friction.html" class="btn-sim download" download>📥 Descargar App</a><a href="../simulators/friction/friction-guide.pdf" class="btn-sim guide" download>📘 Guía PDF</a></div></div>
-            <div class="card"><div class="card-icon">🧲</div><h3>Pulley System</h3><p>Poleas ideales, tensiones.</p><div class="button-group"><a href="../simulators/pulley/" class="btn-sim">🎮 Abrir</a><a href="../simulators/pulley/pulley.html" class="btn-sim download" download>📥 Descargar App</a><a href="../simulators/pulley/pulley-guide.pdf" class="btn-sim guide" download>📘 Guía PDF</a></div></div>
-            <div class="card"><div class="card-icon">📐</div><h3>Inclined Plane</h3><p>Componentes de peso, fricción.</p><div class="button-group"><a href="../simulators/inclined-plane/" class="btn-sim">🎮 Abrir</a><a href="../simulators/inclined-plane/inclined-plane.html" class="btn-sim download" download>📥 Descargar App</a><a href="../simulators/inclined-plane/inclined-plane-guide.pdf" class="btn-sim guide" download>📘 Guía PDF</a></div></div>
-            <div class="card"><div class="card-icon">🔩</div><h3>Eyebolt Tensions</h3><p>Equilibrio de fuerzas concurrentes.</p><div class="button-group"><a href="../simulators/eyebolt-tensions/" class="btn-sim">🎮 Abrir</a><a href="../simulators/eyebolt-tensions/eyebolt-tensions.html" class="btn-sim download" download>📥 Descargar App</a><a href="../simulators/eyebolt-tensions/eyebolt-tensions-guide.pdf" class="btn-sim guide" download>📘 Guía PDF</a></div></div>
+            <!-- Leyes de Newton -->
+            <div class="card">
+                <div class="card-icon">🍎</div>
+                <h3>Leyes de Newton</h3>
+                <p>Principios fundamentales de la dinámica: inercia, F=ma, acción-reacción.</p>
+                <div class="button-group">
+                    <span class="btn-sim" style="background:#334155;">🚧 Próximamente</span>
+                </div>
+            </div>
+
+            <!-- Fricción (existente) -->
+            <div class="card">
+                <div class="card-icon">🧱</div>
+                <h3>Friction System</h3>
+                <p>Segunda ley con rozamiento, coeficiente de fricción estático y cinético.</p>
+                <div class="button-group">
+                    <a href="../simulators/friction/" class="btn-sim">🎮 Abrir</a>
+                    <a href="../simulators/friction/friction.html" class="btn-sim download" download>📥 Descargar App</a>
+                    <a href="../simulators/friction/friction-guide.pdf" class="btn-sim guide" download>📘 Guía PDF</a>
+                </div>
+            </div>
+
+            <!-- Plano Inclinado (existente) -->
+            <div class="card">
+                <div class="card-icon">📐</div>
+                <h3>Inclined Plane</h3>
+                <p>Componentes de peso, fricción, aceleración en plano inclinado.</p>
+                <div class="button-group">
+                    <a href="../simulators/inclined-plane/" class="btn-sim">🎮 Abrir</a>
+                    <a href="../simulators/inclined-plane/inclined-plane.html" class="btn-sim download" download>📥 Descargar App</a>
+                    <a href="../simulators/inclined-plane/inclined-plane-guide.pdf" class="btn-sim guide" download>📘 Guía PDF</a>
+                </div>
+            </div>
+
+            <!-- Poleas (existente) -->
+            <div class="card">
+                <div class="card-icon">🧲</div>
+                <h3>Pulley System</h3>
+                <p>Poleas ideales, tensiones, aceleración en sistemas de poleas.</p>
+                <div class="button-group">
+                    <a href="../simulators/pulley/" class="btn-sim">🎮 Abrir</a>
+                    <a href="../simulators/pulley/pulley.html" class="btn-sim download" download>📥 Descargar App</a>
+                    <a href="../simulators/pulley/pulley-guide.pdf" class="btn-sim guide" download>📘 Guía PDF</a>
+                </div>
+            </div>
+
+            <!-- Equilibrio de Fuerzas (existente) -->
+            <div class="card">
+                <div class="card-icon">🔩</div>
+                <h3>Eyebolt Tensions</h3>
+                <p>Equilibrio de fuerzas concurrentes, suma vectorial, condiciones de equilibrio.</p>
+                <div class="button-group">
+                    <a href="../simulators/eyebolt-tensions/" class="btn-sim">🎮 Abrir</a>
+                    <a href="../simulators/eyebolt-tensions/eyebolt-tensions.html" class="btn-sim download" download>📥 Descargar App</a>
+                    <a href="../simulators/eyebolt-tensions/eyebolt-tensions-guide.pdf" class="btn-sim guide" download>📘 Guía PDF</a>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- ================= OSCILACIONES Y ONDAS ================= -->
+    <!-- ================================================================
+         ===== 3. CONSERVACIÓN DE LA ENERGÍA Y EL MOMENTO =====
+         ================================================================ -->
     <div class="topic-block">
         <div class="topic-header">
-            <h2>🌊 3. Oscilaciones & Ondas</h2>
-            <span class="topic-badge">Péndulo · Sonido · Doppler · Batidos</span>
+            <h2>🔋 3. Conservación de la Energía y el Momento</h2>
+            <span class="topic-badge">Momento Lineal ⭐ · Impulso · Trabajo · Choques · Centro de Masa</span>
         </div>
         <div class="cards-grid">
-            <div class="card"><div class="card-icon">🌀</div><h3>Simple Pendulum</h3><p>Período, energía mecánica.</p><div class="button-group"><a href="../simulators/simple-pendulum/" class="btn-sim">🎮 Abrir</a><a href="../simulators/simple-pendulum/simple-pendulum.html" class="btn-sim download" download>📥 Descargar App</a><a href="../simulators/simple-pendulum/simple-pendulum-guide.pdf" class="btn-sim guide" download>📘 Guía PDF</a></div></div>
-            <div class="card"><div class="card-icon">🔊</div><h3>Sound Intensity</h3><p>Decibeles, distancia.</p><div class="button-group"><a href="../simulators/sound-intensity/" class="btn-sim">🎮 Abrir</a><a href="../simulators/sound-intensity/sound-intensity.html" class="btn-sim download" download>📥 Descargar App</a><a href="../simulators/sound-intensity/sound-intensity-guide.pdf" class="btn-sim guide" download>📘 Guía PDF</a></div></div>
-            <div class="card"><div class="card-icon">📡</div><h3>Doppler Effect</h3><p>Desplazamiento de frecuencia.</p><div class="button-group"><a href="../simulators/doppler/" class="btn-sim">🎮 Abrir</a><a href="../simulators/doppler/doppler.html" class="btn-sim download" download>📥 Descargar App</a><a href="../simulators/doppler/doppler-guide.pdf" class="btn-sim guide" download>📘 Guía PDF</a></div></div>
-            <div class="card"><div class="card-icon">〰️</div><h3>Beats 2D</h3><p>Interferencia en 2D.</p><div class="button-group"><a href="../simulators/beats-2d/" class="btn-sim">🎮 Abrir</a><a href="../simulators/beats-2d/beats-2d.html" class="btn-sim download" download>📥 Descargar App</a><a href="../simulators/beats-2d/beats-2d-guide.pdf" class="btn-sim guide" download>📘 Guía PDF</a></div></div>
-            <div class="card"><div class="card-icon">🌐</div><h3>Beats 3D</h3><p>Superposición 3D.</p><div class="button-group"><a href="../simulators/beats-3d/" class="btn-sim">🎮 Abrir</a><a href="../simulators/beats-3d/beats-3d.html" class="btn-sim download" download>📥 Descargar App</a><a href="../simulators/beats-3d/beats-3d-guide.pdf" class="btn-sim guide" download>📘 Guía PDF</a></div></div>
+            <!-- Conservación del Momento Lineal ⭐ (DESTACADO - RUTA CORREGIDA) -->
+            <div class="card featured">
+                <div class="card-icon">🚗</div>
+                <h3>⭐ Conservación del Momento Lineal</h3>
+                <p>Simulador de choques elásticos e inelásticos. Conservación del momento y energía. Gráficas, módulo pedagógico y evaluación ICFES.</p>
+                <div class="button-group">
+                    <a href="../simulators/collision/" class="btn-sim">🎮 Abrir</a>
+                    <a href="../simulators/collision/index.html" class="btn-sim download" download>📥 Descargar App</a>
+                    <a href="../simulators/collision/guia-momento-lineal.pdf" class="btn-sim guide" download>📘 Guía PDF</a>
+                </div>
+            </div>
+
+            <!-- Impulso -->
+            <div class="card">
+                <div class="card-icon">💥</div>
+                <h3>Impulso</h3>
+                <p>Relación entre impulso y cambio en el momento lineal. Fuerza media y tiempo de contacto.</p>
+                <div class="button-group">
+                    <span class="btn-sim" style="background:#334155;">🚧 Próximamente</span>
+                </div>
+            </div>
+
+            <!-- Trabajo y Energía -->
+            <div class="card">
+                <div class="card-icon">⚡</div>
+                <h3>Trabajo y Energía</h3>
+                <p>Teorema del trabajo y la energía, energía cinética, potencial y mecánica.</p>
+                <div class="button-group">
+                    <span class="btn-sim" style="background:#334155;">🚧 Próximamente</span>
+                </div>
+            </div>
+
+            <!-- Choques -->
+            <div class="card">
+                <div class="card-icon">💢</div>
+                <h3>Choques</h3>
+                <p>Choques elásticos, inelásticos y perfectamente inelásticos en 1D y 2D.</p>
+                <div class="button-group">
+                    <span class="btn-sim" style="background:#334155;">🚧 Próximamente</span>
+                </div>
+            </div>
+
+            <!-- Centro de Masa -->
+            <div class="card">
+                <div class="card-icon">🎯</div>
+                <h3>Centro de Masa</h3>
+                <p>Cálculo del centro de masa de sistemas de partículas y cuerpos rígidos.</p>
+                <div class="button-group">
+                    <span class="btn-sim" style="background:#334155;">🚧 Próximamente</span>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- ================= ELECTROSTÁTICA ================= -->
+    <!-- ================================================================
+         ===== 4. OSCILACIONES Y ONDAS =====
+         ================================================================ -->
     <div class="topic-block">
         <div class="topic-header">
-            <h2>⚡ 4. Electrostática</h2>
-            <span class="topic-badge">Ley de Coulomb</span>
+            <h2>🌊 4. Oscilaciones y Ondas</h2>
+            <span class="topic-badge">Péndulo · Ondas · Sonido · Doppler</span>
         </div>
         <div class="cards-grid">
+            <!-- Péndulo (existente) -->
+            <div class="card">
+                <div class="card-icon">🌀</div>
+                <h3>Simple Pendulum</h3>
+                <p>Período, energía mecánica, movimiento armónico simple.</p>
+                <div class="button-group">
+                    <a href="../simulators/simple-pendulum/" class="btn-sim">🎮 Abrir</a>
+                    <a href="../simulators/simple-pendulum/simple-pendulum.html" class="btn-sim download" download>📥 Descargar App</a>
+                    <a href="../simulators/simple-pendulum/simple-pendulum-guide.pdf" class="btn-sim guide" download>📘 Guía PDF</a>
+                </div>
+            </div>
+
+            <!-- Ondas -->
+            <div class="card">
+                <div class="card-icon">〰️</div>
+                <h3>Ondas</h3>
+                <p>Propagación de ondas mecánicas, longitud de onda, frecuencia, velocidad.</p>
+                <div class="button-group">
+                    <span class="btn-sim" style="background:#334155;">🚧 Próximamente</span>
+                </div>
+            </div>
+
+            <!-- Sonido (existente) -->
+            <div class="card">
+                <div class="card-icon">🔊</div>
+                <h3>Sound Intensity</h3>
+                <p>Decibeles, intensidad sonora, relación con la distancia.</p>
+                <div class="button-group">
+                    <a href="../simulators/sound-intensity/" class="btn-sim">🎮 Abrir</a>
+                    <a href="../simulators/sound-intensity/sound-intensity.html" class="btn-sim download" download>📥 Descargar App</a>
+                    <a href="../simulators/sound-intensity/sound-intensity-guide.pdf" class="btn-sim guide" download>📘 Guía PDF</a>
+                </div>
+            </div>
+
+            <!-- Doppler (existente) -->
+            <div class="card">
+                <div class="card-icon">📡</div>
+                <h3>Doppler Effect</h3>
+                <p>Desplazamiento de frecuencia por movimiento relativo de la fuente o del observador.</p>
+                <div class="button-group">
+                    <a href="../simulators/doppler/" class="btn-sim">🎮 Abrir</a>
+                    <a href="../simulators/doppler/doppler.html" class="btn-sim download" download>📥 Descargar App</a>
+                    <a href="../simulators/doppler/doppler-guide.pdf" class="btn-sim guide" download>📘 Guía PDF</a>
+                </div>
+            </div>
+
+            <!-- Beats 2D (existente) -->
+            <div class="card">
+                <div class="card-icon">〰️</div>
+                <h3>Beats 2D</h3>
+                <p>Interferencia de ondas en 2D, patrones de interferencia y batidos.</p>
+                <div class="button-group">
+                    <a href="../simulators/beats-2d/" class="btn-sim">🎮 Abrir</a>
+                    <a href="../simulators/beats-2d/beats-2d.html" class="btn-sim download" download>📥 Descargar App</a>
+                    <a href="../simulators/beats-2d/beats-2d-guide.pdf" class="btn-sim guide" download>📘 Guía PDF</a>
+                </div>
+            </div>
+
+            <!-- Beats 3D (existente) -->
+            <div class="card">
+                <div class="card-icon">🌐</div>
+                <h3>Beats 3D</h3>
+                <p>Superposición de ondas en 3D, visualización tridimensional.</p>
+                <div class="button-group">
+                    <a href="../simulators/beats-3d/" class="btn-sim">🎮 Abrir</a>
+                    <a href="../simulators/beats-3d/beats-3d.html" class="btn-sim download" download>📥 Descargar App</a>
+                    <a href="../simulators/beats-3d/beats-3d-guide.pdf" class="btn-sim guide" download>📘 Guía PDF</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================================================================
+         ===== 5. ELECTROSTÁTICA =====
+         ================================================================ -->
+    <div class="topic-block">
+        <div class="topic-header">
+            <h2>⚡ 5. Electrostática</h2>
+            <span class="topic-badge">Ley de Coulomb · Campo · Potencial</span>
+        </div>
+        <div class="cards-grid">
+            <!-- Ley de Coulomb (existente) -->
             <div class="card">
                 <div class="card-icon">⚡</div>
                 <h3>Coulomb's Law</h3>
@@ -388,29 +615,108 @@
                     <a href="../simulators/coulomb_law/coulomb_law_guide.pdf" class="btn-sim guide" download>📘 Guía PDF</a>
                 </div>
             </div>
+
+            <!-- Campo Eléctrico -->
+            <div class="card">
+                <div class="card-icon">🧲</div>
+                <h3>Campo Eléctrico</h3>
+                <p>Líneas de campo, intensidad del campo eléctrico, distribución de cargas.</p>
+                <div class="button-group">
+                    <span class="btn-sim" style="background:#334155;">🚧 Próximamente</span>
+                </div>
+            </div>
+
+            <!-- Potencial Eléctrico -->
+            <div class="card">
+                <div class="card-icon">🔋</div>
+                <h3>Potencial Eléctrico</h3>
+                <p>Potencial electrostático, diferencia de potencial, superficies equipotenciales.</p>
+                <div class="button-group">
+                    <span class="btn-sim" style="background:#334155;">🚧 Próximamente</span>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- ================= FLUIDOS (próximamente) ================= -->
+    <!-- ================================================================
+         ===== 6. FLUIDOS =====
+         ================================================================ -->
     <div class="topic-block">
-        <div class="topic-header"><h2>💧 5. Mecánica de Fluidos</h2><span class="topic-badge">Próximamente</span></div>
+        <div class="topic-header">
+            <h2>💧 6. Mecánica de Fluidos</h2>
+            <span class="topic-badge">Pascal · Arquímedes · Bernoulli</span>
+        </div>
         <div class="cards-grid">
-            <div class="card future-card"><div class="card-icon">🌊</div><h3>Principio de Pascal</h3><p>En desarrollo.</p><div class="button-group"><span class="btn-sim" style="background:#334155;">🚧 Próximamente</span></div></div>
-            <div class="card future-card"><div class="card-icon">⚖️</div><h3>Arquímedes</h3><p>En desarrollo.</p><div class="button-group"><span class="btn-sim" style="background:#334155;">🚧 Próximamente</span></div></div>
+            <div class="card future-card">
+                <div class="card-icon">🌊</div>
+                <h3>Principio de Pascal</h3>
+                <p>Transmisión de presión en fluidos, prensa hidráulica.</p>
+                <div class="button-group">
+                    <span class="btn-sim" style="background:#334155;">🚧 Próximamente</span>
+                </div>
+            </div>
+            <div class="card future-card">
+                <div class="card-icon">⚖️</div>
+                <h3>Principio de Arquímedes</h3>
+                <p>Empuje, flotabilidad, densidad relativa.</p>
+                <div class="button-group">
+                    <span class="btn-sim" style="background:#334155;">🚧 Próximamente</span>
+                </div>
+            </div>
+            <div class="card future-card">
+                <div class="card-icon">💨</div>
+                <h3>Principio de Bernoulli</h3>
+                <p>Relación entre presión y velocidad en fluidos en movimiento.</p>
+                <div class="button-group">
+                    <span class="btn-sim" style="background:#334155;">🚧 Próximamente</span>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- ================= FÍSICA MODERNA (próximamente) ================= -->
+    <!-- ================================================================
+         ===== 7. FÍSICA MODERNA =====
+         ================================================================ -->
     <div class="topic-block">
-        <div class="topic-header"><h2>✨ 6. Física Moderna</h2><span class="topic-badge">Relatividad · Cuántica</span></div>
+        <div class="topic-header">
+            <h2>✨ 7. Física Moderna</h2>
+            <span class="topic-badge">Relatividad · Cuántica</span>
+        </div>
         <div class="cards-grid">
-            <div class="card future-card"><div class="card-icon">⏱️</div><h3>Dilatación del Tiempo</h3><p>Próximamente.</p><div class="button-group"><span class="btn-sim" style="background:#334155;">🚧 En desarrollo</span></div></div>
-            <div class="card future-card"><div class="card-icon">🔬</div><h3>Efecto Fotoeléctrico</h3><p>Próximamente.</p><div class="button-group"><span class="btn-sim" style="background:#334155;">🚧 En desarrollo</span></div></div>
+            <div class="card future-card">
+                <div class="card-icon">⏱️</div>
+                <h3>Dilatación del Tiempo</h3>
+                <p>Relatividad especial, dilatación temporal, paradoja de los gemelos.</p>
+                <div class="button-group">
+                    <span class="btn-sim" style="background:#334155;">🚧 En desarrollo</span>
+                </div>
+            </div>
+            <div class="card future-card">
+                <div class="card-icon">🔬</div>
+                <h3>Efecto Fotoeléctrico</h3>
+                <p>Emisión de electrones por luz, función trabajo, cuantización de la energía.</p>
+                <div class="button-group">
+                    <span class="btn-sim" style="background:#334155;">🚧 En desarrollo</span>
+                </div>
+            </div>
+            <div class="card future-card">
+                <div class="card-icon">🌌</div>
+                <h3>Contracción de Lorentz</h3>
+                <p>Contracción de la longitud en relatividad especial.</p>
+                <div class="button-group">
+                    <span class="btn-sim" style="background:#334155;">🚧 En desarrollo</span>
+                </div>
+            </div>
         </div>
     </div>
 
+    <!-- ===== FOOTER INFORMATIVO ===== -->
     <div style="background: #0f172a80; border-radius: 1.5rem; padding: 1rem; margin-top: 1rem; border-left: 4px solid #3b82f6;">
-        <p style="font-size: 0.75rem; color: #cbd5e1;">📚 <strong>Estructura completa por ejes temáticos</strong> — Cada simulación incluye guía pedagógica descargable y recurso offline.</p>
+        <p style="font-size: 0.75rem; color: #cbd5e1;">
+            📚 <strong>Estructura completa por ejes temáticos</strong> — 
+            Cada simulación incluye guía pedagógica descargable y recurso offline. 
+            ⭐ Las tarjetas con <strong>⭐ DESTACADO</strong> son simulaciones completas con evaluación integrada.
+        </p>
     </div>
 </div>
 
