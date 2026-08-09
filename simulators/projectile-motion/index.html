@@ -1,3 +1,6 @@
+Te entrego el código completo del simulador de proyectiles con la evaluación mejorada, incluyendo las correcciones para que el contenedor se expanda dinámicamente y los botones de navegación sean siempre visibles.
+
+```html
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -13,7 +16,7 @@
     </script>
     <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" id="MathJax-script" async></script>
     <style>
-        /* ===== ESTILOS ORIGINALES (sin modificar) ===== */
+        /* ===== ESTILOS ORIGINALES ===== */
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
             background: linear-gradient(135deg, #eef2f5 0%, #d9e2ec 100%);
@@ -137,6 +140,7 @@
             justify-content: space-between;
             align-items: center;
             cursor: pointer;
+            border-radius: 28px 28px 0 0;
         }
         .tarjeta-header:hover { background: #2c5a6e; }
         .flecha { font-size: 1.2rem; transition: transform 0.2s; }
@@ -147,11 +151,13 @@
             padding: 0 18px;
             transition: max-height 0.4s ease, padding 0.3s ease, visibility 0.3s;
             background: #fffef7;
+            border-radius: 0 0 28px 28px;
         }
         .tarjeta-body.abierto {
-            max-height: 5000px;
+            max-height: 8000px;
             visibility: visible;
             padding: 16px 18px;
+            overflow-y: visible;
         }
         .math-display { text-align: center; margin: 12px 0; }
         .desafio-item {
@@ -363,7 +369,7 @@
             100% { opacity: 0; transform: translate(-50%, -50%) scale(1.2); visibility: hidden; }
         }
 
-        /* ===== NUEVOS ESTILOS PARA MODO FULLSCREEN (SOLO PARA .fullscreen-mode) ===== */
+        /* ===== FULLSCREEN MODE ===== */
         .fullscreen-mode .premium-header,
         .fullscreen-mode footer {
             display: none !important;
@@ -400,31 +406,391 @@
             max-height: 100vh;
             object-fit: contain;
         }
-        /* Ajuste para que el HUD, sliders y botones se mantengan visibles y bien posicionados */
-        .fullscreen-mode .top-sliders {
-            top: 10px;
-            left: 10px;
-            z-index: 30;
-        }
-        .fullscreen-mode .bottom-buttons {
-            bottom: 10px;
-            z-index: 30;
-        }
-        .fullscreen-mode .drag-info {
-            top: 10px;
-            right: 10px;
-            z-index: 30;
-        }
+        .fullscreen-mode .top-sliders,
+        .fullscreen-mode .bottom-buttons,
+        .fullscreen-mode .drag-info,
         .fullscreen-mode .hud-stem {
-            top: 10px;
-            right: 10px;
             z-index: 30;
         }
-        /* Ocultar las tarjetas acordeón en modo fullscreen para maximizar el área de juego */
         .fullscreen-mode .tarjeta-acordeon {
             display: none;
         }
-        /* Pero aseguramos que si el usuario quiere verlas, puede salir del fullscreen */
+
+        /* ===== ESTILOS PARA EVALUACIÓN MEJORADA ===== */
+        .quiz-nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding-bottom: 5px;
+        }
+        .btn-nav-quiz {
+            padding: 10px 24px;
+            border: none;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            min-height: 44px;
+        }
+        .btn-nav-quiz.prev {
+            background: #ecf0f1;
+            color: #333;
+        }
+        .btn-nav-quiz.prev:hover:not(:disabled) {
+            background: #d5d8dc;
+        }
+        .btn-nav-quiz.next {
+            background: #2ecc71;
+            color: white;
+        }
+        .btn-nav-quiz.next:hover:not(:disabled) {
+            background: #27ae60;
+        }
+        .btn-nav-quiz.submit {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+            color: white;
+            padding: 10px 28px;
+        }
+        .btn-nav-quiz.submit:hover:not(:disabled) {
+            background: #d68910;
+        }
+        .btn-nav-quiz:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+        .btn-nav-quiz:hover:not(:disabled) {
+            transform: translateY(-2px);
+        }
+
+        .question-status {
+            font-size: 0.7rem;
+            padding: 3px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            display: inline-block;
+        }
+        .question-status.answered {
+            background: #d5f5e3;
+            color: #27ae60;
+        }
+        .question-status.unanswered {
+            background: #fdebd0;
+            color: #e67e22;
+        }
+
+        .quiz-pregunta {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 24px;
+            border-left: 8px solid #ff914d;
+            margin-bottom: 10px;
+        }
+        .quiz-pregunta .q-text {
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: #1a1a2e;
+            margin-bottom: 14px;
+            line-height: 1.6;
+        }
+        .quiz-pregunta .q-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .quiz-pregunta .q-number {
+            font-weight: 700;
+            color: #2c3e50;
+            font-size: 0.85rem;
+        }
+        .quiz-pregunta .opciones-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+        .quiz-pregunta .opciones-grid label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 0;
+            padding: 10px 14px;
+            background: #f7f2e4;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 2px solid transparent;
+            min-height: 42px;
+        }
+        .quiz-pregunta .opciones-grid label:hover:not(.disabled-opt) {
+            border-color: #2ecc71;
+            background: #f0faf0;
+        }
+        .quiz-pregunta .opciones-grid label.selected {
+            border-color: #2ecc71;
+            background: #d5f5e3;
+        }
+        .quiz-pregunta .opciones-grid label.correct-answer {
+            border-color: #2ecc71;
+            background: #d5f5e3;
+        }
+        .quiz-pregunta .opciones-grid label.wrong-answer {
+            border-color: #e74c3c;
+            background: #fadbd8;
+        }
+        .quiz-pregunta .opciones-grid label.disabled-opt {
+            opacity: 0.7;
+            cursor: default;
+        }
+        .quiz-pregunta .opciones-grid label.disabled-opt:hover {
+            border-color: transparent;
+            background: #f7f2e4;
+        }
+        .quiz-pregunta .opciones-grid label .letter {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: #e8ecef;
+            font-weight: 700;
+            font-size: 0.75rem;
+            color: #555;
+            flex-shrink: 0;
+        }
+        .quiz-pregunta .opciones-grid label.selected .letter {
+            background: #2ecc71;
+            color: white;
+        }
+        .quiz-pregunta .opciones-grid label.correct-answer .letter {
+            background: #2ecc71;
+            color: white;
+        }
+        .quiz-pregunta .opciones-grid label.wrong-answer .letter {
+            background: #e74c3c;
+            color: white;
+        }
+        .quiz-pregunta .opciones-grid label input[type="radio"] {
+            display: none;
+        }
+
+        .question-feedback {
+            margin-top: 14px;
+            padding: 14px 18px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            line-height: 1.6;
+            display: none;
+        }
+        .question-feedback.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        .question-feedback.correct {
+            background: #d5f5e3;
+            border-left: 4px solid #2ecc71;
+            color: #1a5a2a;
+        }
+        .question-feedback.incorrect {
+            background: #fadbd8;
+            border-left: 4px solid #e74c3c;
+            color: #7a1a1a;
+        }
+        .question-feedback .fb-title {
+            font-weight: 700;
+            font-size: 0.95rem;
+            margin-bottom: 4px;
+        }
+        .question-feedback .fb-formula {
+            background: rgba(0,0,0,0.05);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            margin: 4px 0;
+            font-size: 0.8rem;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .resultados-container {
+            display: none;
+        }
+        .resultados-container.active {
+            display: block;
+        }
+        .resultados-container .result-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .resultados-container .result-stat {
+            background: white;
+            padding: 12px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .resultados-container .result-stat .stat-value {
+            font-size: 1.5rem;
+            font-weight: 900;
+        }
+        .resultados-container .result-stat .stat-label {
+            font-size: 0.6rem;
+            color: #888;
+            text-transform: uppercase;
+            margin-top: 2px;
+        }
+        .resultados-container .result-stat .stat-value.green { color: #2ecc71; }
+        .resultados-container .result-stat .stat-value.red { color: #e74c3c; }
+        .resultados-container .result-stat .stat-value.blue { color: #3498db; }
+        .resultados-container .result-stat .stat-value.orange { color: #f39c12; }
+        .resultados-container .result-stat .stat-value.purple { color: #8e44ad; }
+
+        .performance-badge {
+            display: inline-block;
+            padding: 6px 20px;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 1rem;
+            margin: 5px 0;
+        }
+        .performance-badge.bajo { background: #fadbd8; color: #922b21; }
+        .performance-badge.basico { background: #fdebd0; color: #a04000; }
+        .performance-badge.alto { background: #d5f5e3; color: #1a7a3a; }
+        .performance-badge.superior { background: #d6eaf8; color: #1a5276; }
+
+        .export-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 12px;
+            justify-content: center;
+        }
+        .btn-export {
+            padding: 8px 20px;
+            border: none;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            min-height: 40px;
+        }
+        .btn-export.pdf { background: #e74c3c; color: white; }
+        .btn-export.pdf:hover { background: #c0392b; transform: translateY(-2px); }
+        .btn-export.excel { background: #27ae60; color: white; }
+        .btn-export.excel:hover { background: #1e8449; transform: translateY(-2px); }
+        .btn-export.review { background: #3498db; color: white; }
+        .btn-export.review:hover { background: #2e86c1; transform: translateY(-2px); }
+        .btn-export:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .review-container {
+            margin-top: 15px;
+            display: none;
+        }
+        .review-container .review-item {
+            background: white;
+            padding: 10px 14px;
+            border-radius: 10px;
+            margin-bottom: 8px;
+            border-left: 4px solid #2ecc71;
+        }
+        .review-container .review-item.incorrect {
+            border-left-color: #e74c3c;
+        }
+        .review-container .review-item .r-q {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #1a1a2e;
+        }
+        .review-container .review-item .r-detail {
+            font-size: 0.75rem;
+            color: #555;
+            margin-top: 4px;
+        }
+        .review-container .review-item .r-explain {
+            font-size: 0.75rem;
+            color: #777;
+            margin-top: 4px;
+            padding: 4px 10px;
+            background: #f8f9fa;
+            border-radius: 6px;
+        }
+
+        /* ===== AJUSTES PARA QUE EL CONTENIDO SE EXPANDA CORRECTAMENTE ===== */
+        #body-quiz.tarjeta-body.abierto {
+            max-height: 8000px;
+            overflow-y: visible;
+            padding: 16px 18px 25px 18px;
+        }
+
+        #body-quiz.tarjeta-body {
+            transition: max-height 0.5s ease, padding 0.4s ease, visibility 0.3s ease;
+        }
+
+        .tarjeta-body.abierto .quiz-nav-buttons {
+            margin-top: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        /* Ajuste para el contenedor del quiz */
+        #quizDynamicContainer {
+            width: 100%;
+            overflow: visible;
+        }
+
+        #quizDynamicContainer .resultados-container {
+            overflow: visible;
+        }
+
+        /* Para que el feedback no se corte */
+        .question-feedback {
+            overflow: visible;
+        }
+
+        @media (max-width: 450px) {
+            .quiz-pregunta .opciones-grid {
+                grid-template-columns: 1fr;
+            }
+            .resultados-container .result-summary {
+                grid-template-columns: 1fr 1fr;
+            }
+            .quiz-nav-buttons {
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            .quiz-nav-buttons .btn-nav-quiz {
+                flex: 1;
+                min-width: 80px;
+                justify-content: center;
+                padding: 8px 14px;
+                font-size: 0.75rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -466,7 +832,7 @@
             <div class="drag-info">🖱️ Arrastra el JUGADOR</div>
         </div>
 
-        <!-- Tarjetas expandibles (se ocultarán en fullscreen por CSS) -->
+        <!-- Tarjetas expandibles -->
         <div class="tarjeta-acordeon">
             <div class="tarjeta-header" data-target="body-fisica">
                 <span>📐 SOLUCIÓN FÍSICA - MODELO MATEMÁTICO</span>
@@ -512,7 +878,7 @@
 </div>
 
 <script>
-    // ========== CONFIGURACIÓN FÍSICA Y CANVAS (SIN MODIFICACIONES) ==========
+    // ========== FÍSICA Y CANVAS (SIN MODIFICACIONES) ==========
     const canvas = document.getElementById("main");
     const ctx = canvas.getContext("2d");
     const gcanvas = document.getElementById("grafico");
@@ -601,19 +967,24 @@
         actualizarPuntosUI(); actualizarHUD();
         actualizarPanelFisico();
         if(puntosTotales >= 500 && !bonusQuizOtorgado) {
-            bonusQuizOtorgado = true;
             otorgarBonusQuiz();
-            mostrarAnimacionLogro500();
         }
         return true;
     }
 
     function otorgarBonusQuiz() {
+        if (bonusQuizOtorgado) return;
+        bonusQuizOtorgado = true;
         const div = document.getElementById("mensajeBonus");
         div.style.display = "block";
         div.innerHTML = "🎁 ¡RECOMPENSA DESBLOQUEADA! Has alcanzado 500 puntos STEM. Has ganado UNA UNIDAD COMPLETA (+1.0) para el Quiz STEM. 🎁";
         setTimeout(() => div.style.display = "none", 5000);
-        if(window.bonusQuizCallback) window.bonusQuizCallback();
+        mostrarAnimacionLogro500();
+        if (typeof ultimaNota !== 'undefined' && ultimaNota !== null) {
+            ultimaNota = Math.min(5.0, ultimaNota + 1.0);
+            ultimoPorcentaje = Math.round((ultimaNota / 5) * 100);
+            actualizarResultadoQuizUI();
+        }
     }
 
     function actualizarPuntosUI() {
@@ -645,7 +1016,6 @@
         angSliderVal.innerText = getAngDeg()+"°";
     }
 
-    // ========== PANEL FÍSICO COMPLETO ==========
     async function actualizarPanelFisico() {
         let v0 = getV0(), angDeg = getAngDeg(), angRad = angDeg*Math.PI/180;
         let vx = v0*Math.cos(angRad), vy = v0*Math.sin(angRad);
@@ -661,94 +1031,34 @@
         
         if(esGolTeorico) {
             resultadoTemp = "⚽ ¡GOOOOOL! ⚽";
-            interpretacionFisica = `
-                <div style="background:#d4edda; padding:15px; border-radius:20px; margin:10px 0; text-align:center;">
-                    🏆 ¡FELICITACIONES! 🏆<br><br>
-                    Has logrado una trayectoria exitosa aplicando correctamente los principios del movimiento parabólico.<br>
-                    La combinación entre velocidad, ángulo y alcance permitió alcanzar la portería con precisión.<br><br>
-                    🌟 Eres un excelente jugador porque supiste tomar decisiones acertadas antes del lanzamiento.<br>
-                    🔬 También estás demostrando habilidades de científico, ya que analizaste variables, realizaste predicciones y verificaste resultados utilizando la física.<br><br>
-                    🚀 Hoy has jugado como un campeón y pensado como un futuro científico.
-                </div>
-            `;
+            interpretacionFisica = `<div style="background:#d4edda; padding:15px; border-radius:20px; margin:10px 0; text-align:center;">🏆 ¡FELICITACIONES! 🏆<br><br>Has logrado una trayectoria exitosa aplicando correctamente los principios del movimiento parabólico.<br>La combinación entre velocidad, ángulo y alcance permitió alcanzar la portería con precisión.<br><br>🌟 Eres un excelente jugador porque supiste tomar decisiones acertadas antes del lanzamiento.<br>🔬 También estás demostrando habilidades de científico, ya que analizaste variables, realizaste predicciones y verificaste resultados utilizando la física.<br><br>🚀 Hoy has jugado como un campeón y pensado como un futuro científico.</div>`;
             let desafioActual = obtenerDesafioPorDistancia(distanciaPorteria);
             if(desafioActual) {
-                contextoFutbol = `<div style="background:#fff3cd; padding:12px; border-radius:20px; margin-top:12px; text-align:center;">
-                                    ${desafioActual.contexto.replace(/\n/g, '<br>')}
-                                  </div>`;
+                contextoFutbol = `<div style="background:#fff3cd; padding:12px; border-radius:20px; margin-top:12px; text-align:center;">${desafioActual.contexto.replace(/\n/g, '<br>')}</div>`;
             } else {
-                contextoFutbol = `<div style="background:#fff3cd; padding:12px; border-radius:20px; margin-top:12px; text-align:center;">
-                                    🎯 ¡GOL VÁLIDO! Tu disparo ha sido efectivo. Sigue ajustando parámetros para alcanzar desafíos más lejanos.
-                                  </div>`;
+                contextoFutbol = `<div style="background:#fff3cd; padding:12px; border-radius:20px; margin-top:12px; text-align:center;">🎯 ¡GOL VÁLIDO! Tu disparo ha sido efectivo. Sigue ajustando parámetros para alcanzar desafíos más lejanos.</div>`;
             }
             let puntosNecesarios = 500 - puntosTotales;
             if(puntosNecesarios < 0) puntosNecesarios = 0;
-            progresoHTML = `
-                <div style="background:#e2e3e8; padding:12px; border-radius:20px; margin-top:12px; text-align:center;">
-                    🎮 **PROGRESO STEM**<br>
-                    Puntos acumulados actuales: <strong>${puntosTotales}</strong><br>
-                    Puntos necesarios para recompensa: <strong>${puntosNecesarios}</strong>
-                </div>
-            `;
-            reflexionFinal = `
-                <div style="background:#cfe2ff; padding:12px; border-radius:20px; margin-top:12px; text-align:center;">
-                    🔭 **REFLEXIÓN STEM**<br><br>
-                    Detrás de este gol no hubo suerte.<br>
-                    Hubo observación, análisis, matemáticas y física.<br><br>
-                    Los científicos hacen exactamente lo mismo:<br>
-                    ✓ observan;<br>
-                    ✓ plantean hipótesis;<br>
-                    ✓ prueban;<br>
-                    ✓ corrigen;<br>
-                    ✓ mejoran.<br><br>
-                    Cada lanzamiento exitoso te acerca a convertirte en un mejor estudiante, un mejor deportista y un futuro profesional capaz de transformar el mundo mediante el conocimiento.<br><br>
-                    ✨ En Rural STEAM Lab aprendemos jugando, experimentando y pensando como científicos. ✨
-                </div>
-            `;
+            progresoHTML = `<div style="background:#e2e3e8; padding:12px; border-radius:20px; margin-top:12px; text-align:center;">🎮 **PROGRESO STEM**<br>Puntos acumulados actuales: <strong>${puntosTotales}</strong><br>Puntos necesarios para recompensa: <strong>${puntosNecesarios}</strong></div>`;
+            reflexionFinal = `<div style="background:#cfe2ff; padding:12px; border-radius:20px; margin-top:12px; text-align:center;">🔭 **REFLEXIÓN STEM**<br><br>Detrás de este gol no hubo suerte.<br>Hubo observación, análisis, matemáticas y física.<br><br>Los científicos hacen exactamente lo mismo:<br>✓ observan;<br>✓ plantean hipótesis;<br>✓ prueban;<br>✓ corrigen;<br>✓ mejoran.<br><br>Cada lanzamiento exitoso te acerca a convertirte en un mejor estudiante, un mejor deportista y un futuro profesional capaz de transformar el mundo mediante el conocimiento.<br><br>✨ En Rural STEAM Lab aprendemos jugando, experimentando y pensando como científicos. ✨</div>`;
         } else {
             resultadoTemp = (alcance < distanciaPorteria) ? "❌ CORTO (teóricamente)" : "❌ LARGO (teóricamente)";
-            interpretacionFisica = (alcance < distanciaPorteria) 
-                ? "❌ **CORTO**: El balón no alcanza la portería porque la velocidad inicial no proporciona el alcance horizontal necesario. Intenta aumentar la velocidad o modificar el ángulo de lanzamiento para lograr mayor distancia."
-                : "❌ **LARGO**: El alcance calculado supera la distancia a la portería. Una reducción moderada de la velocidad o un ajuste angular permitirían mayor precisión.";
+            interpretacionFisica = (alcance < distanciaPorteria) ? "❌ **CORTO**: El balón no alcanza la portería porque la velocidad inicial no proporciona el alcance horizontal necesario. Intenta aumentar la velocidad o modificar el ángulo de lanzamiento para lograr mayor distancia." : "❌ **LARGO**: El alcance calculado supera la distancia a la portería. Una reducción moderada de la velocidad o un ajuste angular permitirían mayor precisión.";
             contextoFutbol = "";
             progresoHTML = "";
             if(ultimoAlcance !== null && ultimoAngulo !== null && ultimaVelocidad !== null) {
                 let mejora = Math.abs(alcance - distanciaPorteria) < Math.abs(ultimoAlcance - distanciaPorteria);
-                if(mejora) {
-                    reflexionFinal = "<div style='background:#cfe2ff; padding:10px; border-radius:20px; margin-top:12px;'>📈 **PROGRESO DETECTADO**: Tu nuevo lanzamiento es más eficiente que el anterior. Estás optimizando la relación entre velocidad y ángulo como lo haría un científico.</div>";
-                } else {
-                    reflexionFinal = "<div style='background:#f8d7da; padding:10px; border-radius:20px; margin-top:12px;'>📚 **ANÁLISIS DEL INTENTO**: Los errores también generan aprendizaje. Analiza los datos obtenidos y ajusta nuevamente los parámetros.</div>";
-                }
-            } else {
-                reflexionFinal = "<div style='background:#eef2f5; padding:10px; border-radius:20px; margin-top:12px;'>💡 **Consejo inicial**: Experimenta con diferentes valores de velocidad y ángulo para observar cómo cambian el alcance, la altura máxima y el tiempo de vuelo.</div>";
-            }
+                if(mejora) reflexionFinal = "<div style='background:#cfe2ff; padding:10px; border-radius:20px; margin-top:12px;'>📈 **PROGRESO DETECTADO**: Tu nuevo lanzamiento es más eficiente que el anterior. Estás optimizando la relación entre velocidad y ángulo como lo haría un científico.</div>";
+                else reflexionFinal = "<div style='background:#f8d7da; padding:10px; border-radius:20px; margin-top:12px;'>📚 **ANÁLISIS DEL INTENTO**: Los errores también generan aprendizaje. Analiza los datos obtenidos y ajusta nuevamente los parámetros.</div>";
+            } else reflexionFinal = "<div style='background:#eef2f5; padding:10px; border-radius:20px; margin-top:12px;'>💡 **Consejo inicial**: Experimenta con diferentes valores de velocidad y ángulo para observar cómo cambian el alcance, la altura máxima y el tiempo de vuelo.</div>";
         }
         
         ultimoAlcance = alcance;
         ultimoAngulo = angDeg;
         ultimaVelocidad = v0;
         
-        let pasoMatematico = `
-            <div class="fisica-detalle">
-                <h3 style="color:#005f73;">📌 DATOS DE ENTRADA</h3>
-                <div class="math-display">\\( v_0 = ${v0.toFixed(2)} \\, m/s \\) &nbsp; \\( \\theta = ${angDeg}^\\circ \\) &nbsp; \\( g = 9.81 \\, m/s^2 \\)</div>
-                <div class="math-display">\\( x_{\\text{lanzador}} = ${lanzadorX_M.toFixed(1)} \\, m \\) &nbsp; Distancia a portería: \\( ${distanciaPorteria.toFixed(1)} \\, m \\)</div>
-                <h3>📐 DESCOMPOSICIÓN VECTORIAL</h3>
-                <div class="math-display">\\( V_x = v_0 \\cos\\theta = ${vx.toFixed(2)} \\, m/s \\)</div>
-                <div class="math-display">\\( V_y = v_0 \\sin\\theta = ${vy.toFixed(2)} \\, m/s \\)</div>
-                <h3>🧮 ECUACIONES DEL MOVIMIENTO</h3>
-                <div class="math-display">\\( x(t) = x_0 + V_x t \\) &nbsp; \\( y(t) = y_0 + V_y t - \\frac{1}{2} g t^2 \\)</div>
-                <div class="math-display">\\( t_{vuelo} = \\frac{2V_y}{g} = ${tvuelo.toFixed(2)} \\, s \\)</div>
-                <div class="math-display">\\( H_{max} = \\frac{V_y^2}{2g} = ${alturaMax.toFixed(2)} \\, m \\)</div>
-                <div class="math-display">\\( R = \\frac{v_0^2 \\sin(2\\theta)}{g} = ${alcance.toFixed(2)} \\, m \\)</div>
-                <h3>📊 INTERPRETACIÓN DEL RESULTADO</h3>
-                <p><b>${resultadoTemp}</b></p>
-                <p>${interpretacionFisica}</p>
-                ${contextoFutbol}
-                ${progresoHTML}
-                ${reflexionFinal}
-            </div>
-        `;
+        let pasoMatematico = `<div class="fisica-detalle"><h3 style="color:#005f73;">📌 DATOS DE ENTRADA</h3><div class="math-display">\\( v_0 = ${v0.toFixed(2)} \\, m/s \\) &nbsp; \\( \\theta = ${angDeg}^\\circ \\) &nbsp; \\( g = 9.81 \\, m/s^2 \\)</div><div class="math-display">\\( x_{\\text{lanzador}} = ${lanzadorX_M.toFixed(1)} \\, m \\) &nbsp; Distancia a portería: \\( ${distanciaPorteria.toFixed(1)} \\, m \\)</div><h3>📐 DESCOMPOSICIÓN VECTORIAL</h3><div class="math-display">\\( V_x = v_0 \\cos\\theta = ${vx.toFixed(2)} \\, m/s \\)</div><div class="math-display">\\( V_y = v_0 \\sin\\theta = ${vy.toFixed(2)} \\, m/s \\)</div><h3>🧮 ECUACIONES DEL MOVIMIENTO</h3><div class="math-display">\\( x(t) = x_0 + V_x t \\) &nbsp; \\( y(t) = y_0 + V_y t - \\frac{1}{2} g t^2 \\)</div><div class="math-display">\\( t_{vuelo} = \\frac{2V_y}{g} = ${tvuelo.toFixed(2)} \\, s \\)</div><div class="math-display">\\( H_{max} = \\frac{V_y^2}{2g} = ${alturaMax.toFixed(2)} \\, m \\)</div><div class="math-display">\\( R = \\frac{v_0^2 \\sin(2\\theta)}{g} = ${alcance.toFixed(2)} \\, m \\)</div><h3>📊 INTERPRETACIÓN DEL RESULTADO</h3><p><b>${resultadoTemp}</b></p><p>${interpretacionFisica}</p>${contextoFutbol}${progresoHTML}${reflexionFinal}</div>`;
         const body = document.getElementById("body-fisica");
         body.innerHTML = pasoMatematico;
         await MathJax.typesetPromise();
@@ -1059,13 +1369,16 @@
         ultimaVelocidad = null;
         puntosTotales = 0; golesTotales = 0;
         golesRegistrados.clear();
-        bonusQuizOtorgado = false; logro500Mostrado = false;
+        logro500Mostrado = false;
         velSlider.value = "20"; angSlider.value = "45";
         actualizarSlidersDisplay();
         actualizarPuntosUI(); actualizarHUD(); actualizarPanelFisico(); actualizarGraficoCinematico(); actualizarSimulacion();
         nombreAlumnoGlobal = ""; localStorage.removeItem("nombreEstudiante");
-        intentosRestantes = 3; ultimaNota = null; tablaRespuestas = []; bonusAplicado = false; pendienteBonus = false;
+        intentosRestantes = 3; ultimaNota = null; tablaRespuestas = [];
         mezclarPreguntas();
+        preguntaActual = 0;
+        examenFinalizado = false;
+        respuestas = {};
         actualizarContenedorQuiz();
         const msgs = document.querySelectorAll('.mensaje-gol, .mensaje-falta, .mensaje-rebote, .mensaje-fuera, .logro-500');
         msgs.forEach(msg => msg.remove());
@@ -1083,20 +1396,16 @@
         else if (!audioCtx) await getAudioContext();
     });
 
-    // Manejo del botón fullscreen con mejora UX: ocultar header y footer mediante clase .fullscreen-mode
     const container = document.querySelector(".simulador-container");
     const fullscreenBtn = document.getElementById("btnFullscreen");
     
     async function toggleFullscreen() {
         if (!document.fullscreenElement) {
             await container.requestFullscreen();
-            // Agregar clase al body para aplicar estilos de ocultación
             document.body.classList.add("fullscreen-mode");
-            // Bloquear orientación horizontal si es posible
             if (screen.orientation && screen.orientation.lock) {
                 try { await screen.orientation.lock("landscape"); } catch(e) { console.log("orientación no soportada"); }
             }
-            // Cambiar texto del botón para indicar salida
             fullscreenBtn.innerHTML = "⛶ Salir STEAM";
         } else {
             await document.exitFullscreen();
@@ -1107,7 +1416,6 @@
     }
     
     fullscreenBtn.addEventListener("click", toggleFullscreen);
-    // Escuchar cambios de fullscreen (por si el usuario sale con Escape)
     document.addEventListener("fullscreenchange", () => {
         if (!document.fullscreenElement) {
             document.body.classList.remove("fullscreen-mode");
@@ -1116,7 +1424,6 @@
         }
     });
 
-    // Resto de eventos (Score, Reset)
     const hudPanel = document.getElementById("hudPanel");
     document.getElementById("btnScore").addEventListener("click", () => { hudPanel.style.display = hudPanel.style.display === "none" ? "block" : "none"; });
     document.getElementById("btnResetTotal").addEventListener("click", () => { resetTotal(); });
@@ -1141,6 +1448,12 @@
             } else {
                 body.classList.add("abierto"); body.style.maxHeight = body.scrollHeight + "px"; flecha.innerHTML = "▲";
                 if (targetId === "body-fisica") { await MathJax.typesetPromise(); setTimeout(() => { body.style.maxHeight = body.scrollHeight + "px"; }, 50); }
+                // Asegurar que el quiz se expanda correctamente
+                if (targetId === "body-quiz") {
+                    setTimeout(() => {
+                        body.style.maxHeight = body.scrollHeight + 200 + "px";
+                    }, 100);
+                }
             }
         });
     });
@@ -1158,168 +1471,524 @@
     function animLoop() { actualizarSimulacion(); requestAnimationFrame(animLoop); }
     animLoop();
 
-    // ========== QUIZ COMPLETO ==========
-    let preguntasBase = [
-        { texto: "¿Qué ángulo produce el máximo alcance horizontal?", opciones: ["30°", "45°", "60°", "90°"], correcta: 1 },
-        { texto: "Si aumentas la velocidad inicial, el alcance:", opciones: ["Disminuye", "No cambia", "Aumenta cuadráticamente", "Solo altura"], correcta: 2 },
-        { texto: "Componente horizontal de la velocidad (sin fricción):", opciones: ["Aumenta", "Disminuye", "Constante", "Depende masa"], correcta: 2 },
-        { texto: "¿Qué sucede si el ángulo es 90°?", opciones: ["Alcance máximo", "Altura máxima, alcance cero", "Rectilíneo", "Circular"], correcta: 1 },
-        { texto: "Fórmula del tiempo de vuelo:", opciones: ["2v₀ senθ/g", "v₀² senθ/g", "2v₀ cosθ/g", "v₀ senθ/(2g)"], correcta: 0 },
-        { texto: "¿Qué representa la línea punteada en el simulador?", opciones: ["Trayectoria durante movimiento", "Viento", "Altura máxima", "Ángulo"], correcta: 0 },
-        { texto: "Con v₀=20 m/s, θ=45°, alcance aprox:", opciones: ["20 m", "30 m", "40 m", "50 m"], correcta: 2 },
-        { texto: "Variable que NO afecta el alcance ideal:", opciones: ["Velocidad", "Ángulo", "Gravedad", "Masa"], correcta: 3 },
-        { texto: "Punto morado en la gráfica representa:", opciones: ["Alcance", "Altura máxima", "Tiempo", "Velocidad"], correcta: 1 },
-        { texto: "Si θ < 45°, al aumentarlo el alcance:", opciones: ["Siempre disminuye", "Aumenta hasta 45°", "Disminuye hasta 45°", "No cambia"], correcta: 1 }
+    // ================================================================
+    //  ===== EVALUACIÓN ICFES STEM - MEJORADA (PREGUNTA POR PREGUNTA) =====
+    //  ================================================================
+
+    // ---- Banco de preguntas ----
+    const preguntaBase = [
+        { texto: "¿Qué ángulo produce el máximo alcance horizontal?", opciones: ["30°", "45°", "60°", "90°"], correcta: 1, explicacion: "El ángulo de 45° maximiza el alcance horizontal para una velocidad inicial fija. Esto se debe a que sin(2θ) es máximo cuando 2θ = 90°, es decir θ = 45°." },
+        { texto: "Si aumentas la velocidad inicial, el alcance:", opciones: ["Disminuye", "No cambia", "Aumenta cuadráticamente", "Solo altura"], correcta: 2, explicacion: "El alcance es proporcional al cuadrado de la velocidad inicial (R ∝ v₀²). Por eso, al duplicar la velocidad, el alcance se cuadruplica." },
+        { texto: "Componente horizontal de la velocidad (sin fricción):", opciones: ["Aumenta", "Disminuye", "Constante", "Depende masa"], correcta: 2, explicacion: "En ausencia de fuerzas horizontales (fricción), la velocidad horizontal permanece constante durante todo el movimiento." },
+        { texto: "¿Qué sucede si el ángulo es 90°?", opciones: ["Alcance máximo", "Altura máxima, alcance cero", "Rectilíneo", "Circular"], correcta: 1, explicacion: "Con θ = 90°, el movimiento es vertical puro. Se alcanza la máxima altura, pero el alcance horizontal es cero porque no hay componente horizontal de velocidad." },
+        { texto: "Fórmula del tiempo de vuelo:", opciones: ["2v₀ senθ/g", "v₀² senθ/g", "2v₀ cosθ/g", "v₀ senθ/(2g)"], correcta: 0, explicacion: "El tiempo de vuelo es t_vuelo = 2v₀ senθ / g. Se obtiene de la ecuación y(t) = 0 cuando el proyectil regresa al nivel de lanzamiento." },
+        { texto: "¿Qué representa la línea punteada en el simulador?", opciones: ["Trayectoria durante movimiento", "Viento", "Altura máxima", "Ángulo"], correcta: 0, explicacion: "La línea punteada muestra la trayectoria teórica que sigue el proyectil desde el lanzamiento hasta el impacto." },
+        { texto: "Con v₀=20 m/s, θ=45°, alcance aprox:", opciones: ["20 m", "30 m", "40 m", "50 m"], correcta: 2, explicacion: "R = v₀²·sen(2θ)/g = (20²·sen90°)/9.81 ≈ 40.8 m. El valor más cercano es 40 m." },
+        { texto: "Variable que NO afecta el alcance ideal:", opciones: ["Velocidad", "Ángulo", "Gravedad", "Masa"], correcta: 3, explicacion: "En condiciones ideales (sin fricción), el alcance NO depende de la masa del proyectil. Solo depende de v₀, θ y g." },
+        { texto: "Punto morado en la gráfica representa:", opciones: ["Alcance", "Altura máxima", "Tiempo", "Velocidad"], correcta: 1, explicacion: "El punto morado indica la altura máxima alcanzada por el proyectil, que ocurre en el vértice de la parábola." },
+        { texto: "Si θ < 45°, al aumentarlo el alcance:", opciones: ["Siempre disminuye", "Aumenta hasta 45°", "Disminuye hasta 45°", "No cambia"], correcta: 1, explicacion: "Para ángulos menores a 45°, el alcance aumenta al incrementar el ángulo, hasta alcanzar el máximo en 45°." }
     ];
+
+    // ---- Variables de estado del quiz ----
     let preguntasActuales = [];
-    function mezclarPreguntas() { preguntasActuales = [...preguntasBase]; for (let i = preguntasActuales.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [preguntasActuales[i], preguntasActuales[j]] = [preguntasActuales[j], preguntasActuales[i]]; } }
-    mezclarPreguntas();
-
-    let intentosRestantes = 3, ultimaNota = null, ultimoPorcentaje = null, ultimoNivel = "", tablaRespuestas = [];
+    let preguntaActual = 0;
+    let respuestas = {};
+    let intentosRestantes = 3;
+    let ultimaNota = null;
+    let ultimoPorcentaje = null;
+    let ultimoNivel = "";
+    let tablaRespuestas = [];
     let nombreAlumnoGlobal = localStorage.getItem("nombreEstudiante") || "";
-    let bonusAplicado = false, pendienteBonus = false;
+    let examenFinalizado = false;
 
-    function obtenerMensajePersonalizado(nota) {
-        if (nota >= 4.8) return { nivel: "🏆 GENIO DE LA FÍSICA Y LEYENDA DEL FÚTBOL 🏆", msg: "Tu análisis del movimiento bidimensional es impresionante. Newton estaría orgulloso de ti y además juegas como CR7. ¡Eres imparable!" };
-        else if (nota >= 4.5) return { nivel: "🚀 AYUDANTE DE GALILEO Y FUTBOLISTA ÉLITE 🚀", msg: "Excelente comprensión de las leyes de caída libre. Messi aplaudiría tu precisión. ¡Sigue así!" };
-        else if (nota >= 4.0) return { nivel: "🔭 EXPLORADOR DE KEPLER Y CRACK EN CANCHA 🔭", msg: "Muy bien, dominas las órbitas parabólicas y tienes la potencia de James Rodríguez. ¡A seguir aprendiendo!" };
-        else if (nota >= 3.5) return { nivel: "⚡ APRENDIZ DE FARADAY Y PROMESA DEPORTIVA ⚡", msg: "Buen trabajo, combinas ciencia y deporte. Luis Díaz te felicita. ¡Mejora tus parámetros!" };
-        else if (nota >= 3.0) return { nivel: "📐 DISCÍPULO DE EUCLIDES Y JUGADOR ESFORZADO 📐", msg: "Fundamentos sólidos. Puedes mejorar con práctica. ¡Como Radamel Falcao, nunca te rindas!" };
-        else return { nivel: "📚 RECLUTA CIENTÍFICO Y CANTERANO 📚", msg: "Dedica tiempo al estudio del movimiento parabólico. Con esfuerzo llegarás a ser como Yerry Mina en defensa y en ciencias." };
-    }
-
-    window.bonusQuizCallback = function () {
-        if (bonusAplicado) return;
-        bonusAplicado = true;
-        if (ultimaNota !== null) {
-            let nuevaNota = Math.min(5.0, ultimaNota + 1.0);
-            ultimaNota = nuevaNota;
-            ultimoPorcentaje = Math.round((nuevaNota / 5) * 100);
-            if (document.getElementById("resultadoNota") && document.getElementById("resultadoNota").innerHTML !== "") actualizarResultadoQuizUI();
-        } else { pendienteBonus = true; }
-    };
-
-    function actualizarResultadoQuizUI() {
-        let nivelInfo = obtenerMensajePersonalizado(ultimaNota);
-        ultimoNivel = nivelInfo.nivel;
-        let tablaHtml = `<div class="tabla-resultados"><table><thead><tr><th>Preg</th><th>Tu resp</th><th>Correcta</th><th>Estado</th></tr></thead><tbody>`;
-        tablaRespuestas.forEach(r => { tablaHtml += `<tr><td>${r.pregunta}</td><td>${r.alumno}</td><td>${r.correcta}</td><td>${r.estado}</td></tr>`; });
-        tablaHtml += `</tbody></table></div>`;
-        document.getElementById("resultadoNota").innerHTML = `<div style="background:#e9c46a; border-radius:40px; padding:12px; text-align:center;">🎓 NOTA: ${ultimaNota}/5.0 (${ultimoPorcentaje}%)<br>Aciertos: ${tablaRespuestas.filter(r => r.estado === "✅").length}/${preguntasActuales.length}</div><div class="nivel-stem">${nivelInfo.nivel}<br>${nivelInfo.msg}</div>${tablaHtml}<div>Intentos restantes: ${intentosRestantes}</div>`;
-    }
-
-    function evaluarQuiz() {
-        let nombreInp = document.getElementById("nombreAlumnoQuiz");
-        if (!nombreInp.value.trim()) { alert("Ingresa el nombre del estudiante."); return; }
-        nombreAlumnoGlobal = nombreInp.value.trim();
-        localStorage.setItem("nombreEstudiante", nombreAlumnoGlobal);
-        let faltantes = [];
-        for (let i = 0; i < preguntasActuales.length; i++) if (!Array.from(document.getElementsByName(`q${i}`)).some(r => r.checked)) faltantes.push(i + 1);
-        if (faltantes.length > 0) { alert(`Faltan preguntas: ${faltantes.join(", ")}`); return; }
-        if (intentosRestantes <= 0) { alert("Sin intentos. Reinicie el quiz."); return; }
-        let aciertos = 0, detalle = [];
-        for (let i = 0; i < preguntasActuales.length; i++) {
-            let radios = document.getElementsByName(`q${i}`), selec = null;
-            for (let r of radios) if (r.checked) selec = parseInt(r.value);
-            let ok = (selec === preguntasActuales[i].correcta);
-            if (ok) aciertos++;
-            detalle.push({ pregunta: i + 1, alumno: selec !== null ? String.fromCharCode(65 + selec) : "-", correcta: String.fromCharCode(65 + preguntasActuales[i].correcta), estado: ok ? "✅" : "❌" });
+    // ---- Funciones del quiz ----
+    function mezclarPreguntas() {
+        let copia = [...preguntaBase];
+        for (let i = copia.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [copia[i], copia[j]] = [copia[j], copia[i]];
         }
+        preguntasActuales = copia.slice(0, 10);
+        respuestas = {};
+        preguntaActual = 0;
+        examenFinalizado = false;
+    }
+
+    function obtenerNivel(nota) {
+        if (nota >= 4.8) return { nivel: "🏆 GENIO DE LA FÍSICA Y LEYENDA DEL FÚTBOL", msg: "Tu análisis del movimiento bidimensional es impresionante. Newton estaría orgulloso de ti y además juegas como CR7." };
+        if (nota >= 4.5) return { nivel: "🚀 AYUDANTE DE GALILEO Y FUTBOLISTA ÉLITE", msg: "Excelente comprensión de las leyes de caída libre. Messi aplaudiría tu precisión." };
+        if (nota >= 4.0) return { nivel: "🔭 EXPLORADOR DE KEPLER Y CRACK EN CANCHA", msg: "Muy bien, dominas las órbitas parabólicas y tienes la potencia de James Rodríguez." };
+        if (nota >= 3.5) return { nivel: "⚡ APRENDIZ DE FARADAY Y PROMESA DEPORTIVA", msg: "Buen trabajo, combinas ciencia y deporte. Luis Díaz te felicita." };
+        if (nota >= 3.0) return { nivel: "📐 DISCÍPULO DE EUCLIDES Y JUGADOR ESFORZADO", msg: "Fundamentos sólidos. Puedes mejorar con práctica. ¡Como Radamel Falcao, nunca te rindas!" };
+        return { nivel: "📚 RECLUTA CIENTÍFICO Y CANTERANO", msg: "Dedica tiempo al estudio del movimiento parabólico. Con esfuerzo llegarás lejos." };
+    }
+
+    function obtenerLetra(indice) {
+        return String.fromCharCode(65 + indice);
+    }
+
+    // ---- Renderizar pregunta actual ----
+    function renderizarPregunta(index) {
+        const container = document.getElementById("preguntaContainer");
+        if (!container) return;
+
+        if (examenFinalizado) {
+            container.innerHTML = "";
+            return;
+        }
+
+        const q = preguntasActuales[index];
+        if (!q) return;
+
+        const respondida = respuestas[index] !== undefined;
+        const statusClass = respondida ? "answered" : "unanswered";
+        const statusText = respondida ? "✅ Respondida" : "⏳ Sin responder";
+
+        let opcionesHTML = "";
+        const letras = ["A", "B", "C", "D"];
+        const selected = respuestas[index];
+
+        q.opciones.forEach((opt, i) => {
+            let clase = "";
+            if (selected === i) clase = "selected";
+            opcionesHTML += `
+                <label class="${clase}" data-index="${i}">
+                    <input type="radio" name="q${index}" value="${i}" ${selected === i ? "checked" : ""}>
+                    <span class="letter">${letras[i]}</span>
+                    ${opt}
+                </label>
+            `;
+        });
+
+        container.innerHTML = `
+            <div class="quiz-pregunta" id="pregunta-${index}">
+                <div class="q-header">
+                    <span class="q-number">Pregunta ${index + 1} de ${preguntasActuales.length}</span>
+                    <span class="question-status ${statusClass}">${statusText}</span>
+                </div>
+                <div class="q-text">${q.texto}</div>
+                <div class="opciones-grid" id="opciones-${index}">
+                    ${opcionesHTML}
+                </div>
+                <div class="question-feedback" id="feedback-${index}"></div>
+            </div>
+        `;
+
+        // Eventos para las opciones
+        const opciones = container.querySelectorAll('.opciones-grid label');
+        opciones.forEach(label => {
+            label.addEventListener('click', function(e) {
+                if (examenFinalizado) return;
+                const radio = this.querySelector('input[type="radio"]');
+                if (radio) {
+                    radio.checked = true;
+                    seleccionarOpcion(index, parseInt(this.dataset.index));
+                }
+            });
+        });
+
+        // Si ya está respondida, mostrar feedback
+        if (respondida) {
+            mostrarFeedback(index);
+        }
+
+        // Actualizar barra de progreso
+        actualizarProgreso();
+
+        // Expandir el contenedor si es necesario
+        expandirContenedorQuiz();
+    }
+
+    // ---- Función para expandir el contenedor del quiz ----
+    function expandirContenedorQuiz() {
+        const body = document.getElementById("body-quiz");
+        if (body && body.classList.contains("abierto")) {
+            setTimeout(() => {
+                body.style.maxHeight = body.scrollHeight + 250 + "px";
+            }, 50);
+        }
+    }
+
+    // ---- Seleccionar opción ----
+    function seleccionarOpcion(qIdx, optIdx) {
+        if (examenFinalizado) return;
+        if (intentosRestantes <= 0) return;
+
+        respuestas[qIdx] = optIdx;
+
+        // Actualizar visual
+        const container = document.getElementById("preguntaContainer");
+        const labels = container.querySelectorAll('.opciones-grid label');
+        labels.forEach((label, i) => {
+            label.classList.toggle('selected', i === optIdx);
+        });
+
+        // Actualizar estado
+        const status = container.querySelector('.question-status');
+        if (status) {
+            status.className = 'question-status answered';
+            status.textContent = '✅ Respondida';
+        }
+
+        // Mostrar feedback
+        mostrarFeedback(qIdx);
+
+        // Actualizar barra de progreso
+        actualizarProgreso();
+
+        // Verificar si todas están respondidas
+        const todasRespondidas = preguntasActuales.every((_, i) => respuestas[i] !== undefined);
+        const btnSubmit = document.getElementById('btnSubmitQuiz');
+        if (btnSubmit) {
+            btnSubmit.style.display = todasRespondidas ? 'inline-flex' : 'none';
+        }
+
+        expandirContenedorQuiz();
+    }
+
+    // ---- Mostrar feedback ----
+    function mostrarFeedback(index) {
+        const feedback = document.getElementById(`feedback-${index}`);
+        if (!feedback) return;
+
+        const q = preguntasActuales[index];
+        const selected = respuestas[index];
+        if (selected === undefined) {
+            feedback.className = 'question-feedback';
+            feedback.style.display = 'none';
+            return;
+        }
+
+        const isCorrect = selected === q.correcta;
+        const letras = ["A", "B", "C", "D"];
+
+        feedback.className = `question-feedback show ${isCorrect ? 'correct' : 'incorrect'}`;
+        feedback.innerHTML = `
+            <div class="fb-title">${isCorrect ? '✅ ¡Correcto!' : '❌ Incorrecto'}</div>
+            <div>${q.explicacion}</div>
+            <div style="margin-top:4px; font-size:0.75rem; color:#555;">
+                Tu respuesta: ${letras[selected]} | Correcta: ${letras[q.correcta]}
+            </div>
+        `;
+        feedback.style.display = 'block';
+
+        expandirContenedorQuiz();
+    }
+
+    // ---- Actualizar barra de progreso ----
+    function actualizarProgreso() {
+        const total = preguntasActuales.length;
+        const respondidas = Object.keys(respuestas).length;
+        const porcentaje = Math.round((respondidas / total) * 100);
+
+        const barra = document.getElementById('progressFillQuiz');
+        const texto = document.getElementById('progressTextQuiz');
+        const badge = document.getElementById('intentosBadgeQuiz');
+
+        if (barra) barra.style.width = porcentaje + '%';
+        if (texto) texto.textContent = `${respondidas}/${total} respondidas`;
+        if (badge) badge.textContent = `🎯 Intentos: ${intentosRestantes}`;
+    }
+
+    // ---- Navegación ----
+    function irPregunta(delta) {
+        const nueva = preguntaActual + delta;
+        if (nueva < 0 || nueva >= preguntasActuales.length) return;
+        preguntaActual = nueva;
+        renderizarPregunta(preguntaActual);
+        actualizarBotonesNavegacion();
+        // Scroll a la pregunta
+        const container = document.getElementById("preguntaContainer");
+        if (container) {
+            setTimeout(() => container.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
+        }
+        expandirContenedorQuiz();
+    }
+
+    function actualizarBotonesNavegacion() {
+        const prev = document.getElementById('btnPrevQuiz');
+        const next = document.getElementById('btnNextQuiz');
+        const submit = document.getElementById('btnSubmitQuiz');
+
+        if (prev) prev.disabled = preguntaActual === 0;
+        if (next) next.disabled = preguntaActual === preguntasActuales.length - 1;
+
+        // Mostrar botón de calificar si todas están respondidas
+        if (submit) {
+            const todas = preguntasActuales.every((_, i) => respuestas[i] !== undefined);
+            submit.style.display = todas ? 'inline-flex' : 'none';
+        }
+    }
+
+    // ---- Calificar evaluación ----
+    function calificarEvaluacion() {
+        // Verificar que todas estén respondidas
+        const todas = preguntasActuales.every((_, i) => respuestas[i] !== undefined);
+        if (!todas) {
+            alert('⚠️ Por favor, responde todas las preguntas antes de calificar.');
+            return;
+        }
+
+        const nombre = document.getElementById('nombreAlumnoQuiz');
+        if (!nombre || !nombre.value.trim()) {
+            alert('⚠️ Ingresa el nombre del estudiante.');
+            return;
+        }
+        nombreAlumnoGlobal = nombre.value.trim();
+        localStorage.setItem("nombreEstudiante", nombreAlumnoGlobal);
+
+        examenFinalizado = true;
+        let aciertos = 0;
+        let detalle = [];
+
+        preguntasActuales.forEach((q, i) => {
+            const respuesta = respuestas[i];
+            const ok = respuesta === q.correcta;
+            if (ok) aciertos++;
+            detalle.push({
+                pregunta: i + 1,
+                alumno: respuesta !== undefined ? obtenerLetra(respuesta) : "-",
+                correcta: obtenerLetra(q.correcta),
+                estado: ok ? "✅" : "❌",
+                texto: q.texto,
+                explicacion: q.explicacion,
+                seleccionada: respuesta
+            });
+        });
+
         let nota = (aciertos / preguntasActuales.length) * 5;
+        if (bonusQuizOtorgado) {
+            nota = Math.min(5.0, nota + 1.0);
+        }
         nota = Math.round(nota * 10) / 10;
+
         ultimaNota = nota;
         ultimoPorcentaje = Math.round((aciertos / preguntasActuales.length) * 100);
         tablaRespuestas = detalle;
         intentosRestantes--;
-        if (pendienteBonus && !bonusAplicado) {
-            ultimaNota = Math.min(5.0, ultimaNota + 1.0);
-            ultimoPorcentaje = Math.round((ultimaNota / 5) * 100);
-            pendienteBonus = false; bonusAplicado = true;
-        }
-        actualizarResultadoQuizUI();
-        if (intentosRestantes === 0) document.getElementById("btnCalificarQuiz").disabled = true;
-        else { mezclarPreguntas(); actualizarContenedorQuiz(); }
-        document.querySelector("#body-quiz .intentos-badge").innerHTML = `🎯 Intentos: ${intentosRestantes}`;
+
+        // Mostrar resultados
+        mostrarResultados(aciertos, nota);
     }
 
-    function reiniciarQuiz() {
-        if (confirm("¿Reiniciar evaluación? Se perderán respuestas.")) {
+    // ---- Mostrar resultados ----
+    function mostrarResultados(aciertos, nota) {
+        const container = document.getElementById('quizDynamicContainer');
+        if (!container) return;
+
+        const nivelInfo = obtenerNivel(nota);
+        ultimoNivel = nivelInfo.nivel;
+
+        // Generar tabla de resultados
+        let tablaHTML = `<div class="tabla-resultados"><table><thead><tr><th>#</th><th>Tu resp</th><th>Correcta</th><th>Estado</th></tr></thead><tbody>`;
+        tablaRespuestas.forEach(r => {
+            tablaHTML += `<tr><td>${r.pregunta}</td><td>${r.alumno}</td><td>${r.correcta}</td><td>${r.estado}</td></tr>`;
+        });
+        tablaHTML += `</tbody></table></div>`;
+
+        let bonusHTML = "";
+        if (bonusQuizOtorgado) {
+            bonusHTML = `<div style="background:#ffd966; color:#2c3e50; border-radius:40px; padding:8px; margin:10px 0; text-align:center; font-weight:bold;">
+                🎁 BONUS +1.0: Alcanzaste 500 puntos como CRACK FUTBOLERO. ¡Unidad extra concedida! ⚽🧠
+            </div>`;
+        }
+
+        // Preparar revisión detallada
+        let reviewHTML = `<div style="margin-top:15px;"><h4 style="color:#1a5a2a;">🔍 Revisión Detallada</h4>`;
+        tablaRespuestas.forEach((r, i) => {
+            const isCorrect = r.estado === "✅";
+            reviewHTML += `
+                <div style="background:white; padding:10px 14px; border-radius:10px; margin-bottom:8px; border-left:4px solid ${isCorrect ? '#2ecc71' : '#e74c3c'};">
+                    <div style="font-weight:600; font-size:0.85rem;">P${r.pregunta}. ${r.texto}</div>
+                    <div style="font-size:0.75rem; color:#555;">
+                        <span style="color:${isCorrect ? '#2ecc71' : '#e74c3c'}; font-weight:600;">
+                            ${isCorrect ? '✅' : '❌'} Tu respuesta: ${r.alumno}
+                        </span>
+                        <span style="color:#2ecc71; font-weight:600; margin-left:10px;">
+                            Correcta: ${r.correcta}
+                        </span>
+                    </div>
+                    <div style="font-size:0.75rem; color:#777; margin-top:4px;">${r.explicacion}</div>
+                </div>
+            `;
+        });
+        reviewHTML += `</div>`;
+
+        container.innerHTML = `
+            <div class="resultados-container active" id="resultadosContainer">
+                <div style="text-align:center; margin-bottom:15px;">
+                    <h3 style="color:#1a5a2a;">📊 Resultados de la Evaluación</h3>
+                </div>
+
+                <div class="result-summary">
+                    <div class="result-stat">
+                        <div class="stat-value green">${aciertos}/${preguntasActuales.length}</div>
+                        <div class="stat-label">✅ Correctas</div>
+                    </div>
+                    <div class="result-stat">
+                        <div class="stat-value red">${preguntasActuales.length - aciertos}</div>
+                        <div class="stat-label">❌ Incorrectas</div>
+                    </div>
+                    <div class="result-stat">
+                        <div class="stat-value blue">${ultimoPorcentaje}%</div>
+                        <div class="stat-label">📊 Porcentaje</div>
+                    </div>
+                    <div class="result-stat">
+                        <div class="stat-value orange">${nota.toFixed(1)}</div>
+                        <div class="stat-label">⭐ Nota (5.0)</div>
+                    </div>
+                    <div class="result-stat">
+                        <div class="stat-value purple">${intentosRestantes}</div>
+                        <div class="stat-label">🎯 Intentos restantes</div>
+                    </div>
+                </div>
+
+                <div style="text-align:center;">
+                    <div class="performance-badge ${ultimoPorcentaje >= 90 ? 'superior' : ultimoPorcentaje >= 70 ? 'alto' : ultimoPorcentaje >= 50 ? 'basico' : 'bajo'}">
+                        ${nivelInfo.nivel}
+                    </div>
+                    <div style="font-size:0.85rem; color:#555; margin-top:5px;">${nivelInfo.msg}</div>
+                </div>
+
+                ${bonusHTML}
+
+                ${tablaHTML}
+
+                <div class="export-buttons">
+                    <button class="btn-export pdf" id="btnExportPDF">📄 Exportar PDF</button>
+                    <button class="btn-export excel" id="btnExportExcel">📊 Exportar Excel</button>
+                    <button class="btn-export review" id="btnToggleReview">🔍 Revisar Evaluación</button>
+                </div>
+
+                <div class="review-container" id="reviewContainer">${reviewHTML}</div>
+
+                <button class="btn-reset-quiz" id="btnResetQuiz" style="margin-top:10px;">🔄 REINICIAR QUIZ</button>
+            </div>
+        `;
+
+        // Eventos de exportación
+        document.getElementById('btnExportPDF')?.addEventListener('click', exportarPDF);
+        document.getElementById('btnExportExcel')?.addEventListener('click', exportarExcel);
+        document.getElementById('btnToggleReview')?.addEventListener('click', () => {
+            const rc = document.getElementById('reviewContainer');
+            if (rc) rc.style.display = rc.style.display === 'none' ? 'block' : 'none';
+            expandirContenedorQuiz();
+        });
+        document.getElementById('btnResetQuiz')?.addEventListener('click', reiniciarQuizCompleto);
+
+        expandirContenedorQuiz();
+    }
+
+    // ---- Exportar PDF ----
+    function exportarPDF() {
+        if (!nombreAlumnoGlobal || ultimaNota === null) return;
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        doc.text("Certificado STEM - Movimiento Parabólico", 20, 20);
+        doc.text(`Nombre: ${nombreAlumnoGlobal}`, 20, 45);
+        doc.text(`Nota: ${ultimaNota}/5.0 (${ultimoPorcentaje}%)`, 20, 55);
+        doc.text(`Logro: ${ultimoNivel}`, 20, 65);
+        if (bonusQuizOtorgado) {
+            doc.text("Bonus aplicado: +1.0 por 500 puntos (CRACK FUTBOLERO)", 20, 75);
+        }
+        doc.text("Rural STEAM Lab Colombia", 20, 95);
+        let y = 120;
+        tablaRespuestas.forEach(r => {
+            doc.text(`Preg ${r.pregunta}: ${r.alumno} | correcta ${r.correcta} ${r.estado}`, 20, y);
+            y += 6;
+        });
+        doc.save(`STEM_${nombreAlumnoGlobal.replace(/\s/g, '_')}.pdf`);
+    }
+
+    // ---- Exportar Excel ----
+    function exportarExcel() {
+        if (!nombreAlumnoGlobal || ultimaNota === null) return;
+        let csv = 'Pregunta,Respuesta,Correcta,Estado\n';
+        tablaRespuestas.forEach(r => {
+            csv += `${r.pregunta},${r.alumno},${r.correcta},${r.estado}\n`;
+        });
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `Resultados_${nombreAlumnoGlobal.replace(/\s/g, '_')}.csv`;
+        a.click();
+        URL.revokeObjectURL(url);
+    }
+
+    // ---- Reiniciar quiz ----
+    function reiniciarQuizCompleto() {
+        if (confirm('¿Reiniciar la evaluación? Se perderán las respuestas actuales.')) {
             mezclarPreguntas();
-            intentosRestantes = 3; ultimaNota = null; tablaRespuestas = []; bonusAplicado = false; pendienteBonus = false;
-            if (document.getElementById("resultadoNota")) document.getElementById("resultadoNota").innerHTML = "";
+            intentosRestantes = 3;
+            ultimaNota = null;
+            ultimoPorcentaje = null;
+            tablaRespuestas = [];
+            examenFinalizado = false;
+            preguntaActual = 0;
+            respuestas = {};
             actualizarContenedorQuiz();
         }
     }
 
-    function actualizarProgresoQuiz() {
-        let respondidas = 0;
-        for (let i = 0; i < preguntasActuales.length; i++) {
-            let radios = document.getElementsByName(`q${i}`);
-            if (Array.from(radios).some(r => r.checked)) respondidas++;
-            let div = document.getElementById(`pregunta-${i}`);
-            if (div) {
-                if (!Array.from(radios).some(r => r.checked)) div.classList.add("no-respondida");
-                else div.classList.remove("no-respondida");
-            }
-        }
-        let porcentaje = (respondidas / preguntasActuales.length) * 100;
-        let fill = document.getElementById("progresoFillQuiz");
-        if (fill) fill.style.width = porcentaje + "%";
-        let txt = document.getElementById("progressText");
-        if (txt) txt.innerText = `${respondidas}/${preguntasActuales.length} respondidas`;
-    }
-
+    // ---- Generar UI del quiz ----
     function generarUIQuiz() {
-        return `<div class="quiz-header">
-            <label>Nombre del estudiante:</label>
-            <input type="text" id="nombreAlumnoQuiz" class="nombre-input" placeholder="Ej: Isaac Newton" value="${nombreAlumnoGlobal}">
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-                <div class="progress-text" id="progressText">0/${preguntasActuales.length} respondidas</div>
-                <div class="intentos-badge">🎯 Intentos: ${intentosRestantes}</div>
+        const nombreVal = nombreAlumnoGlobal || "";
+        return `
+            <div class="quiz-header">
+                <label>👤 Nombre del estudiante:</label>
+                <input type="text" id="nombreAlumnoQuiz" class="nombre-input" placeholder="Ej: Isaac Newton" value="${nombreVal}">
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+                    <div class="progress-text" id="progressTextQuiz">0/${preguntasActuales.length} respondidas</div>
+                    <div class="intentos-badge" id="intentosBadgeQuiz">🎯 Intentos: ${intentosRestantes}</div>
+                </div>
+                <div class="progress-bar-container">
+                    <div id="progressFillQuiz" class="progress-fill" style="width:0%;"></div>
+                </div>
             </div>
-            <div class="progress-bar-container"><div id="progresoFillQuiz" class="progress-fill"></div></div>
-        </div>
-        <div id="preguntasQuiz"></div>
-        <button id="btnCalificarQuiz" style="background:#2b7a4b; width:100%; padding:12px; border-radius:60px;">✅ CALIFICAR EVALUACIÓN</button>
-        <div id="resultadoNota"></div>
-        <button id="btnResetQuiz" class="btn-reset-quiz">🔄 REINICIAR QUIZ</button>
-        <button id="btnDescargarPDF" class="btn-pdf">📄 DESCARGAR CERTIFICADO STEM</button>`;
+            <div id="preguntaContainer"></div>
+            <div class="quiz-nav-buttons">
+                <button class="btn-nav-quiz prev" id="btnPrevQuiz" disabled>⬅ Anterior</button>
+                <button class="btn-nav-quiz next" id="btnNextQuiz">Siguiente ➡</button>
+                <button class="btn-nav-quiz submit" id="btnSubmitQuiz" style="display:none;">✅ Calificar</button>
+            </div>
+        `;
     }
 
+    // ---- Actualizar contenedor del quiz ----
     function actualizarContenedorQuiz() {
         const cont = document.getElementById("quizDynamicContainer");
         if (!cont) return;
-        cont.innerHTML = generarUIQuiz();
-        const preguntasDiv = document.getElementById("preguntasQuiz");
-        let pregHtml = "";
-        for (let i = 0; i < preguntasActuales.length; i++) {
-            let p = preguntasActuales[i];
-            pregHtml += `<div class="quiz-pregunta" id="pregunta-${i}"><p><strong>Pregunta ${i + 1}:</strong> ${p.texto}</p><div class="quiz-opciones">`;
-            for (let j = 0; j < p.opciones.length; j++) pregHtml += `<label><input type="radio" name="q${i}" value="${j}" onchange="window.actualizarProgresoQuizGlobal()"> ${String.fromCharCode(65 + j)}. ${p.opciones[j]}</label>`;
-            pregHtml += `</div></div>`;
+
+        if (examenFinalizado) {
+            return;
         }
-        preguntasDiv.innerHTML = pregHtml;
-        document.getElementById("btnCalificarQuiz")?.addEventListener("click", evaluarQuiz);
-        document.getElementById("btnResetQuiz")?.addEventListener("click", reiniciarQuiz);
-        document.getElementById("btnDescargarPDF")?.addEventListener("click", () => {
-            if (!nombreAlumnoGlobal && document.getElementById("nombreAlumnoQuiz")?.value) nombreAlumnoGlobal = document.getElementById("nombreAlumnoQuiz").value.trim();
-            if (!nombreAlumnoGlobal || ultimaNota === null) { alert("Complete nombre y califique primero."); return; }
-            const { jsPDF } = window.jspdf;
-            let doc = new jsPDF();
-            doc.text("Certificado STEM - Movimiento Parabólico", 20, 20);
-            doc.text(`Nombre: ${nombreAlumnoGlobal}`, 20, 45);
-            doc.text(`Nota: ${ultimaNota}/5.0 (${ultimoPorcentaje}%)`, 20, 55);
-            doc.text(`Logro: ${ultimoNivel}`, 20, 65);
-            doc.text("Rural STEAM Lab Colombia", 20, 85);
-            let y = 110;
-            tablaRespuestas.forEach(r => { doc.text(`Preg ${r.pregunta}: ${r.alumno} | correcta ${r.correcta} ${r.estado}`, 20, y); y += 6; });
-            doc.save(`STEM_${nombreAlumnoGlobal.replace(/\s/g, '_')}.pdf`);
-        });
-        window.actualizarProgresoQuizGlobal = actualizarProgresoQuiz;
-        actualizarProgresoQuiz();
+
+        if (preguntasActuales.length === 0) {
+            mezclarPreguntas();
+        }
+
+        cont.innerHTML = generarUIQuiz();
+
+        if (preguntasActuales.length > 0) {
+            renderizarPregunta(0);
+            actualizarBotonesNavegacion();
+        }
+
+        document.getElementById('btnPrevQuiz')?.addEventListener('click', () => irPregunta(-1));
+        document.getElementById('btnNextQuiz')?.addEventListener('click', () => irPregunta(1));
+        document.getElementById('btnSubmitQuiz')?.addEventListener('click', calificarEvaluacion);
+
+        expandirContenedorQuiz();
     }
 
+    // ---- Inicializar quiz ----
+    mezclarPreguntas();
     actualizarContenedorQuiz();
+
+    console.log('📝 Evaluación ICFES STEM - Modo pregunta por pregunta activado');
+    console.log(`📋 ${preguntasActuales.length} preguntas cargadas`);
 </script>
 </body>
 </html>
+```
